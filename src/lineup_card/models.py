@@ -1,4 +1,4 @@
-"""Data models for the multi-domain Readiness pipeline.
+"""Data models for Lineup Card (from Readiness 09435aa, trimmed).
 
 A Reading is one athlete-day-metric value (what an adapter delivers).
 DomainAssessment is what the engine computes for one response domain;
@@ -27,14 +27,12 @@ class Status(str, Enum):
 
 
 class Domain(str, Enum):
-    PERCEPTUAL = "perceptual"      # subjective wellness
-    AUTONOMIC = "autonomic"        # HRV
-    NEUROMUSCULAR = "neuromuscular"  # CMJ strategy
+    PERCEPTUAL = "perceptual"        # wellness questionnaire
+    NEUROMUSCULAR = "neuromuscular"  # CMJ RSI-mod
 
 
 class ReadinessDriver(str, Enum):
     PERCEPTUAL = "perceptual"
-    AUTONOMIC = "autonomic"
     NEUROMUSCULAR = "neuromuscular"
 
 
@@ -51,18 +49,17 @@ METRICS: dict[Domain, MetricSpec] = {
     Domain.PERCEPTUAL: MetricSpec(
         domain=Domain.PERCEPTUAL, column="wellness_score",
         label="Wellness", unit="pts", higher_is_worse=False, rolling_days=1),
-    Domain.AUTONOMIC: MetricSpec(
-        domain=Domain.AUTONOMIC, column="hrv_lnrmssd",
-        label="HRV (ln rMSSD)", unit="", higher_is_worse=False, rolling_days=7),
     Domain.NEUROMUSCULAR: MetricSpec(
         domain=Domain.NEUROMUSCULAR, column="rsi_mod",
-        label="RSI-mod", unit="", higher_is_worse=False, rolling_days=1),
+        label="RSI-mod", unit="m/s", higher_is_worse=False, rolling_days=1),
 }
 
-# context metric column names (never flag)
-SRPE = "srpe_au"
-HSR = "hsr_m"
-TOTAL = "total_m"
+# context metrics: shown on the card, never set a status
+JUMP_HEIGHT = "jump_height_cm"
+PLAYER_LOAD = "player_load"
+THROWS = "throw_count"
+PITCHES = "pitch_count"
+CONTEXT_METRICS = {JUMP_HEIGHT, PLAYER_LOAD, THROWS, PITCHES}
 
 
 def goodness_specs() -> dict[Domain, str]:
@@ -86,13 +83,13 @@ class Reading(BaseModel):
     @field_validator("metric")
     @classmethod
     def known_metric(cls, value: str) -> str:
-        if value not in {s.column for s in METRICS.values()} | {SRPE, HSR, TOTAL}:
+        if value not in {s.column for s in METRICS.values()} | CONTEXT_METRICS:
             raise ValueError("Unknown metric; map export columns to an engine metric")
         return value
 
     @model_validator(mode="after")
     def nonnegative_metrics(self):
-        if self.metric != "hrv_lnrmssd" and self.value < 0:
+        if self.value < 0:
             raise ValueError("This metric cannot be negative")
         return self
 
@@ -114,6 +111,8 @@ class DomainAssessment(BaseModel):
     pct: float | None
     decline_z: float | None        # goodness scale: a decline is negative
     consecutive_declines: int = 0
+    te: float | None = None              # typical error, raw units
+    beyond_noise: bool | None = None     # None when TE unknown
     reasons: list[str] = Field(default_factory=list)
 
     @property
@@ -122,14 +121,12 @@ class DomainAssessment(BaseModel):
 
 
 class LoadContext(BaseModel):
-    """Load/workload CONTEXT. Never sets availability status."""
+    """Workload CONTEXT from Catapult. Never sets a status."""
 
-    srpe_today: float | None = None
-    srpe_z: float | None = None
-    spike: bool = False
-    hsr_today: float | None = None
-    total_today: float | None = None
-    acwr: float | None = None
+    player_load_today: float | None = None
+    throws_today: int | None = None
+    pitches_today: int | None = None
+    throws_7d: int | None = None        # throws + pitches, last 7 days, None if no rows
 
 
 class AthleteAssessment(BaseModel):
@@ -153,71 +150,3 @@ class AthleteAssessment(BaseModel):
     @property
     def data_complete(self) -> bool:
         return not self.missing_domains
-
-
-class Flag(BaseModel):
-    assessment: AthleteAssessment
-    note: str
-
-
-class Brief(BaseModel):
-    day: date
-    summary: str
-    flags: list[Flag]
-    cleared: list[AthleteAssessment]
-    total: int
-    insufficient: list[AthleteAssessment] = Field(default_factory=list)
-
-    @property
-    def cleared_count(self) -> int:
-        return len(self.cleared)
-
-
-class DailyPoint(BaseModel):
-    day: date
-    z: float
-
-
-class AthleteWeek(BaseModel):
-    athlete_id: str
-    name: str
-    pos: str
-    week_status: Status
-    watch: bool
-    days_tested: int
-    days_flagged: int
-    week_mean_z: float | None
-    prior_mean_z: float | None
-    delta_z: float | None
-    drivers: list[ReadinessDriver]
-    acwr_end: float | None
-    load_spike: bool
-    daily_z: list[DailyPoint]
-    worst_day: AthleteAssessment
-    note: str = ""
-    days_assessed: int = 0
-    complete_days: int = 0
-
-
-class WeeklyReport(BaseModel):
-    week_start: date
-    week_end: date
-    summary: str
-    athletes: list[AthleteWeek]
-    total: int
-
-    @property
-    def flagged(self) -> list[AthleteWeek]:
-        return [w for w in self.athletes if w.week_status in (Status.REVIEW, Status.MONITOR)]
-
-    @property
-    def insufficient(self) -> list[AthleteWeek]:
-        return [w for w in self.athletes if w.week_status is Status.INSUFFICIENT]
-
-    @property
-    def watch(self) -> list[AthleteWeek]:
-        return [w for w in self.athletes if w.watch]
-
-    @property
-    def cleared_count(self) -> int:
-        return sum(w.week_status is Status.CLEARED and not w.watch for w in self.athletes)
