@@ -17,11 +17,14 @@ Rules (plain English, because a coach has to trust them):
                Else MONITOR if any domain is MONITOR. Else within range only
                when all response domains are assessable; otherwise insufficient.
 
-  Context      Internal load (sRPE), external load (GPS) and ACWR are
-               computed as CONTEXT and attached to every athlete. They
-               explain the "why". They never set availability status.
-               ACWR is a flawed ratio (Impellizzeri 2020) and is context
-               only, by design.
+  Context      Jump height, PlayerLoad, throws and pitches come along as
+               CONTEXT. They never set a status.
+
+  Noise gate   A flag also needs the drop from baseline to exceed the
+               metric's typical error (TE, Hopkins 2000), estimated from
+               the squad's own repeat readings. A big z inside TE is
+               "No change". Unknown TE never blocks a flag; the reason
+               says the noise is not yet estimated.
 
   Freshness    Streams arrive on different clocks. A domain is assessed
                from its most recent reading within FRESHNESS_DAYS; with no
@@ -37,21 +40,20 @@ import statistics
 from collections import defaultdict
 from datetime import date, timedelta
 
-from .models import (METRICS, SRPE, HSR, TOTAL, AthleteAssessment, Baseline,
-                     Domain, DomainAssessment, LoadContext, MetricSpec,
+from .models import (METRICS, PITCHES, PLAYER_LOAD, THROWS, AthleteAssessment,
+                     Baseline, Domain, DomainAssessment, LoadContext, MetricSpec,
                      ReadinessDriver, Reading, Status)
 
 BASELINE_DAYS = 28
 MIN_BASELINE_SESSIONS = 10
 FRESHNESS_DAYS = 4
-ACUTE_DAYS = 7
+LOAD_DAYS = 7
 REVIEW_Z = -2.0
 MONITOR_Z = -1.2
 CONVERGENCE_Z = -1.2
 MONITOR_DECLINE_SESSIONS = 3
 TREND_SESSIONS = 14
 SWC_FACTOR = 0.2
-LOAD_SPIKE_Z = 2.0
 
 SEVERITY = {Status.REVIEW: 0, Status.MONITOR: 1, Status.INSUFFICIENT: 2,
             Status.CLEARED: 3}
@@ -100,7 +102,7 @@ def count_consecutive_declines(values: list[float]) -> int:
 
 
 def assess_domain(spec: MetricSpec, points: list[tuple[date, float]],
-                  today: date) -> DomainAssessment:
+                  today: date, te: float | None = None) -> DomainAssessment:
     """Assess one response domain from its raw (day, value) series."""
     pts = sorted((d, v) for d, v in points if d <= today)
     if len({d for d, _ in pts}) != len(pts):
@@ -134,29 +136,39 @@ def assess_domain(spec: MetricSpec, points: list[tuple[date, float]],
     declines = count_consecutive_declines(recent)
     cumulative_drop = (recent[-1 - declines] - recent[-1]) if declines else 0.0
 
+    drop = base.mean - g_today          # goodness units; positive means worse
+    beyond_noise = None if te is None else drop > te
+
     reasons: list[str] = []
     if decline_z <= REVIEW_Z:
         status = Status.REVIEW
-        reasons.append(f"{spec.label} z {decline_z:.1f} at or below review "
-                       f"line ({REVIEW_Z:.1f})")
+        reasons.append(f"{spec.label} {abs(decline_z):.1f} SD below his 28-day normal")
     elif decline_z <= MONITOR_Z:
         status = Status.MONITOR
-        reasons.append(f"{spec.label} z {decline_z:.1f} at or below monitor "
-                       f"line ({MONITOR_Z:.1f})")
+        reasons.append(f"{spec.label} {abs(decline_z):.1f} SD below his 28-day normal")
     elif declines >= MONITOR_DECLINE_SESSIONS and cumulative_drop > base.swc:
         status = Status.MONITOR
-        reasons.append(f"{spec.label}: {declines} consecutive declining "
-                       f"readings past the smallest worthwhile change")
+        reasons.append(f"{spec.label}: {declines} declining readings in a row")
     else:
         status = Status.CLEARED
+
+    if status in (Status.REVIEW, Status.MONITOR):
+        if beyond_noise is False:
+            status = Status.CLEARED
+            reasons = [f"{spec.label} drop inside test noise (TE {te:g} {spec.unit})"]
+        elif beyond_noise is True:
+            reasons[-1] += " and beyond test noise"
+        else:
+            reasons[-1] += "; test noise not yet estimated"
 
     raw_mean = -base.mean if spec.higher_is_worse else base.mean
     pct = (None if raw_mean == 0
            else round((today_val - raw_mean) / raw_mean * 100.0, 1))
     return DomainAssessment(domain=spec.domain, status=status, fresh=True,
-                            today=round(today_val, 2), base=base,
+                            today=round(today_val, 3), base=base,
                             pct=pct, decline_z=decline_z, observed_on=today_day,
-                            consecutive_declines=declines, reasons=reasons)
+                            consecutive_declines=declines, reasons=reasons,
+                            te=te, beyond_noise=beyond_noise)
 
 
 def _metric_series(readings: list[Reading], metric: str,
@@ -171,50 +183,27 @@ def _metric_series(readings: list[Reading], metric: str,
     return sorted(by_day.items())
 
 
-def _latest(series: list[tuple[date, float]], today: date) -> float | None:
-    fresh = [v for (d, v) in series
-             if today - timedelta(days=FRESHNESS_DAYS) <= d <= today]
-    return fresh[-1] if fresh else None
+def _int_or_none(value: float | None) -> int | None:
+    return None if value is None else int(round(value))
 
 
 def load_context(readings: list[Reading], today: date) -> LoadContext:
-    """Internal/external load + ACWR. CONTEXT only — never sets a status."""
-    srpe = _metric_series(readings, SRPE, today)
-    srpe_today = _latest(srpe, today)
-    srpe_z = None
-    spike = False
-    if srpe_today is not None:
-        observed_on = srpe[-1][0]
-        prior = [v for (d, v) in srpe
-                 if observed_on - timedelta(days=BASELINE_DAYS) <= d < observed_on]
-        base = compute_baseline(prior)
-        if base is not None:
-            raw_z = z_score(srpe_today, base)
-            srpe_z = round(raw_z, 1)
-            spike = raw_z >= LOAD_SPIKE_Z
+    """Catapult workload. CONTEXT only; never sets a status."""
+    def on(metric: str, day: date) -> float | None:
+        vals = [r.value for r in readings if r.metric == metric and r.day == day]
+        return sum(vals) if vals else None
 
-    acwr = None
-    if srpe:
-        vals = dict(srpe)
-        acute = [v for d, v in vals.items()
-                 if today - timedelta(days=ACUTE_DAYS) < d <= today]
-        chronic = [v for d, v in vals.items()
-                   if today - timedelta(days=BASELINE_DAYS) < d <= today]
-        # Missing days are unknown, not rest days. A rest day must be explicit 0.
-        if len(acute) == ACUTE_DAYS and len(chronic) == BASELINE_DAYS:
-            cm = statistics.fmean(chronic)
-            if cm:
-                acwr = round(statistics.fmean(acute) / cm, 2)
-
+    window = [r for r in readings if r.metric in (THROWS, PITCHES)
+              and today - timedelta(days=LOAD_DAYS - 1) <= r.day <= today]
     return LoadContext(
-        srpe_today=srpe_today, srpe_z=srpe_z, spike=spike,
-        hsr_today=_latest(_metric_series(readings, HSR, today), today),
-        total_today=_latest(_metric_series(readings, TOTAL, today), today),
-        acwr=acwr)
+        player_load_today=on(PLAYER_LOAD, today),
+        throws_today=_int_or_none(on(THROWS, today)),
+        pitches_today=_int_or_none(on(PITCHES, today)),
+        throws_7d=_int_or_none(sum(r.value for r in window)) if window else None)
 
 
-def assess_athlete(readings: list[Reading],
-                   today: date) -> AthleteAssessment | None:
+def assess_athlete(readings: list[Reading], today: date,
+                   te: dict[str, float | None] | None = None) -> AthleteAssessment | None:
     """Assess one athlete across response domains; status by convergence.
     Retain known athletes with insufficient data; None for no as-of identity."""
     readings = [r for r in readings if r.day <= today]
@@ -229,14 +218,16 @@ def assess_athlete(readings: list[Reading],
     if ident is None:
         return None
 
+    te = te or {}
     domains: list[DomainAssessment] = []
     for spec in METRICS.values():
         series = _metric_series(readings, spec.column, today)
-        domains.append(assess_domain(spec, series, today))
+        domains.append(assess_domain(spec, series, today, te.get(spec.column)))
 
     assessable = [d for d in domains if d.assessable]
     any_review = any(d.status is Status.REVIEW for d in domains)
-    converging = [d for d in assessable if d.decline_z <= CONVERGENCE_Z]
+    converging = [d for d in assessable
+                  if d.decline_z <= CONVERGENCE_Z and d.beyond_noise is not False]
     if any_review or len(converging) >= 2:
         status = Status.REVIEW
     elif any(d.status is Status.MONITOR for d in domains):
@@ -257,8 +248,6 @@ def assess_athlete(readings: list[Reading],
         reasons.append("Incomplete response-domain coverage; check missing or stale data")
 
     load = load_context(readings, today)
-    if load.spike and status in (Status.REVIEW, Status.MONITOR):
-        reasons.append("during an acute training-load spike (context)")
 
     aid, name, pos = ident
     return AthleteAssessment(athlete_id=aid, name=name, pos=pos, status=status,
@@ -271,12 +260,12 @@ def _worst_z(a: AthleteAssessment) -> float:
     return min(zs) if zs else 0.0
 
 
-def assess_squad(readings: list[Reading],
-                 today: date) -> list[AthleteAssessment]:
+def assess_squad(readings: list[Reading], today: date,
+                 te: dict[str, float | None] | None = None) -> list[AthleteAssessment]:
     """Assess every athlete with data. Sorted worst-first."""
     by_athlete: dict[str, list[Reading]] = defaultdict(list)
     for r in readings:
         by_athlete[r.athlete_id].append(r)
     out = [a for group in by_athlete.values()
-           if (a := assess_athlete(group, today)) is not None]
+           if (a := assess_athlete(group, today, te)) is not None]
     return sorted(out, key=lambda a: (SEVERITY[a.status], _worst_z(a)))
