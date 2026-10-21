@@ -2228,7 +2228,7 @@ test("bandPosition clamps z to the track", () => {
 
 - [ ] **Step 2: Run to see them fail**
 
-Run: `node --test tests/web/`
+Run: `node --test tests/web/*.test.mjs`
 Expected: FAIL (cannot find module `web/js/logic.js`).
 
 - [ ] **Step 3: Implement `web/js/logic.js`**
@@ -2286,7 +2286,7 @@ export const bandPosition = (z) => Math.max(2, Math.min(98, 50 + z * 15));
 
 - [ ] **Step 4: Run the tests**
 
-Run: `node --test tests/web/`
+Run: `node --test tests/web/*.test.mjs`
 Expected: `5` tests pass.
 
 - [ ] **Step 5: Commit**
@@ -2900,7 +2900,7 @@ For each one, search the DOI or the title. Keep it only if the authors, year, jo
 7. "Real data": the export column names are modeled on public examples; live VALD or Catapult connections need a club account (see `adapters/api_stub.py`); never put real athlete data in a public repo.
 8. "Built on Readiness" with commit `09435aa`.
 9. "Evidence" with only the verified citations.
-10. "Tests": `.venv/bin/python -m pytest -q` and `node --test tests/web/`.
+10. "Tests": `.venv/bin/python -m pytest -q` and `node --test tests/web/*.test.mjs`.
 
 - [ ] **Step 3: Commit**
 
@@ -2917,7 +2917,7 @@ git commit -m "docs: README with rules, run steps, schedule and verified citatio
 
 ```bash
 .venv/bin/python -m pytest -q
-node --test tests/web/
+node --test tests/web/*.test.mjs
 ```
 Expected: every test passes. Record the counts.
 
