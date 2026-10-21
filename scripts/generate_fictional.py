@@ -53,7 +53,7 @@ def _rsi_today(rng, base, noise, lc_id, day):
     if lc_id == "LC01" and day >= date(2026, 9, 16):
         value *= 1 - 0.045 * ((day - date(2026, 9, 15)).days)
     if lc_id == "LC03" and day == END:
-        value = base - 0.012
+        value = base - 0.014
     return max(value, 0.2)
 
 
