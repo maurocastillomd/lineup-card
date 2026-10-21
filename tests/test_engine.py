@@ -86,3 +86,12 @@ def test_load_context_sums_last_seven_days():
 def test_load_context_missing_is_none_not_zero():
     lc = load_context([], D0)
     assert lc.throws_7d is None and lc.player_load_today is None
+
+
+def test_noise_gate_is_one_and_a_half_typical_errors():
+    from lineup_card.engine import noise_threshold
+    assert noise_threshold(0.02) == 0.03
+    # a drop of 1.2 x TE now stays inside the noise
+    pts = series([0.550, 0.552] * 10 + [0.527])      # drop 0.024, TE 0.02
+    d = assess_domain(RSI, pts, pts[-1][0], te=0.02)
+    assert d.beyond_noise is False and d.status is Status.CLEARED

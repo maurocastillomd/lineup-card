@@ -20,10 +20,10 @@ Rules (plain English, because a coach has to trust them):
   Context      Jump height, PlayerLoad, throws and pitches come along as
                CONTEXT. They never set a status.
 
-  Noise gate   A flag also needs the drop from baseline to exceed the
-               metric's typical error (TE, Hopkins 2000), estimated from
-               the squad's own repeat readings. A big z inside TE is
-               "No change". Unknown TE never blocks a flag; the reason
+  Noise gate   A flag also needs the drop from baseline to exceed 1.5 x
+               the metric's typical error (TE, Hopkins 2000), estimated
+               from the squad's own repeat readings. A big z inside that
+               band is "No change". Unknown TE never blocks a flag; the reason
                says the noise is not yet estimated.
 
   Freshness    Streams arrive on different clocks. A domain is assessed
@@ -48,6 +48,7 @@ BASELINE_DAYS = 28
 MIN_BASELINE_SESSIONS = 10
 FRESHNESS_DAYS = 4
 LOAD_DAYS = 7
+NOISE_GATE_MULTIPLIER = 1.5
 REVIEW_Z = -2.0
 MONITOR_Z = -1.2
 CONVERGENCE_Z = -1.2
@@ -101,6 +102,19 @@ def count_consecutive_declines(values: list[float]) -> int:
     return run
 
 
+def noise_threshold(te: float) -> float:
+    """The smallest drop (raw units) that counts as more than test noise.
+
+    te is the typical error: SD of day-to-day differences / sqrt(2).
+    For reference: 1 x TE is the loosest common rule; MDC95 is
+    1.96 x sqrt(2) x TE, about 2.77 x TE, the strictest.
+    """
+    # Rule chosen by Mauro Castillo, 2026-10-21: 1.5 x TE. A middle ground for a
+    # daily report: fewer false alarms than 1 x TE, far fewer missed declines
+    # than MDC95. No validated cutoff exists for pro baseball CMJ.
+    return NOISE_GATE_MULTIPLIER * te
+
+
 def assess_domain(spec: MetricSpec, points: list[tuple[date, float]],
                   today: date, te: float | None = None) -> DomainAssessment:
     """Assess one response domain from its raw (day, value) series."""
@@ -137,7 +151,7 @@ def assess_domain(spec: MetricSpec, points: list[tuple[date, float]],
     cumulative_drop = (recent[-1 - declines] - recent[-1]) if declines else 0.0
 
     drop = base.mean - g_today          # goodness units; positive means worse
-    beyond_noise = None if te is None else drop > te
+    beyond_noise = None if te is None else drop > noise_threshold(te)
 
     reasons: list[str] = []
     if decline_z <= REVIEW_Z:
