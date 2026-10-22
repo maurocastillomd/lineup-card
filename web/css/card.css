@@ -110,3 +110,19 @@
 @media print {
   .band-row > div:last-child small { display: block; margin-left: 0; }
 }
+
+/* availability board (figures/board/board.svg) */
+#board svg { width: 100%; height: auto; }
+#board .tag { display: none; }
+#board .peg[data-status="check_in"] .tag[data-for="check_in"],
+#board .peg[data-status="watch"] .tag[data-for="watch"],
+#board .peg[data-status="no_change"] .tag[data-for="no_change"],
+#board .peg[data-status="not_enough_data"] .tag[data-for="not_enough_data"] { display: inline; }
+/* the figure is always light, so it keeps the light-theme status colours in dark mode too */
+#board { --board-alert: #9F3C2E; --board-warn: #815410; }
+#board .glyph[data-glyph="check_in"] { fill: var(--board-alert); }
+#board .glyph[data-glyph="watch"] { fill: var(--board-warn); }
+@media print {
+  #board svg { max-height: 2.4in; width: auto; max-width: 100%; }
+  .lower .board-key { display: block; font-size: 7px; margin: 1px 0 0; }
+}
