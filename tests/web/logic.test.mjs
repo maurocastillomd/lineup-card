@@ -71,3 +71,32 @@ test("groupCheckins on a team-shift day splits players down more than the team",
   assert.deepEqual(g.more.map((p) => p.id), ["C", "D", "A"]);
   assert.deepEqual(g.withTeam.map((p) => p.id), ["B", "F"]);
 });
+
+import { jumpPosition, plainChange } from "../../web/js/logic.js";
+
+test("plainChange speaks in percent of his normal", () => {
+  assert.equal(plainChange({ rsi: { pct: -12.4 }, magnitude: "▼ large" }), "12% below his normal");
+  assert.equal(plainChange({ rsi: { pct: 3.2 }, magnitude: "– within noise" }), "3% above his normal");
+  assert.equal(plainChange({ rsi: { pct: 0.4 }, magnitude: "– within noise" }), "Right at his normal");
+  assert.equal(plainChange({ rsi: { pct: 1.0 }, magnitude: "▼ large (wellness)" }),
+    "1% above his normal · wellness low");
+  assert.equal(plainChange({ rsi: { pct: null, today: 0.5 }, magnitude: "" }), "Still learning his normal");
+  assert.equal(plainChange({ rsi: { pct: null, today: null }, magnitude: "" }), "No jump today");
+});
+
+test("jumpPosition maps -20%..+20% onto the track and clamps", () => {
+  assert.equal(jumpPosition(0), 50);
+  assert.equal(jumpPosition(-20), 2);
+  assert.equal(jumpPosition(10), 74);
+  assert.equal(jumpPosition(-40), 2);
+});
+
+import { plainReason } from "../../web/js/logic.js";
+
+test("plainReason gives the coach one plain line", () => {
+  const p = { pos: "RP", rsi: { pct: -18.3, today: 0.45 }, wellness: { z: -2.3 }, magnitude: "▼ large (wellness)",
+    load: { throws_7d: 196 } };
+  assert.equal(plainReason(p), "Jump 18% below his normal · wellness low · 196 throws + pitches in 7 days");
+  const q = { pos: "OF", rsi: { pct: -9.6, today: 0.5 }, wellness: { z: -0.2 }, magnitude: "▼ moderate", load: {} };
+  assert.equal(plainReason(q), "Jump 10% below his normal");
+});

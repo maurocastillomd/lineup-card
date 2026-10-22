@@ -67,3 +67,9 @@ def test_driver_magnitude_names_the_flagging_measure():
     assert driver_magnitude([rsi2, well.model_copy(update={"status": Status.CLEARED})]) == "▼ moderate"
     gated = rsi.model_copy(update={"decline_z": -2.6})          # big z, cleared by noise gate
     assert driver_magnitude([gated, well.model_copy(update={"status": Status.CLEARED})]) == "– within noise"
+
+
+def test_day_carries_noise_gate_threshold():
+    day = build_day(rows(), TODAY, CW, CleanLog(), {"opponent": "", "home_away": "", "note": ""})
+    te = day["te"]["rsi_mod"]
+    assert day["noise_gate"]["rsi_mod"] == round(1.5 * te, 4)

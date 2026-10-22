@@ -63,3 +63,25 @@ export function groupCheckins(players, teamShift) {
     withTeam: flagged.filter((p) => p.beyond_team === false),
   };
 }
+
+// Jump today in plain words: percent of his own normal.
+export function plainChange(p) {
+  const pct = p.rsi.pct;
+  let text;
+  if (pct == null) text = p.rsi.today == null ? "No jump today" : "Still learning his normal";
+  else if (Math.abs(pct) < 1) text = "Right at his normal";
+  else text = `${Math.round(Math.abs(pct))}% ${pct < 0 ? "below" : "above"} his normal`;
+  return p.magnitude?.includes("(wellness)") ? `${text} · wellness low` : text;
+}
+
+// -20% sits at the left edge, his normal in the middle, +20% at the right edge.
+export const jumpPosition = (pct) => Math.max(2, Math.min(98, 50 + pct * 2.4));
+
+// One line for the coach: jump, wellness, and arm workload for pitchers.
+export function plainReason(p) {
+  const parts = [];
+  if (p.rsi.pct != null) parts.push(`Jump ${plainChange({ ...p, magnitude: "" }).replace(/^Right at/, "right at")}`);
+  if (p.wellness?.z != null && p.wellness.z <= -1.2) parts.push("wellness low");
+  if (["SP", "RP"].includes(p.pos) && p.load?.throws_7d != null) parts.push(`${p.load.throws_7d} throws + pitches in 7 days`);
+  return parts.join(" · ");
+}

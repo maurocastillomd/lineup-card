@@ -119,7 +119,9 @@ def build_day(readings: list[Reading], today: date, cw: Crosswalk, log: CleanLog
 
     return {
         "date": today.isoformat(), "synthetic": True, "club": CLUB, "schedule": schedule,
-        "te": te, "team_shift": shift, "league_reference": LEAGUE_REFERENCE,
+        "te": te,
+        "noise_gate": {k: None if v is None else round(noise_threshold(v), 4) for k, v in te.items()},
+        "team_shift": shift, "league_reference": LEAGUE_REFERENCE,
         "players": players,
         "held_out": log.held_out,
         "cleaning_log": [e.model_dump(mode="json") for e in log.entries if e.day == today],

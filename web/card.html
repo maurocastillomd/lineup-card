@@ -23,27 +23,26 @@
   <p id="unreviewed" class="banner" hidden>Not reviewed yet. <a href="index.html">Review first</a>.</p>
   <section><h2>Check in today</h2>
     <p id="shift-lead" class="shift-lead" hidden></p>
-    <p id="more-label" class="group-label" hidden>Down more than the team</p>
+    <p id="more-label" class="group-label" hidden>Not explained by the team drop</p>
     <ol id="checkin" class="checkin"></ol>
     <p id="with-team" class="with-team"></p>
   </section>
   <p id="shift" class="shift"></p>
   <section><h2>Today's players</h2>
-    <div class="band-head"><span>Player</span><span>lower · his normal · higher</span><span>Status</span></div>
+    <div class="band-head"><span>Player</span><span class="scale"><span>20% lower</span><span>his normal</span><span>20% higher</span></span><span>Status</span></div>
+    <p class="how">Jump today compared with his own normal (scale: 20% lower to 20% higher). Dot = today. Centre line = his normal. Shaded area = his usual ups and downs. A dot left of the shading means he is jumping lower than usual.</p>
     <div id="today"></div>
     <p id="hidden-summary" class="hidden-summary"></p>
     <button id="toggle" class="noprint" aria-expanded="false">Show full roster</button>
     <div id="rest" hidden></div>
   </section>
   <section class="lower">
-    <div><h2>Two-week trend</h2><div id="trends"></div></div>
+    <div><h2>Two-week trend</h2><p class="how">Jump each day for flagged players. Shaded band = his normal.</p><div id="trends"></div></div>
     <div><h2>Availability board</h2><div id="board"></div></div>
   </section>
   <footer class="card-foot">
-    <p>Sources: VALD ForceDecks CMJ (RSI-mod, jump height), Catapult OpenField (PlayerLoad, throws, pitches), morning wellness form. Fictional data in vendor-shaped exports.</p>
-    <p>Rule: a status needs the drop to be large against his own 28-day normal and larger than the test's typical error. Position, team and league lines are context only. Coaches and medical staff decide participation.</p>
-    <p id="league"></p>
-    <p class="legend"><span class="sw band"></span> his normal range <span class="sw dot"></span> today, with test noise <span class="sw tick"></span> position median</p>
+    <p><strong>How a flag works:</strong> a player is flagged only when his drop is big compared with his own last 28 days and bigger than normal test-to-test noise. Team and league notes are context only. Coaches and medical staff decide who plays.</p>
+    <p><strong>Jump</strong> = reactive strength from the force-plate jump (RSI-mod). <strong>Sources:</strong> VALD ForceDecks, Catapult (load, throws, pitches), morning wellness form. Fictional roster and data. <span id="league"></span></p>
   </footer>
 </main>
 <script type="module" src="js/card.js"></script>

@@ -1,4 +1,4 @@
-import { applyDecisions, bandPosition, groupCheckins, hiddenSummary } from "./logic.js";
+import { applyDecisions, groupCheckins, hiddenSummary, jumpPosition, plainChange, plainReason } from "./logic.js";
 import { loadReview } from "./store.js";
 
 const $ = (id) => document.getElementById(id);
@@ -27,11 +27,11 @@ const shift = day.team_shift;
 const groups = groupCheckins(players, shift);
 const flagged = [...groups.more, ...groups.withTeam];
 const shiftText = shift
-  ? `Whole roster RSI-mod ${shift.median_pct}% vs normal (n ${shift.n}).${day.schedule.note ? ` ${day.schedule.note}.` : ""}`
+  ? `Whole team jumping ${Math.abs(Math.round(shift.median_pct))}% ${shift.median_pct < 0 ? "below" : "above"} normal (${shift.n} players tested).${day.schedule.note ? ` ${day.schedule.note}.` : ""}`
   : "";
 const checkinItem = (p) => `<li><strong>${esc(p.name)}</strong> ${esc(p.pos)} ·
-  <span class="word-${p.status}">${esc(p.word)}</span> ${esc(p.magnitude)}
-  <small>${p.reasons.map(esc).join("; ")}${p.reviewNote ? ` · ${esc(p.reviewNote)}` : ""}${pitchLine(p)}</small></li>`;
+  <span class="word-${p.status}">${esc(p.word)}</span>
+  <small>${esc(plainReason(p))}${p.reviewNote ? ` · ${esc(p.reviewNote)}` : ""}</small></li>`;
 
 if (groups.lead) {
   // Team-shift day: the team line leads, then who dropped more than the team, then a names-only line.
@@ -51,23 +51,18 @@ if (groups.lead) {
 }
 
 const league = day.league_reference.rsi_mod;
-$("league").textContent = `League context: RSI-mod ${league.value} ${league.unit} (${league.label}).`;
-
-function pitchLine(p) {
-  if (!["SP", "RP"].includes(p.pos) || p.load.throws_7d == null) return "";
-  return ` · throws + pitches, last 7 days: ${p.load.throws_7d}`;
-}
+$("league").textContent = `For context only: a typical jump score at this level is about ${league.value} ${league.unit} (${league.label}).`;
 
 function row(p) {
-  const z = p.rsi.z;
-  const te = day.te.rsi_mod && p.rsi.sd ? day.te.rsi_mod / p.rsi.sd : null;
-  const track = z == null ? `<span class="none">baseline building</span>` : `
-    ${p.position_median_z == null ? "" : `<span class="tick" style="left:${bandPosition(p.position_median_z)}%" title="${p.pos} median, n ${p.position_n}"></span>`}
-    ${te == null ? "" : `<span class="noise" style="left:${bandPosition(z - te)}%;width:${bandPosition(z + te) - bandPosition(z - te)}%"></span>`}
-    <span class="dot" style="left:${bandPosition(z)}%"></span>`;
-  return `<div class="band-row"><div>${esc(p.name)}<small>${esc(p.pos)} · RSI-mod ${p.rsi.today ?? "n/a"}</small></div>
-    <div class="track"><span class="band"></span>${track}</div>
-    <div><span class="word-${p.status}">${esc(p.word)}</span><small>${esc(p.magnitude)}</small></div></div>`;
+  const pct = p.rsi.pct;
+  const gate = day.noise_gate.rsi_mod && p.rsi.mean ? day.noise_gate.rsi_mod / p.rsi.mean * 100 : null;
+  const zone = gate == null ? "" :
+    `<span class="zone" style="left:${jumpPosition(-gate)}%;width:${jumpPosition(gate) - jumpPosition(-gate)}%"></span>`;
+  const dot = pct == null ? "" : `<span class="dot dot-${p.status}" style="left:${jumpPosition(pct)}%"></span>`;
+  return `<div class="band-row"><div>${esc(p.name)}<small>${esc(p.pos)}</small></div>
+    <div class="track">${zone}<span class="normal"></span>${dot}</div>
+    <div><span class="word-${p.status}">${esc(p.word)}</span><small>${esc(plainChange(p))}</small>${
+      p.reviewNote ? `<small class="note">${esc(p.reviewNote)}</small>` : ""}</div></div>`;
 }
 
 function grouped(list) {

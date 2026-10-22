@@ -11,6 +11,10 @@
   "wellness_score": 1.5711,
   "rsi_mod": 0.0316
  },
+ "noise_gate": {
+  "wellness_score": 2.3567,
+  "rsi_mod": 0.0474
+ },
  "team_shift": {
   "median_pct": -1.0,
   "median_raw": -0.0055,
