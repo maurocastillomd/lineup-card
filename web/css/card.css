@@ -126,3 +126,7 @@
   #board svg { max-height: 2.4in; width: auto; max-width: 100%; }
   .lower .board-key { display: block; font-size: 7px; margin: 1px 0 0; }
 }
+@media (max-width: 640px) {
+  .band-head .scale { font-size: 10px; gap: 4px; }
+  .band-head .scale span { white-space: nowrap; }
+}

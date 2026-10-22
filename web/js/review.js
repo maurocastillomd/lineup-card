@@ -5,6 +5,12 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 let day, review;
 
+const noise = (b) => b === null ? "noise not yet estimated" : b ? "beyond test noise" : "inside test noise";
+// Both measures, so a wellness-only flag never looks like a contradiction.
+const gates = (p) => [["RSI-mod", p.rsi], ["Wellness", p.wellness]]
+  .map(([label, d]) => `${label}: z ${d.z ?? "n/a"}${d.z == null ? "" : `, ${noise(d.beyond_noise)}`}`)
+  .join(" · ");
+
 async function load(date) {
   day = await (await fetch(`data/days/${date}.json`)).json();
   review = loadReview(date);
@@ -30,7 +36,7 @@ function render() {
     return `<div class="row" data-id="${p.id}">
       <div><strong>${esc(p.name)}</strong> ${esc(p.pos)} · <span class="word-${p.status}">${esc(p.word)}</span> ${esc(p.magnitude)}
         <small>${p.reasons.map(esc).join("; ")}</small>
-        <small>z gate: RSI-mod z ${p.rsi.z ?? "n/a"} · noise gate: ${p.rsi.beyond_noise === null ? "TE not yet estimated" : p.rsi.beyond_noise ? "beyond test noise" : "inside test noise"}</small>${state}
+        <small>${gates(p)}</small>${state}
         <span class="err" data-err></span></div>
       <div class="actions">
         <button data-act="confirm">Confirm</button>
