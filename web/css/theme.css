@@ -1,0 +1,35 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Hanken+Grotesk:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+:root {
+  --bg: #FAFAF9; --surface: #F1F1F0; --card: #FFFFFF;
+  --ink: #0B0B0C; --ink-dim: #52525B; --ink-faint: #666670;
+  --accent: #2039C4; --accent-dim: #182C93; --accent-wash: rgba(32, 57, 196, 0.06);
+  --line: rgba(11, 11, 12, 0.08);
+  --ok: #246346; --warn: #815410; --alert: #9F3C2E;
+  --display: "Fraunces", Georgia, serif;
+  --sans: "Hanken Grotesk", -apple-system, system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  --radius: 20px; --radius-sm: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E0E10; --surface: #17171A; --card: #1C1C20;
+    --ink: #F4F4F5; --ink-dim: #A1A1AA; --ink-faint: #8B8B94;
+    --accent: #8C9BFF; --accent-dim: #6F80F5; --accent-wash: rgba(140, 155, 255, 0.10);
+    --line: rgba(255, 255, 255, 0.10);
+    --ok: #6FCF9E; --warn: #E0B25C; --alert: #F08A7A;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 15px/1.6 var(--sans); }
+h1, h2, h3 { font-family: var(--display); font-weight: 500; line-height: 1.2; margin: 0 0 .4em; }
+.mono { font-family: var(--mono); }
+.wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 64px; }
+.fiction { font-size: 12px; color: var(--ink-faint); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; display: inline-block; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px; margin: 16px 0; }
+button, select, textarea, input { font: inherit; color: inherit; }
+button { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 6px 12px; cursor: pointer; }
+button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+textarea { width: 100%; min-height: 120px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px; }
+.word-check_in { color: var(--alert); } .word-watch { color: var(--warn); }
+.word-no_change { color: var(--ink-dim); } .word-not_enough_data { color: var(--ink-faint); }

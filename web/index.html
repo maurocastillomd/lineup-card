@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lineup Card review</title>
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    .row { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 10px 0; border-top: 1px solid var(--line); }
+    .row small { color: var(--ink-dim); display: block; }
+    .actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: start; }
+    .err { color: var(--alert); font-size: 13px; }
+    ul.plain { padding-left: 18px; margin: 0; }
+    @media (max-width: 640px) { .row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <span class="fiction">Fictional roster. Not a fitness-to-play decision.</span>
+  <h1>Morning review</h1>
+  <p>Check what the pipeline did, mark today's players, then approve the Lineup Card.</p>
+  <label>Date <select id="date"></select></label>
+
+  <section class="panel">
+    <h2>1. Today's players</h2>
+    <p>Paste the lineup and probable pitchers, one per line. Names, last names or IDs work.</p>
+    <textarea id="lineup" aria-label="Today's players"></textarea>
+    <button id="apply-lineup">Use this list</button>
+    <p id="lineup-result"></p>
+  </section>
+
+  <section class="panel">
+    <h2>2. What the pipeline held out or dropped</h2>
+    <div id="held"></div>
+    <div id="log"></div>
+  </section>
+
+  <section class="panel">
+    <h2>3. Flags</h2>
+    <div id="flags"></div>
+  </section>
+
+  <section class="panel">
+    <button class="primary" id="approve">Approve and build the Lineup Card</button>
+    <span id="approve-msg" class="err"></span>
+  </section>
+</main>
+<script type="module" src="js/review.js"></script>
+</body>
+</html>
