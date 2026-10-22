@@ -50,7 +50,9 @@
     "sd": 0.028,
     "z": 2.34,
     "pct": 12.1,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 17.0,
@@ -58,16 +60,18 @@
     "sd": 1.197,
     "z": -2.47,
     "pct": -14.8,
-    "beyond_noise": true
+    "beyond_noise": true,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 46.7,
    "position_median_z": 0.63,
    "position_n": 8,
    "load": {
-    "player_load_today": 88.5,
-    "throws_today": 22,
-    "pitches_today": 0,
-    "throws_7d": 179
+    "player_load_today": 179.7,
+    "throws_today": 16,
+    "pitches_today": 19,
+    "throws_7d": 183
    },
    "beyond_team": null,
    "trend": [
@@ -145,7 +149,9 @@
     "sd": 0.027,
     "z": -2.1,
     "pct": -11.1,
-    "beyond_noise": true
+    "beyond_noise": true,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 18.0,
@@ -153,16 +159,18 @@
     "sd": 1.699,
     "z": -0.95,
     "pct": -8.2,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 40.1,
    "position_median_z": -0.12,
    "position_n": 6,
    "load": {
-    "player_load_today": 237.5,
-    "throws_today": 72,
+    "player_load_today": 163.0,
+    "throws_today": 70,
     "pitches_today": 0,
-    "throws_7d": 379
+    "throws_7d": 383
    },
    "beyond_team": null,
    "trend": [
@@ -240,7 +248,9 @@
     "sd": 0.035,
     "z": -1.09,
     "pct": -7.0,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 18.0,
@@ -248,16 +258,18 @@
     "sd": 1.214,
     "z": -1.86,
     "pct": -11.2,
-    "beyond_noise": true
+    "beyond_noise": true,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 42.9,
    "position_median_z": -0.81,
    "position_n": 3,
    "load": {
-    "player_load_today": 196.6,
-    "throws_today": 76,
+    "player_load_today": 199.2,
+    "throws_today": 87,
     "pitches_today": 0,
-    "throws_7d": 378
+    "throws_7d": 363
    },
    "beyond_team": null,
    "trend": [
@@ -335,7 +347,9 @@
     "sd": 0.027,
     "z": -1.61,
     "pct": -9.0,
-    "beyond_noise": true
+    "beyond_noise": true,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 22.0,
@@ -343,16 +357,18 @@
     "sd": 1.792,
     "z": 1.04,
     "pct": 9.3,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 42.6,
    "position_median_z": 0.63,
    "position_n": 8,
    "load": {
-    "player_load_today": 94.9,
-    "throws_today": 22,
-    "pitches_today": 0,
-    "throws_7d": 163
+    "player_load_today": 216.7,
+    "throws_today": 25,
+    "pitches_today": 20,
+    "throws_7d": 190
    },
    "beyond_team": null,
    "trend": [
@@ -430,7 +446,9 @@
     "sd": 0.03,
     "z": 2.43,
     "pct": 15.4,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 18.0,
@@ -438,16 +456,18 @@
     "sd": 1.555,
     "z": -1.53,
     "pct": -11.7,
-    "beyond_noise": true
+    "beyond_noise": true,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 50.6,
    "position_median_z": 0.63,
    "position_n": 8,
    "load": {
-    "player_load_today": 153.3,
-    "throws_today": 34,
-    "pitches_today": 18,
-    "throws_7d": 239
+    "player_load_today": 247.10000000000002,
+    "throws_today": 28,
+    "pitches_today": 25,
+    "throws_7d": 216
    },
    "beyond_team": null,
    "trend": [
@@ -525,7 +545,9 @@
     "sd": 0.02,
     "z": -1.82,
     "pct": -6.6,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 19.0,
@@ -533,16 +555,18 @@
     "sd": 1.122,
     "z": -0.63,
     "pct": -3.6,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 35.9,
    "position_median_z": 0.63,
    "position_n": 8,
    "load": {
-    "player_load_today": 113.6,
-    "throws_today": 33,
-    "pitches_today": 0,
-    "throws_7d": 186
+    "player_load_today": 195.0,
+    "throws_today": 24,
+    "pitches_today": 22,
+    "throws_7d": 197
    },
    "beyond_team": null,
    "trend": [
@@ -618,7 +642,9 @@
     "sd": 0.025,
     "z": -0.92,
     "pct": -4.5,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 20.0,
@@ -626,16 +652,18 @@
     "sd": 1.911,
     "z": 0.11,
     "pct": 1.1,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 42.3,
    "position_median_z": -0.5,
    "position_n": 5,
    "load": {
-    "player_load_today": 196.5,
-    "throws_today": 49,
+    "player_load_today": 239.20000000000002,
+    "throws_today": 92,
     "pitches_today": 0,
-    "throws_7d": 400
+    "throws_7d": 408
    },
    "beyond_team": null,
    "trend": [
@@ -711,7 +739,9 @@
     "sd": 0.026,
     "z": -0.89,
     "pct": -4.3,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 21.0,
@@ -719,16 +749,18 @@
     "sd": 1.633,
     "z": 0.71,
     "pct": 5.9,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 44.5,
    "position_median_z": -0.42,
    "position_n": 5,
    "load": {
-    "player_load_today": 87.5,
-    "throws_today": 24,
+    "player_load_today": 101.80000000000001,
+    "throws_today": 29,
     "pitches_today": 0,
-    "throws_7d": 225
+    "throws_7d": 232
    },
    "beyond_team": null,
    "trend": [
@@ -804,7 +836,9 @@
     "sd": 0.022,
     "z": -0.87,
     "pct": -3.5,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 21.0,
@@ -812,16 +846,18 @@
     "sd": 1.465,
     "z": 0.92,
     "pct": 6.9,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 36.6,
    "position_median_z": -0.5,
    "position_n": 5,
    "load": {
-    "player_load_today": 155.5,
-    "throws_today": 58,
+    "player_load_today": 171.9,
+    "throws_today": 90,
     "pitches_today": 0,
-    "throws_7d": 397
+    "throws_7d": 404
    },
    "beyond_team": null,
    "trend": [
@@ -897,7 +933,9 @@
     "sd": 0.027,
     "z": -0.81,
     "pct": -4.5,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 19.0,
@@ -905,16 +943,18 @@
     "sd": 1.383,
     "z": -0.72,
     "pct": -5.0,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 38.5,
    "position_median_z": -0.81,
    "position_n": 3,
    "load": {
-    "player_load_today": 209.10000000000002,
-    "throws_today": 45,
+    "player_load_today": 180.5,
+    "throws_today": 69,
     "pitches_today": 0,
-    "throws_7d": 360
+    "throws_7d": 359
    },
    "beyond_team": null,
    "trend": [
@@ -990,7 +1030,9 @@
     "sd": 0.03,
     "z": -0.16,
     "pct": -0.9,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 19.0,
@@ -998,16 +1040,18 @@
     "sd": 1.537,
     "z": -0.65,
     "pct": -5.0,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 38.7,
    "position_median_z": -0.42,
    "position_n": 5,
    "load": {
-    "player_load_today": 223.3,
-    "throws_today": 20,
-    "pitches_today": 93,
-    "throws_7d": 336
+    "player_load_today": 100.3,
+    "throws_today": 30,
+    "pitches_today": 0,
+    "throws_7d": 256
    },
    "beyond_team": null,
    "trend": [
@@ -1083,7 +1127,9 @@
     "sd": 0.032,
     "z": -0.23,
     "pct": -1.4,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 19.0,
@@ -1091,16 +1137,18 @@
     "sd": 1.211,
     "z": -0.56,
     "pct": -3.5,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 38.3,
    "position_median_z": -0.12,
    "position_n": 6,
    "load": {
-    "player_load_today": 186.0,
-    "throws_today": 80,
+    "player_load_today": 215.0,
+    "throws_today": 79,
     "pitches_today": 0,
-    "throws_7d": 411
+    "throws_7d": 410
    },
    "beyond_team": null,
    "trend": [
@@ -1176,7 +1224,9 @@
     "sd": 0.025,
     "z": -0.5,
     "pct": -2.7,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 22.0,
@@ -1184,16 +1234,18 @@
     "sd": 1.239,
     "z": 1.75,
     "pct": 10.9,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 38.6,
    "position_median_z": -0.5,
    "position_n": 5,
    "load": {
-    "player_load_today": 202.0,
-    "throws_today": 61,
+    "player_load_today": 174.8,
+    "throws_today": 59,
     "pitches_today": 0,
-    "throws_7d": 381
+    "throws_7d": 404
    },
    "beyond_team": null,
    "trend": [
@@ -1269,7 +1321,9 @@
     "sd": 0.024,
     "z": 1.92,
     "pct": 9.7,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 19.0,
@@ -1277,16 +1331,18 @@
     "sd": 1.434,
     "z": -0.45,
     "pct": -3.3,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 44.0,
    "position_median_z": -0.12,
    "position_n": 6,
    "load": {
-    "player_load_today": 180.0,
-    "throws_today": 83,
+    "player_load_today": 174.4,
+    "throws_today": 51,
     "pitches_today": 0,
-    "throws_7d": 400
+    "throws_7d": 375
    },
    "beyond_team": null,
    "trend": [
@@ -1362,7 +1418,9 @@
     "sd": 0.027,
     "z": -0.42,
     "pct": -2.3,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 20.0,
@@ -1370,16 +1428,18 @@
     "sd": 1.103,
     "z": 0.72,
     "pct": 4.1,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 44.9,
    "position_median_z": -0.42,
    "position_n": 5,
    "load": {
-    "player_load_today": 100.5,
-    "throws_today": 31,
-    "pitches_today": 0,
-    "throws_7d": 198
+    "player_load_today": 193.79999999999998,
+    "throws_today": 19,
+    "pitches_today": 85,
+    "throws_7d": 291
    },
    "beyond_team": null,
    "trend": [
@@ -1457,7 +1517,9 @@
     "sd": 0.029,
     "z": -0.01,
     "pct": -0.0,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 19.0,
@@ -1465,16 +1527,18 @@
     "sd": 1.381,
     "z": -0.42,
     "pct": -3.0,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 37.5,
    "position_median_z": -0.12,
    "position_n": 6,
    "load": {
-    "player_load_today": 208.1,
-    "throws_today": 66,
+    "player_load_today": 215.5,
+    "throws_today": 40,
     "pitches_today": 0,
-    "throws_7d": 392
+    "throws_7d": 368
    },
    "beyond_team": null,
    "trend": [
@@ -1550,7 +1614,9 @@
     "sd": 0.03,
     "z": -0.42,
     "pct": -2.7,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 23.0,
@@ -1558,16 +1624,18 @@
     "sd": 1.621,
     "z": 1.9,
     "pct": 15.5,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 42.7,
    "position_median_z": -0.42,
    "position_n": 5,
    "load": {
-    "player_load_today": 110.19999999999999,
-    "throws_today": 29,
+    "player_load_today": 122.0,
+    "throws_today": 25,
     "pitches_today": 0,
-    "throws_7d": 245
+    "throws_7d": 242
    },
    "beyond_team": null,
    "trend": [
@@ -1643,7 +1711,9 @@
     "sd": 0.029,
     "z": -0.41,
     "pct": -2.1,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 22.0,
@@ -1651,16 +1721,18 @@
     "sd": 1.308,
     "z": 1.78,
     "pct": 11.9,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 42.0,
    "position_median_z": -0.81,
    "position_n": 3,
    "load": {
-    "player_load_today": 217.39999999999998,
-    "throws_today": 39,
+    "player_load_today": 223.4,
+    "throws_today": 60,
     "pitches_today": 0,
-    "throws_7d": 347
+    "throws_7d": 393
    },
    "beyond_team": null,
    "trend": [
@@ -1736,7 +1808,9 @@
     "sd": 0.027,
     "z": -0.37,
     "pct": -2.1,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 20.0,
@@ -1744,16 +1818,18 @@
     "sd": 1.621,
     "z": -0.05,
     "pct": -0.4,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 45.8,
    "position_median_z": 0.63,
    "position_n": 8,
    "load": {
-    "player_load_today": 91.4,
+    "player_load_today": 103.0,
     "throws_today": 21,
     "pitches_today": 0,
-    "throws_7d": 160
+    "throws_7d": 166
    },
    "beyond_team": null,
    "trend": [
@@ -1829,7 +1905,9 @@
     "sd": 0.03,
     "z": 0.94,
     "pct": 6.1,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 19.0,
@@ -1837,16 +1915,18 @@
     "sd": 1.699,
     "z": -0.36,
     "pct": -3.1,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 45.5,
    "position_median_z": 0.63,
    "position_n": 8,
    "load": {
-    "player_load_today": 225.5,
-    "throws_today": 30,
-    "pitches_today": 27,
-    "throws_7d": 223
+    "player_load_today": 89.8,
+    "throws_today": 20,
+    "pitches_today": 0,
+    "throws_7d": 193
    },
    "beyond_team": null,
    "trend": [
@@ -1922,7 +2002,9 @@
     "sd": 0.034,
     "z": -0.33,
     "pct": -1.8,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 22.0,
@@ -1930,16 +2012,18 @@
     "sd": 1.989,
     "z": 0.86,
     "pct": 8.4,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 41.0,
    "position_median_z": -0.12,
    "position_n": 6,
    "load": {
-    "player_load_today": 173.5,
-    "throws_today": 62,
+    "player_load_today": 219.89999999999998,
+    "throws_today": 79,
     "pitches_today": 0,
-    "throws_7d": 396
+    "throws_7d": 398
    },
    "beyond_team": null,
    "trend": [
@@ -2015,7 +2099,9 @@
     "sd": 0.027,
     "z": -0.32,
     "pct": -1.5,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 24.0,
@@ -2023,16 +2109,18 @@
     "sd": 1.73,
     "z": 2.36,
     "pct": 20.5,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 39.8,
    "position_median_z": -0.5,
    "position_n": 5,
    "load": {
-    "player_load_today": 231.2,
-    "throws_today": 68,
+    "player_load_today": 179.7,
+    "throws_today": 53,
     "pitches_today": 0,
-    "throws_7d": 345
+    "throws_7d": 331
    },
    "beyond_team": null,
    "trend": [
@@ -2108,7 +2196,9 @@
     "sd": 0.004,
     "z": 0.52,
     "pct": 0.4,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 19.0,
@@ -2116,16 +2206,18 @@
     "sd": 1.642,
     "z": -0.3,
     "pct": -2.6,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 41.1,
    "position_median_z": -0.5,
    "position_n": 5,
    "load": {
-    "player_load_today": 191.5,
-    "throws_today": 36,
+    "player_load_today": 187.7,
+    "throws_today": 37,
     "pitches_today": 0,
-    "throws_7d": 359
+    "throws_7d": 362
    },
    "beyond_team": null,
    "trend": [
@@ -2201,7 +2293,9 @@
     "sd": 0.035,
     "z": 0.32,
     "pct": 2.3,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 20.0,
@@ -2209,16 +2303,18 @@
     "sd": 1.233,
     "z": -0.03,
     "pct": -0.2,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 40.4,
    "position_median_z": 0.63,
    "position_n": 8,
    "load": {
-    "player_load_today": 98.3,
-    "throws_today": 17,
-    "pitches_today": 0,
-    "throws_7d": 237
+    "player_load_today": 229.4,
+    "throws_today": 32,
+    "pitches_today": 18,
+    "throws_7d": 265
    },
    "beyond_team": null,
    "trend": [
@@ -2294,7 +2390,9 @@
     "sd": 0.03,
     "z": 0.06,
     "pct": 0.3,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 21.0,
@@ -2302,16 +2400,18 @@
     "sd": 1.445,
     "z": 1.04,
     "pct": 7.7,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 38.5,
    "position_median_z": -0.42,
    "position_n": 5,
    "load": {
-    "player_load_today": 84.2,
-    "throws_today": 24,
+    "player_load_today": 102.39999999999999,
+    "throws_today": 21,
     "pitches_today": 0,
-    "throws_7d": 213
+    "throws_7d": 210
    },
    "beyond_team": null,
    "trend": [
@@ -2387,7 +2487,9 @@
     "sd": 0.027,
     "z": 0.21,
     "pct": 1.1,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 22.0,
@@ -2395,16 +2497,18 @@
     "sd": 1.438,
     "z": 1.66,
     "pct": 12.2,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 44.8,
    "position_median_z": -0.12,
    "position_n": 6,
    "load": {
-    "player_load_today": 189.1,
-    "throws_today": 47,
+    "player_load_today": 233.0,
+    "throws_today": 65,
     "pitches_today": 0,
-    "throws_7d": 283
+    "throws_7d": 304
    },
    "beyond_team": null,
    "trend": [
@@ -2480,7 +2584,9 @@
     "sd": 0.024,
     "z": 3.02,
     "pct": 14.1,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "wellness": {
     "today": 21.0,
@@ -2488,16 +2594,18 @@
     "sd": 1.565,
     "z": 0.5,
     "pct": 3.9,
-    "beyond_noise": false
+    "beyond_noise": false,
+    "observed_on": "2026-09-11",
+    "days_old": 0
    },
    "jump_height_cm": 48.6,
    "position_median_z": 0.63,
    "position_n": 8,
    "load": {
-    "player_load_today": 185.0,
-    "throws_today": 32,
+    "player_load_today": 214.7,
+    "throws_today": 18,
     "pitches_today": 13,
-    "throws_7d": 197
+    "throws_7d": 212
    },
    "beyond_team": null,
    "trend": [
