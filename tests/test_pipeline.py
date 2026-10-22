@@ -46,3 +46,15 @@ def test_travel_day_team_shift():
 def test_no_day_for_monday_off():
     with pytest.raises(FileNotFoundError):
         run_day(DATA, date(2026, 9, 14))
+
+
+def test_travel_day_marks_who_dropped_more_than_the_team():
+    day = run_day(DATA, date(2026, 9, 15))
+    marks = [p["beyond_team"] for p in day["players"]]
+    assert any(m is True for m in marks) and any(m is False for m in marks)
+    more = [p for p in day["players"] if p["beyond_team"]]
+    assert len(more) < sum(p["status"] == "check_in" for p in day["players"])
+
+
+def test_beyond_team_is_none_without_a_team_shift(last_day):
+    assert all(p["beyond_team"] is None for p in last_day["players"])

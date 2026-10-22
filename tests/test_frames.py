@@ -46,7 +46,7 @@ def test_team_shift_beyond_noise():
     changes = [-0.04, -0.035, -0.05, -0.03, -0.045]
     pct = [-8.0, -7.0, -9.5, -6.0, -8.5]
     shift = team_shift(changes, pct, te=0.02)
-    assert shift == {"median_pct": -8.0, "beyond_noise": True, "n": 5}
+    assert shift == {"median_pct": -8.0, "median_raw": -0.04, "beyond_noise": True, "n": 5}
 
 
 def test_team_shift_inside_noise_and_empty():
@@ -56,3 +56,8 @@ def test_team_shift_inside_noise_and_empty():
 
 def test_league_reference_is_labeled_illustrative():
     assert "illustrative" in LEAGUE_REFERENCE["rsi_mod"]["label"]
+
+
+def test_team_shift_reports_median_raw():
+    shift = team_shift([-0.04, -0.05, -0.03], [-8.0, -9.0, -6.0], te=0.02)
+    assert shift["median_raw"] == -0.04

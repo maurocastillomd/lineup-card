@@ -13,6 +13,7 @@
  },
  "team_shift": {
   "median_pct": -1.0,
+  "median_raw": -0.0046,
   "beyond_noise": false,
   "n": 27
  },
@@ -64,6 +65,7 @@
     "pitches_today": 22,
     "throws_7d": 194
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -158,6 +160,7 @@
     "pitches_today": 0,
     "throws_7d": 401
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -252,6 +255,7 @@
     "pitches_today": 0,
     "throws_7d": 271
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -346,6 +350,7 @@
     "pitches_today": 85,
     "throws_7d": 112
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -440,6 +445,7 @@
     "pitches_today": 0,
     "throws_7d": 157
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -534,6 +540,7 @@
     "pitches_today": 0,
     "throws_7d": 399
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -628,6 +635,7 @@
     "pitches_today": 0,
     "throws_7d": 378
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -722,6 +730,7 @@
     "pitches_today": 0,
     "throws_7d": 367
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -814,6 +823,7 @@
     "pitches_today": 0,
     "throws_7d": 197
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -906,6 +916,7 @@
     "pitches_today": 0,
     "throws_7d": 210
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -998,6 +1009,7 @@
     "pitches_today": 0,
     "throws_7d": 386
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -1090,6 +1102,7 @@
     "pitches_today": 0,
     "throws_7d": 213
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -1182,6 +1195,7 @@
     "pitches_today": 0,
     "throws_7d": 165
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -1274,6 +1288,7 @@
     "pitches_today": 0,
     "throws_7d": 218
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -1366,6 +1381,7 @@
     "pitches_today": 0,
     "throws_7d": 393
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -1458,6 +1474,7 @@
     "pitches_today": 0,
     "throws_7d": 227
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -1550,6 +1567,7 @@
     "pitches_today": 0,
     "throws_7d": 388
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -1642,6 +1660,7 @@
     "pitches_today": 95,
     "throws_7d": 326
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -1734,6 +1753,7 @@
     "pitches_today": 0,
     "throws_7d": 351
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -1826,6 +1846,7 @@
     "pitches_today": 27,
     "throws_7d": 206
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -1918,6 +1939,7 @@
     "pitches_today": 0,
     "throws_7d": 420
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -2010,6 +2032,7 @@
     "pitches_today": 0,
     "throws_7d": 344
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -2102,6 +2125,7 @@
     "pitches_today": 0,
     "throws_7d": 413
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -2194,6 +2218,7 @@
     "pitches_today": 26,
     "throws_7d": 253
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -2286,6 +2311,7 @@
     "pitches_today": 0,
     "throws_7d": 260
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -2378,6 +2404,7 @@
     "pitches_today": 0,
     "throws_7d": 331
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -2470,6 +2497,7 @@
     "pitches_today": 0,
     "throws_7d": 426
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",
@@ -2562,6 +2590,7 @@
     "pitches_today": 0,
     "throws_7d": 174
    },
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-08-30",

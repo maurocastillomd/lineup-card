@@ -59,5 +59,6 @@ def team_shift(raw_changes: list[float], pct_changes: list[float], te: float | N
         return None
     median_raw = statistics.median(raw_changes)
     return {"median_pct": round(statistics.median(pct_changes), 1),
+            "median_raw": round(median_raw, 4),
             "beyond_noise": te is not None and abs(median_raw) > noise_threshold(te),
             "n": len(raw_changes)}

@@ -7,7 +7,7 @@ from datetime import date, timedelta
 
 from .clean import CleanLog
 from .crosswalk import Crosswalk
-from .engine import assess_squad, compute_baseline, goodness, z_score
+from .engine import assess_squad, compute_baseline, goodness, noise_threshold, z_score
 from .frames import LEAGUE_REFERENCE, position_medians, team_shift, typical_error
 from .models import JUMP_HEIGHT, METRICS, AthleteAssessment, Domain, DomainAssessment, Reading, Status
 
@@ -60,6 +60,17 @@ def _latest(readings: list[Reading], lc_id: str, metric: str, today: date) -> fl
     return round(vals[0], 1) if vals else None
 
 
+def _beyond_team(d: DomainAssessment, shift: dict | None, te: float | None,
+                 today: date) -> bool | None:
+    """On a team-shift day: did he drop more than the team, by more than noise?
+    Context only. None when there is no team shift or no reading today."""
+    if not shift or not shift["beyond_noise"] or te is None:
+        return None
+    if d.base is None or d.observed_on != today:
+        return None
+    return (d.today - d.base.mean) - shift["median_raw"] < -noise_threshold(te)
+
+
 def build_day(readings: list[Reading], today: date, cw: Crosswalk, log: CleanLog,
               schedule: dict) -> dict:
     te = {spec.column: typical_error(readings, spec.column, today) for spec in METRICS.values()}
@@ -87,6 +98,7 @@ def build_day(readings: list[Reading], today: date, cw: Crosswalk, log: CleanLog
             "jump_height_cm": _latest(readings, a.athlete_id, JUMP_HEIGHT, today),
             "position_median_z": group["median_z"], "position_n": group["n"],
             "load": a.load.model_dump(),
+            "beyond_team": _beyond_team(rsi, shift, te["rsi_mod"], today),
             "trend": _trend(readings, a.athlete_id, today),
         })
 
