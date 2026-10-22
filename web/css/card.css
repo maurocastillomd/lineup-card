@@ -1,0 +1,67 @@
+.card-head { display: flex; justify-content: space-between; gap: 16px; align-items: start; }
+.head-actions { display: flex; gap: 12px; align-items: center; }
+.head-actions a, .banner a { color: var(--accent); }
+.head-actions button { white-space: nowrap; }
+.banner { background: var(--accent-wash); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+.checkin { padding-left: 20px; } .checkin li { margin: 4px 0; }
+.checkin small { color: var(--ink-dim); display: block; }
+.shift-lead { font-weight: 500; margin: 0 0 6px; }
+.with-team { font-size: 13px; color: var(--ink-dim); margin: 4px 0 0; }
+.with-team:empty { display: none; }
+.shift { font-family: var(--mono); font-size: 13px; color: var(--ink-dim); }
+.band-head, .band-row { display: grid; grid-template-columns: 170px 1fr 130px; gap: 12px; align-items: center; }
+.band-head { font-size: 12px; color: var(--ink-faint); border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+.band-row { padding: 6px 0; border-bottom: 1px solid var(--line); }
+.band-row small, .group-label { font-size: 12px; color: var(--ink-faint); }
+.band-row small { display: block; line-height: 1.3; }
+.group-label { margin: 10px 0 0; text-transform: none; }
+.track { position: relative; height: 22px; }
+.track .band { position: absolute; left: 35%; width: 30%; top: 5px; height: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 3px; }
+.track .tick { position: absolute; top: 1px; width: 2px; height: 20px; background: var(--ink-faint); }
+.track .noise { position: absolute; top: 10px; height: 2px; background: var(--ink); opacity: .5; }
+.track .dot { position: absolute; top: 6px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: var(--ink); }
+.track .none { position: absolute; left: 30%; top: 2px; font-size: 12px; color: var(--ink-faint); }
+.hidden-summary { font-size: 14px; margin: 10px 0 6px; }
+.lower { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 16px; }
+.spark { display: grid; grid-template-columns: 110px 1fr; gap: 8px; align-items: center; font-size: 13px; }
+.spark svg { width: 100%; height: 34px; }
+.card-foot { font-size: 11px; color: var(--ink-dim); border-top: 1px solid var(--line); margin-top: 16px; }
+.legend .sw { display: inline-block; width: 18px; height: 8px; vertical-align: middle; margin: 0 4px 0 10px; }
+.legend .band { background: var(--surface); border: 1px solid var(--line); }
+.legend .dot { width: 8px; border-radius: 50%; background: var(--ink); }
+.legend .tick { width: 2px; height: 12px; background: var(--ink-faint); }
+@media (max-width: 640px) {
+  .card-head { flex-direction: column; gap: 4px; }
+  .band-head, .band-row { grid-template-columns: 110px 1fr 90px; }
+  .lower { grid-template-columns: 1fr; }
+}
+@page { size: letter; margin: 0.4in; }
+@media print {
+  :root { --bg: #fff; --ink: #000; --surface: #eee; }
+  body { font-size: 9.5px; line-height: 1.35; background: #fff; }
+  .wrap { padding: 0; max-width: none; }
+  .noprint, #rest, .banner { display: none !important; }
+  h1 { font-size: 18px; margin: 2px 0 0; } h2 { font-size: 12px; margin: 6px 0 2px; }
+  #meta { margin: 2px 0 0; }
+  .checkin { margin: 0; } .checkin li { margin: 1px 0; }
+  .checkin small, .with-team, .shift { font-size: 8.5px; }
+  .shift-lead { margin: 0 0 2px; }
+  .band-head, .band-row { grid-template-columns: 180px 1fr 120px; gap: 8px; }
+  .band-head { font-size: 8px; padding-bottom: 1px; }
+  .band-row { padding: 0; }
+  .band-row small { display: inline; font-size: 8px; margin-left: 4px; }
+  .group-label { font-size: 8px; margin: 2px 0 0; }
+  .track { height: 12px; }
+  .track .band { top: 3px; height: 6px; }
+  .track .tick { top: 0; height: 12px; }
+  .track .noise { top: 5px; }
+  .track .dot { top: 3px; width: 6px; height: 6px; margin-left: -3px; }
+  .track .none { top: 0; font-size: 8px; }
+  .hidden-summary { font-size: 9px; margin: 4px 0 0; }
+  .lower { margin-top: 4px; gap: 16px; }
+  .spark { font-size: 8.5px; grid-template-columns: 90px 1fr; }
+  .spark svg { height: 16px; }
+  .card-foot { font-size: 7.5px; margin-top: 6px; }
+  .card-foot p { margin: 2px 0; }
+  .card { break-inside: avoid; }
+}

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lineup Card</title>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/card.css">
+</head>
+<body>
+<main class="card wrap">
+  <header class="card-head">
+    <div>
+      <span class="fiction">Fictional roster. Not a fitness-to-play decision.</span>
+      <h1>Lineup Card</h1>
+      <p id="meta" class="mono"></p>
+    </div>
+    <div class="head-actions noprint">
+      <a href="index.html">Back to review</a>
+      <button id="print">Print / PDF</button>
+    </div>
+  </header>
+  <p id="unreviewed" class="banner" hidden>Not reviewed yet. <a href="index.html">Review first</a>.</p>
+  <section><h2>Check in today</h2>
+    <p id="shift-lead" class="shift-lead" hidden></p>
+    <p id="more-label" class="group-label" hidden>Down more than the team</p>
+    <ol id="checkin" class="checkin"></ol>
+    <p id="with-team" class="with-team"></p>
+  </section>
+  <p id="shift" class="shift"></p>
+  <section><h2>Today's players</h2>
+    <div class="band-head"><span>Player</span><span>lower · his normal · higher</span><span>Status</span></div>
+    <div id="today"></div>
+    <p id="hidden-summary" class="hidden-summary"></p>
+    <button id="toggle" class="noprint" aria-expanded="false">Show full roster</button>
+    <div id="rest" hidden></div>
+  </section>
+  <section class="lower">
+    <div><h2>Two-week trend</h2><div id="trends"></div></div>
+    <div><h2>Availability board</h2><div id="board"></div></div>
+  </section>
+  <footer class="card-foot">
+    <p>Sources: VALD ForceDecks CMJ (RSI-mod, jump height), Catapult OpenField (PlayerLoad, throws, pitches), morning wellness form. Fictional data in vendor-shaped exports.</p>
+    <p>Rule: a status needs the drop to be large against his own 28-day normal and larger than the test's typical error. Position, team and league lines are context only. Coaches and medical staff decide participation.</p>
+    <p id="league"></p>
+    <p class="legend"><span class="sw band"></span> his normal range <span class="sw dot"></span> today, with test noise <span class="sw tick"></span> position median</p>
+  </footer>
+</main>
+<script type="module" src="js/card.js"></script>
+</body>
+</html>

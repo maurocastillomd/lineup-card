@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { applyDecisions, bandPosition, hiddenSummary, parseLineup } from "../../web/js/logic.js";
+import { applyDecisions, bandPosition, groupCheckins, hiddenSummary, parseLineup } from "../../web/js/logic.js";
 
 const players = [
   { id: "LC01", name: "J. Ortega", pos: "RP", status: "check_in", word: "Check in" },
@@ -45,4 +45,29 @@ test("bandPosition clamps z to the track", () => {
   assert.equal(bandPosition(0), 50);
   assert.equal(bandPosition(-10), 2);
   assert.equal(bandPosition(1), 65);
+});
+
+const shiftPlayers = [
+  { id: "A", name: "A", status: "watch", rsi: { z: -1.5 }, beyond_team: true },
+  { id: "B", name: "B", status: "check_in", rsi: { z: -2.0 }, beyond_team: false },
+  { id: "C", name: "C", status: "check_in", rsi: { z: -3.6 }, beyond_team: true },
+  { id: "D", name: "D", status: "check_in", rsi: { z: null }, beyond_team: null },
+  { id: "E", name: "E", status: "no_change", rsi: { z: -2.5 }, beyond_team: true },
+  { id: "F", name: "F", status: "watch", rsi: { z: -1.2 }, beyond_team: false },
+];
+
+test("groupCheckins without a team shift lists every flagged player", () => {
+  for (const shift of [null, undefined, { beyond_noise: false, median_pct: 1 }]) {
+    const g = groupCheckins(shiftPlayers, shift);
+    assert.equal(g.lead, false);
+    assert.deepEqual(g.more.map((p) => p.id), ["C", "B", "D", "A", "F"]);
+    assert.deepEqual(g.withTeam, []);
+  }
+});
+
+test("groupCheckins on a team-shift day splits players down more than the team", () => {
+  const g = groupCheckins(shiftPlayers, { beyond_noise: true, median_pct: -10.2, n: 27 });
+  assert.equal(g.lead, true);
+  assert.deepEqual(g.more.map((p) => p.id), ["C", "D", "A"]);
+  assert.deepEqual(g.withTeam.map((p) => p.id), ["B", "F"]);
 });

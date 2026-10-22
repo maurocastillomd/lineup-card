@@ -46,3 +46,20 @@ export function applyDecisions(players, decisions) {
 
 // z of 0 sits at 50%; each SD moves 15%; clamp to 2..98
 export const bandPosition = (z) => Math.max(2, Math.min(98, 50 + z * 15));
+
+// Check-in list order: Check in before Watch, then lowest RSI-mod z first; no z goes last.
+const zKey = (p) => p.rsi?.z ?? Number.MAX_VALUE;
+const byConcern = (a, b) =>
+  (a.status === "check_in" ? 0 : 1) - (b.status === "check_in" ? 0 : 1) || zKey(a) - zKey(b);
+
+// On a team-shift day (whole roster down beyond test noise), split flagged players into
+// those down more than the team (or with no RSI reading today) and those down with it.
+export function groupCheckins(players, teamShift) {
+  const flagged = players.filter((p) => FLAGGED.has(p.status)).sort(byConcern);
+  if (!teamShift?.beyond_noise) return { lead: false, more: flagged, withTeam: [] };
+  return {
+    lead: true,
+    more: flagged.filter((p) => p.beyond_team !== false),
+    withTeam: flagged.filter((p) => p.beyond_team === false),
+  };
+}
