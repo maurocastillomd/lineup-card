@@ -6,6 +6,9 @@ can see it in the review step.
             (Claudino et al. 2017). Fewer than 2 valid trials: no value.
   Sessions  Sum Catapult periods per player per day. Ignore any period
             named like a session total so nothing counts twice.
+  Duplicates  Two Catapult rows for one player, day and period number count
+            once (first kept). Two wellness forms for one player and day:
+            the last one in file order is kept. Both are logged.
   Identity  Unmatched names or IDs are held out, never guessed.
   Missing   Missing stays missing. Nothing becomes zero.
 """
@@ -94,6 +97,7 @@ def clean_cmj(trials: list[CmjTrial], cw: Crosswalk, log: CleanLog) -> list[Read
 
 def clean_catapult(periods: list[CatapultPeriod], cw: Crosswalk, log: CleanLog) -> list[Reading]:
     sums: dict[tuple[str, date, str], float] = defaultdict(float)
+    seen: set[tuple[str, date, int]] = set()
     for p in periods:
         if "total" in p.period_name.lower():
             continue
@@ -101,6 +105,12 @@ def clean_catapult(periods: list[CatapultPeriod], cw: Crosswalk, log: CleanLog) 
         if lc_id is None:
             log.hold("catapult", p.player_name)
             continue
+        period_key = (lc_id, p.day, p.period_number)
+        if period_key in seen:
+            log.add(lc_id, p.day, "catapult", "duplicate_period",
+                    f"duplicate Catapult period {p.period_number}; counted once")
+            continue
+        seen.add(period_key)
         for metric, value in ((PLAYER_LOAD, p.player_load), (THROWS, p.throw_count),
                               (PITCHES, p.pitch_count)):
             if value is not None:
@@ -110,8 +120,14 @@ def clean_catapult(periods: list[CatapultPeriod], cw: Crosswalk, log: CleanLog) 
 
 
 def clean_wellness(rows: list[WellnessRow], cw: Crosswalk, log: CleanLog) -> list[Reading]:
-    out = []
+    last: dict[tuple[str, date], WellnessRow] = {}
     for r in rows:
+        if (r.athlete_id, r.day) in last and r.athlete_id in cw.players:
+            log.add(r.athlete_id, r.day, "wellness", "duplicate_form",
+                    "duplicate wellness form; kept the last one")
+        last[(r.athlete_id, r.day)] = r      # file order: the last row wins
+    out = []
+    for r in last.values():
         if r.athlete_id not in cw.players:
             log.hold("wellness", r.athlete_id)
             continue

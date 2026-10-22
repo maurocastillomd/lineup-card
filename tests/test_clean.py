@@ -74,3 +74,21 @@ def test_wellness_blank_score_skipped_and_unknown_id_held_out():
     assert out == []
     assert any(e.rule == "incomplete_form" for e in log.entries)
     assert log.held_out == [{"source": "wellness", "raw": "LC77", "reason": "not in crosswalk"}]
+
+
+def test_duplicate_wellness_form_keeps_the_last_and_logs_it():
+    log = CleanLog()
+    out = clean_wellness([WellnessRow(athlete_id="LC01", day=D, score=12),
+                          WellnessRow(athlete_id="LC01", day=D, score=21)], CW, log)
+    assert [(r.value, r.athlete_id) for r in out] == [(21, "LC01")]
+    dup = [e for e in log.entries if e.rule == "duplicate_form"]
+    assert len(dup) == 1 and dup[0].detail == "duplicate wellness form; kept the last one"
+    assert dup[0].lc_id == "LC01" and dup[0].day == D
+
+
+def test_duplicate_catapult_period_counted_once():
+    log = CleanLog()
+    out = clean_catapult([period(1), period(1), period(2, load=30.0, throws=5)], CW, log)
+    assert values(out, "player_load") == [80.0]
+    assert values(out, "throw_count") == [15]
+    assert [e.rule for e in log.entries] == ["duplicate_period"]

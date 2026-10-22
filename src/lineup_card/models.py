@@ -2,13 +2,13 @@
 
 A Reading is one athlete-day-metric value (what an adapter delivers).
 DomainAssessment is what the engine computes for one response domain;
-AthleteAssessment aggregates the response domains into an availability
-status by convergence, with load/ACWR carried as context. A Brief is the
-assembled morning message.
+AthleteAssessment aggregates the response domains into a status by
+convergence, with Catapult load (PlayerLoad, throws, pitches) carried as
+context only. The day JSON built from these is what the web card shows.
 
-Every number a coach reads exists on an assessment before any language
-model is involved. The model phrases; it never computes. Nothing here
-predicts injury — it surfaces individual change in readiness.
+Every number a coach reads is computed here in code. No AI model does any
+math or sets any status. Nothing here predicts injury; it surfaces
+individual change.
 """
 
 from __future__ import annotations
@@ -42,7 +42,7 @@ class MetricSpec(BaseModel):
     label: str
     unit: str
     higher_is_worse: bool
-    rolling_days: int    # 7 for HRV (rolling mean), 1 otherwise
+    rolling_days: int    # 1 = use each day's value as is
 
 
 METRICS: dict[Domain, MetricSpec] = {

@@ -7,7 +7,8 @@ from datetime import date, timedelta
 
 from .clean import CleanLog
 from .crosswalk import Crosswalk
-from .engine import MONITOR_Z, assess_squad, compute_baseline, goodness, noise_threshold, z_score
+from .engine import (MONITOR_Z, assess_squad, compute_baseline, goodness, load_context,
+                     noise_threshold, z_score)
 from .frames import LEAGUE_REFERENCE, position_medians, team_shift, typical_error
 from .models import JUMP_HEIGHT, METRICS, AthleteAssessment, Domain, DomainAssessment, Reading, Status
 
@@ -40,16 +41,21 @@ def driver_magnitude(domains: list[DomainAssessment]) -> str:
     if not flagged:
         return "" if all(d.decline_z is None for d in domains) else "– within noise"
     worst = min(flagged, key=lambda d: d.decline_z)
-    size = magnitude(worst.decline_z)
+    # A Watch from 3 declines in a row can sit above the -1.2 z line; do not call it "within noise".
+    size = "▼ steady decline" if worst.decline_z > MONITOR_Z else magnitude(worst.decline_z)
     return size if worst.domain is Domain.NEUROMUSCULAR else f"{size} ({DOMAIN_NAMES[worst.domain]})"
 
 
-def _domain_json(d: DomainAssessment) -> dict:
+def _domain_json(d: DomainAssessment, today: date) -> dict:
+    """observed_on / days_old say which day the reading is from, so a jump a few
+    days old is never shown as today's. Both null when there is no reading."""
+    when = {"observed_on": None if d.observed_on is None else d.observed_on.isoformat(),
+            "days_old": None if d.observed_on is None else (today - d.observed_on).days}
     if d.base is None:
         return {"today": d.today, "mean": None, "sd": None, "z": None, "pct": None,
-                "beyond_noise": None}
+                "beyond_noise": None, **when}
     return {"today": d.today, "mean": round(d.base.mean, 3), "sd": round(d.base.sd, 3),
-            "z": round(d.decline_z, 2), "pct": d.pct, "beyond_noise": d.beyond_noise}
+            "z": round(d.decline_z, 2), "pct": d.pct, "beyond_noise": d.beyond_noise, **when}
 
 
 def _trend(readings: list[Reading], lc_id: str, today: date) -> list[dict]:
@@ -109,10 +115,12 @@ def build_day(readings: list[Reading], today: date, cw: Crosswalk, log: CleanLog
             "id": a.athlete_id, "name": a.name, "pos": a.pos,
             "status": status, "word": word, "magnitude": driver_magnitude(a.domains),
             "reasons": a.reasons or [r for d in a.domains for r in d.reasons],
-            "rsi": _domain_json(rsi), "wellness": _domain_json(well),
+            "rsi": _domain_json(rsi, today), "wellness": _domain_json(well, today),
             "jump_height_cm": _latest(readings, a.athlete_id, JUMP_HEIGHT, today),
             "position_median_z": group["median_z"], "position_n": group["n"],
-            "load": a.load.model_dump(),
+            # Morning card: load runs through yesterday so tonight's game is not counted.
+            "load": load_context([r for r in readings if r.athlete_id == a.athlete_id],
+                                 today - timedelta(days=1)).model_dump(),
             "beyond_team": _beyond_team(rsi, shift, te["rsi_mod"], today),
             "trend": _trend(readings, a.athlete_id, today),
         })

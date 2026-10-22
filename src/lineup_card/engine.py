@@ -3,8 +3,7 @@
 Rules (plain English, because a coach has to trust them):
 
   Baseline     Each response metric is measured against the athlete's OWN
-               28-day rolling baseline (min 10 readings). HRV is baselined
-               on its 7-day rolling mean (Williams 2017). Direction is
+               28-day rolling baseline (min 10 readings). Direction is
                sign-normalized to a "goodness" scale so a decline is always
                a negative z and one threshold set serves every domain.
 

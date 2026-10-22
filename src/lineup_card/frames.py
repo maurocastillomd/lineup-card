@@ -6,7 +6,9 @@
   Position       Median of today's z by role, with n. Groups are small at
                  Triple-A, so a median, and n is always shown.
   Team           Median of today's raw change vs each player's normal.
-                 Beyond noise when its size exceeds 1.5 x TE.
+                 Beyond noise only when the median is a DROP (below zero)
+                 and its size exceeds 1.5 x TE. A team-wide rise is not a
+                 team-shift day.
   League         One illustrative value per metric. No public MiLB VALD
                  norm exists; the label says so.
 """
@@ -60,5 +62,5 @@ def team_shift(raw_changes: list[float], pct_changes: list[float], te: float | N
     median_raw = statistics.median(raw_changes)
     return {"median_pct": round(statistics.median(pct_changes), 1),
             "median_raw": round(median_raw, 4),
-            "beyond_noise": te is not None and abs(median_raw) > noise_threshold(te),
+            "beyond_noise": te is not None and median_raw < 0 and abs(median_raw) > noise_threshold(te),
             "n": len(raw_changes)}

@@ -61,3 +61,8 @@ def test_league_reference_is_labeled_illustrative():
 def test_team_shift_reports_median_raw():
     shift = team_shift([-0.04, -0.05, -0.03], [-8.0, -9.0, -6.0], te=0.02)
     assert shift["median_raw"] == -0.04
+
+
+def test_team_shift_up_is_never_beyond_noise():
+    shift = team_shift([0.04, 0.05, 0.03], [8.0, 9.0, 6.0], te=0.02)
+    assert shift["median_raw"] == 0.04 and shift["beyond_noise"] is False
