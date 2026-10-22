@@ -10,6 +10,15 @@ export function loadReview(date) {
   }
 }
 
+// True when anything at all is saved for this date (even a partial review).
+export function hasSavedReview(date) {
+  try {
+    return localStorage.getItem(key(date)) !== null;
+  } catch {
+    return false;
+  }
+}
+
 export function saveReview(date, review) {
   try {
     localStorage.setItem(key(date), JSON.stringify(review));

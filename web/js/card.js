@@ -1,5 +1,5 @@
-import { applyDecisions, groupCheckins, hiddenSummary, jumpPosition, plainChange, plainReason } from "./logic.js";
-import { loadReview } from "./store.js";
+import { applyDecisions, groupCheckins, hiddenSummary, isStale, jumpPosition, plainChange, plainReason } from "./logic.js";
+import { hasSavedReview, loadReview } from "./store.js";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -10,8 +10,9 @@ const date = new URLSearchParams(location.search).get("date") ?? index.latest;
 const day = await (await fetch(`data/days/${date}.json`)).json();
 let review = loadReview(date);
 let example = false;
-if (!review.approvedAt) {
-  // A visitor with no saved review sees a bundled example review, labeled as such.
+if (!hasSavedReview(date)) {
+  // Only a visitor with nothing saved for this date sees the bundled example, labeled as such.
+  // A partial or unapproved review of their own is shown as theirs, under the "Not reviewed yet" banner.
   const res = await fetch(`examples/review-${date}.json`);
   if (res.ok) { review = await res.json(); example = true; }
 }
@@ -30,7 +31,7 @@ const shiftText = shift
   ? `Whole team jumping ${Math.abs(Math.round(shift.median_pct))}% ${shift.median_pct < 0 ? "below" : "above"} normal (${shift.n} players tested).${day.schedule.note ? ` ${day.schedule.note}.` : ""}`
   : "";
 const checkinItem = (p) => `<li><strong>${esc(p.name)}</strong> ${esc(p.pos)} ·
-  <span class="word-${p.status}">${esc(p.word)}</span>
+  <span class="word-${esc(p.status)}">${esc(p.word)}</span>
   <small>${esc(plainReason(p))}${p.reviewNote ? ` · ${esc(p.reviewNote)}` : ""}</small></li>`;
 
 if (groups.lead) {
@@ -58,10 +59,11 @@ function row(p) {
   const gate = day.noise_gate.rsi_mod && p.rsi.mean ? day.noise_gate.rsi_mod / p.rsi.mean * 100 : null;
   const zone = gate == null ? "" :
     `<span class="zone" style="left:${jumpPosition(-gate)}%;width:${jumpPosition(gate) - jumpPosition(-gate)}%"></span>`;
-  const dot = pct == null ? "" : `<span class="dot dot-${p.status}" style="left:${jumpPosition(pct)}%"></span>`;
+  const stale = isStale(p) ? " dot-stale" : "";
+  const dot = pct == null ? "" : `<span class="dot dot-${esc(p.status)}${stale}" style="left:${jumpPosition(pct)}%"></span>`;
   return `<div class="band-row"><div>${esc(p.name)}<small>${esc(p.pos)}</small></div>
     <div class="track">${zone}<span class="normal"></span>${dot}</div>
-    <div><span class="word-${p.status}">${esc(p.word)}</span><small>${esc(plainChange(p))}</small>${
+    <div><span class="word-${esc(p.status)}">${esc(p.word)}</span><small>${esc(plainChange(p))}</small>${
       p.reviewNote ? `<small class="note">${esc(p.reviewNote)}</small>` : ""}</div></div>`;
 }
 
@@ -95,7 +97,7 @@ try {
   const res = await fetch("figures/board/board.svg");
   if (!res.ok) throw new Error("no board");
   $("board").innerHTML = await res.text();
-  for (const p of players) $("board").querySelector(`.peg[data-id="${p.id}"]`)?.setAttribute("data-status", p.status);
+  for (const p of players) $("board").querySelector(`.peg[data-id="${CSS.escape(p.id)}"]`)?.setAttribute("data-status", p.status);
 } catch {
   $("board").textContent = "Board figure not built yet.";
 }

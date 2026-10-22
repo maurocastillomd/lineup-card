@@ -130,3 +130,9 @@
   .band-head .scale { font-size: 10px; gap: 4px; }
   .band-head .scale span { white-space: nowrap; }
 }
+
+/* a jump from an earlier day: hollow dot, same colour as the status */
+.track .dot.dot-stale { background: transparent; box-sizing: border-box; border: 2px solid var(--ink); }
+.track .dot.dot-stale.dot-check_in { border-color: var(--alert); }
+.track .dot.dot-stale.dot-watch { border-color: var(--warn); }
+@media print { .track .dot.dot-stale { border-width: 1.5px; } }

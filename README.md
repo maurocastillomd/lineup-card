@@ -42,7 +42,7 @@ The drop must be larger than 1.5 x TE. Mauro Castillo chose 1.5 x TE on 2026-10-
 - Position: the median change for his position group (SP, RP, C, IF, OF), with the group size.
 - Team: the median change across everyone tested today.
 - League: one reference value per metric, labelled "illustrative, not a published MLB or MiLB norm". No public Minor League force plate norm exists.
-- Workload: Catapult PlayerLoad, plus throws and pitches today and over 7 days for pitchers.
+- Workload: Catapult PlayerLoad, plus throws and pitches over the last 7 days for pitchers. Workload runs through yesterday, so a game later today is not counted.
 
 **Team-shift days.** Sometimes the whole roster jumps lower, for example after an early-morning travel arrival. When the team's median jump change is beyond the same 1.5 x TE gate, the card leads with one line, such as "Whole team jumping 10% below normal" (the fictional 2026-09-15 travel day). Below it come the flagged players "Not explained by the team drop": players whose jump fell more than the team's by more than the noise gate, or whose flag did not come from the jump. Last comes a names-only "Down with the team" line. This is grouping only. No status changes on a team-shift day. The team line uses the jump (RSI-mod) only.
 

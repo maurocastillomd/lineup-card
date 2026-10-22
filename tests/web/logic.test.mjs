@@ -100,3 +100,42 @@ test("plainReason gives the coach one plain line", () => {
   const q = { pos: "OF", rsi: { pct: -9.6, today: 0.5 }, wellness: { z: -0.2 }, magnitude: "▼ moderate", load: {} };
   assert.equal(plainReason(q), "Jump 10% below his normal");
 });
+
+test("plainChange says how old a stale jump is", () => {
+  const stale = (days_old, pct) => ({ rsi: { pct, today: 0.4, days_old }, magnitude: "▼ large" });
+  assert.equal(plainChange(stale(2, -22.4)), "Jump 2 days ago: 22% below his normal");
+  assert.equal(plainChange(stale(1, -9.6)), "Jump 1 day ago: 10% below his normal");
+  assert.equal(plainChange(stale(3, 0.2)), "Jump 3 days ago: right at his normal");
+  assert.equal(plainChange(stale(0, -22.4)), "22% below his normal");
+  assert.equal(plainChange({ rsi: { pct: null, today: null, days_old: null }, magnitude: "" }), "No jump today");
+  assert.equal(plainChange({ rsi: { pct: null, today: null, days_old: 9 }, magnitude: "" }), "No jump today");
+});
+
+test("plainReason does not repeat the word Jump for a stale jump", () => {
+  const p = { pos: "OF", rsi: { pct: -22.4, today: 0.4, days_old: 2 }, wellness: { z: -2.3 }, magnitude: "", load: {} };
+  assert.equal(plainReason(p), "Jump 2 days ago: 22% below his normal · wellness low");
+});
+
+test("parseLineup treats an ambiguous last name as unmatched", () => {
+  const twins = [
+    { id: "LC10", name: "A. Garcia", pos: "IF" },
+    { id: "LC11", name: "B. Garcia", pos: "OF" },
+    { id: "LC12", name: "C. Smith", pos: "SP" },
+  ];
+  const { ids, unmatched } = parseLineup("Garcia\nA. Garcia\nsmith", twins);
+  assert.deepEqual(ids, ["LC10", "LC12"]);
+  assert.deepEqual(unmatched, ["Garcia"]);
+});
+
+test("hasSavedReview is true only when a review key exists", async () => {
+  const mem = new Map();
+  globalThis.localStorage = { getItem: (k) => mem.get(k) ?? null, setItem: (k, v) => mem.set(k, v) };
+  const { hasSavedReview, saveReview, emptyReview } = await import("../../web/js/store.js");
+  assert.equal(hasSavedReview("2026-09-20"), false);
+  saveReview("2026-09-20", { ...emptyReview(), approvedAt: null });
+  assert.equal(hasSavedReview("2026-09-20"), true);
+  assert.equal(hasSavedReview("2026-09-19"), false);
+  globalThis.localStorage = { getItem() { throw new Error("blocked"); } };
+  assert.equal(hasSavedReview("2026-09-20"), false);
+  delete globalThis.localStorage;
+});

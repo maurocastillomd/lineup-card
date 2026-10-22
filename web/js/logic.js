@@ -16,8 +16,10 @@ export function parseLineup(text, players) {
   const unmatched = [];
   for (const raw of text.split(/\n|,/).map((l) => l.trim()).filter(Boolean)) {
     const key = norm(raw);
-    const hit = players.find((p) => p.id.toLowerCase() === key || norm(p.name) === key)
-      ?? players.filter((p) => lastName(p.name) === key).at(0);
+    const exact = players.find((p) => p.id.toLowerCase() === key || norm(p.name) === key);
+    // A last name shared by two players is not a match: never guess which one.
+    const byLast = players.filter((p) => lastName(p.name) === key);
+    const hit = exact ?? (byLast.length === 1 ? byLast[0] : undefined);
     if (hit && !ids.includes(hit.id)) ids.push(hit.id);
     else if (!hit) unmatched.push(raw);
   }
@@ -65,12 +67,19 @@ export function groupCheckins(players, teamShift) {
 }
 
 // Jump today in plain words: percent of his own normal.
+export const isStale = (p) => p.rsi?.pct != null && p.rsi.days_old > 0;
+
 export function plainChange(p) {
   const pct = p.rsi.pct;
   let text;
   if (pct == null) text = p.rsi.today == null ? "No jump today" : "Still learning his normal";
   else if (Math.abs(pct) < 1) text = "Right at his normal";
   else text = `${Math.round(Math.abs(pct))}% ${pct < 0 ? "below" : "above"} his normal`;
+  if (isStale(p)) {
+    // The reading is not from today: say how old it is, in the same sentence.
+    const n = p.rsi.days_old;
+    text = `Jump ${n} day${n === 1 ? "" : "s"} ago: ${text.replace(/^Right at/, "right at")}`;
+  }
   return p.magnitude?.includes("(wellness)") ? `${text} · wellness low` : text;
 }
 
@@ -80,7 +89,10 @@ export const jumpPosition = (pct) => Math.max(2, Math.min(98, 50 + pct * 2.4));
 // One line for the coach: jump, wellness, and arm workload for pitchers.
 export function plainReason(p) {
   const parts = [];
-  if (p.rsi.pct != null) parts.push(`Jump ${plainChange({ ...p, magnitude: "" }).replace(/^Right at/, "right at")}`);
+  if (p.rsi.pct != null) {
+    const text = plainChange({ ...p, magnitude: "" });
+    parts.push(isStale(p) ? text : `Jump ${text.replace(/^Right at/, "right at")}`);
+  }
   if (p.wellness?.z != null && p.wellness.z <= -1.2) parts.push("wellness low");
   if (["SP", "RP"].includes(p.pos) && p.load?.throws_7d != null) parts.push(`${p.load.throws_7d} throws + pitches in 7 days`);
   return parts.join(" · ");

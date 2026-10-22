@@ -33,8 +33,8 @@ function render() {
   $("flags").innerHTML = flagged.length ? flagged.map((p) => {
     const d = review.decisions[p.id];
     const state = d ? `<small>Decision: ${esc(d.action)}${d.note ? ` · ${esc(d.note)}` : ""}</small>` : "";
-    return `<div class="row" data-id="${p.id}">
-      <div><strong>${esc(p.name)}</strong> ${esc(p.pos)} · <span class="word-${p.status}">${esc(p.word)}</span> ${esc(p.magnitude)}
+    return `<div class="row" data-id="${esc(p.id)}">
+      <div><strong>${esc(p.name)}</strong> ${esc(p.pos)} · <span class="word-${esc(p.status)}">${esc(p.word)}</span> ${esc(p.magnitude)}
         <small>${p.reasons.map(esc).join("; ")}</small>
         <small>${gates(p)}</small>${state}
         <span class="err" data-err></span></div>
@@ -78,7 +78,12 @@ $("approve").addEventListener("click", () => {
   if (!review.todayIds.length) { $("approve-msg").textContent = "Mark today's players first."; return; }
   if (open.length) { $("approve-msg").textContent = `Decide on every flag first (${open.length} left).`; return; }
   review.approvedAt = new Date().toISOString();
-  saveReview(day.date, review);
+  if (!saveReview(day.date, review)) {
+    review.approvedAt = null;
+    $("approve-msg").textContent = "Could not save this review in this browser.";
+    return;
+  }
+  $("approve-msg").textContent = "";
   location.href = `card.html?date=${day.date}`;
 });
 
