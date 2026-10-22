@@ -416,7 +416,7 @@
    "pos": "OF",
    "status": "no_change",
    "word": "No change",
-   "magnitude": "▼ large",
+   "magnitude": "– within noise",
    "reasons": [
     "RSI-mod drop inside test noise (TE 0.0316 m/s)"
    ],

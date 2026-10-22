@@ -131,7 +131,7 @@
    "pos": "OF",
    "status": "watch",
    "word": "Watch",
-   "magnitude": "– within noise",
+   "magnitude": "▼ moderate (wellness)",
    "reasons": [
     "Wellness 1.4 SD below his 28-day normal and beyond test noise"
    ],
@@ -226,7 +226,7 @@
    "pos": "RP",
    "status": "watch",
    "word": "Watch",
-   "magnitude": "– within noise",
+   "magnitude": "▼ moderate (wellness)",
    "reasons": [
     "Wellness 1.3 SD below his 28-day normal and beyond test noise"
    ],
@@ -511,7 +511,7 @@
    "pos": "SP",
    "status": "no_change",
    "word": "No change",
-   "magnitude": "▼ moderate",
+   "magnitude": "– within noise",
    "reasons": [
     "RSI-mod drop inside test noise (TE 0.0304 m/s)"
    ],

@@ -36,7 +36,7 @@
    "pos": "RP",
    "status": "check_in",
    "word": "Check in",
-   "magnitude": "▼ large",
+   "magnitude": "▼ large (wellness)",
    "reasons": [
     "2 response domains at or below z -1.2; convergence review rule",
     "Wellness 2.3 SD below his 28-day normal and beyond test noise",
@@ -133,7 +133,7 @@
    "pos": "IF",
    "status": "watch",
    "word": "Watch",
-   "magnitude": "– within noise",
+   "magnitude": "▼ moderate (wellness)",
    "reasons": [
     "Wellness 1.8 SD below his 28-day normal and beyond test noise"
    ],
@@ -513,7 +513,7 @@
    "pos": "SP",
    "status": "no_change",
    "word": "No change",
-   "magnitude": "▼ moderate",
+   "magnitude": "– within noise",
    "reasons": [
     "RSI-mod drop inside test noise (TE 0.0315 m/s)"
    ],
@@ -608,7 +608,7 @@
    "pos": "OF",
    "status": "no_change",
    "word": "No change",
-   "magnitude": "▼ moderate",
+   "magnitude": "– within noise",
    "reasons": [
     "RSI-mod drop inside test noise (TE 0.0315 m/s)"
    ],
@@ -703,7 +703,7 @@
    "pos": "OF",
    "status": "no_change",
    "word": "No change",
-   "magnitude": "▼ moderate",
+   "magnitude": "– within noise",
    "reasons": [
     "RSI-mod drop inside test noise (TE 0.0315 m/s)"
    ],

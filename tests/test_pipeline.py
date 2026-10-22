@@ -58,3 +58,10 @@ def test_travel_day_marks_who_dropped_more_than_the_team():
 
 def test_beyond_team_is_none_without_a_team_shift(last_day):
     assert all(p["beyond_team"] is None for p in last_day["players"])
+
+
+def test_wellness_only_flags_are_not_marked_down_with_the_team():
+    day = run_day(DATA, date(2026, 9, 15))
+    for p in day["players"]:
+        if p["beyond_team"] is False:
+            assert p["rsi"]["z"] is not None and p["rsi"]["z"] <= -1.2

@@ -131,7 +131,7 @@
    "pos": "SP",
    "status": "check_in",
    "word": "Check in",
-   "magnitude": "– within noise",
+   "magnitude": "▼ large (wellness)",
    "reasons": [
     "Wellness 2.1 SD below his 28-day normal and beyond test noise"
    ],
@@ -416,7 +416,7 @@
    "pos": "OF",
    "status": "no_change",
    "word": "No change",
-   "magnitude": "▼ moderate",
+   "magnitude": "– within noise",
    "reasons": [
     "RSI-mod drop inside test noise (TE 0.0296 m/s)"
    ],
@@ -511,7 +511,7 @@
    "pos": "SP",
    "status": "no_change",
    "word": "No change",
-   "magnitude": "▼ moderate",
+   "magnitude": "– within noise",
    "reasons": [
     "RSI-mod drop inside test noise (TE 0.0296 m/s)"
    ],
@@ -606,7 +606,7 @@
    "pos": "C",
    "status": "no_change",
    "word": "No change",
-   "magnitude": "▼ moderate",
+   "magnitude": "– within noise",
    "reasons": [
     "Wellness drop inside test noise (TE 1.4562 pts)",
     "RSI-mod drop inside test noise (TE 0.0296 m/s)"
@@ -702,7 +702,7 @@
    "pos": "OF",
    "status": "no_change",
    "word": "No change",
-   "magnitude": "▼ moderate",
+   "magnitude": "– within noise",
    "reasons": [
     "RSI-mod drop inside test noise (TE 0.0296 m/s)"
    ],

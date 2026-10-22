@@ -321,7 +321,7 @@
    "pos": "OF",
    "status": "check_in",
    "word": "Check in",
-   "magnitude": "– within noise",
+   "magnitude": "▼ large (wellness)",
    "reasons": [
     "Wellness 2.0 SD below his 28-day normal and beyond test noise"
    ],
@@ -416,7 +416,7 @@
    "pos": "IF",
    "status": "watch",
    "word": "Watch",
-   "magnitude": "– within noise",
+   "magnitude": "▼ moderate (wellness)",
    "reasons": [
     "Wellness 1.8 SD below his 28-day normal and beyond test noise"
    ],
@@ -511,7 +511,7 @@
    "pos": "RP",
    "status": "watch",
    "word": "Watch",
-   "magnitude": "– within noise",
+   "magnitude": "▼ moderate (wellness)",
    "reasons": [
     "Wellness 1.7 SD below his 28-day normal and beyond test noise"
    ],

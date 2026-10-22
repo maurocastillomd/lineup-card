@@ -53,3 +53,17 @@ def test_build_day_shape_and_statuses():
 def test_players_sorted_worst_first():
     day = build_day(rows(), TODAY, CW, CleanLog(), {"opponent": "", "home_away": "", "note": ""})
     assert day["players"][0]["id"] == "LC01"
+
+
+def test_driver_magnitude_names_the_flagging_measure():
+    from lineup_card.day import driver_magnitude
+    from lineup_card.models import DomainAssessment, Domain
+    rsi = DomainAssessment(domain=Domain.NEUROMUSCULAR, status=Status.CLEARED, fresh=True,
+                           today=0.5, base=None, pct=None, decline_z=0.1)
+    well = DomainAssessment(domain=Domain.PERCEPTUAL, status=Status.REVIEW, fresh=True,
+                            today=15, base=None, pct=None, decline_z=-4.1)
+    assert driver_magnitude([rsi, well]) == "▼ large (wellness)"
+    rsi2 = rsi.model_copy(update={"status": Status.MONITOR, "decline_z": -1.5})
+    assert driver_magnitude([rsi2, well.model_copy(update={"status": Status.CLEARED})]) == "▼ moderate"
+    gated = rsi.model_copy(update={"decline_z": -2.6})          # big z, cleared by noise gate
+    assert driver_magnitude([gated, well.model_copy(update={"status": Status.CLEARED})]) == "– within noise"

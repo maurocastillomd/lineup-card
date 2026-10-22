@@ -7,7 +7,7 @@ from datetime import date, timedelta
 
 from .clean import CleanLog
 from .crosswalk import Crosswalk
-from .engine import assess_squad, compute_baseline, goodness, noise_threshold, z_score
+from .engine import MONITOR_Z, assess_squad, compute_baseline, goodness, noise_threshold, z_score
 from .frames import LEAGUE_REFERENCE, position_medians, team_shift, typical_error
 from .models import JUMP_HEIGHT, METRICS, AthleteAssessment, Domain, DomainAssessment, Reading, Status
 
@@ -29,6 +29,19 @@ def magnitude(z: float | None) -> str:
     if z <= -1.2:
         return "▼ moderate"
     return "– within noise"
+
+
+DOMAIN_NAMES = {Domain.NEUROMUSCULAR: "jump", Domain.PERCEPTUAL: "wellness"}
+
+
+def driver_magnitude(domains: list[DomainAssessment]) -> str:
+    """Size of the change that set the status, named when it is not the jump."""
+    flagged = [d for d in domains if d.status in (Status.REVIEW, Status.MONITOR)]
+    if not flagged:
+        return "" if all(d.decline_z is None for d in domains) else "– within noise"
+    worst = min(flagged, key=lambda d: d.decline_z)
+    size = magnitude(worst.decline_z)
+    return size if worst.domain is Domain.NEUROMUSCULAR else f"{size} ({DOMAIN_NAMES[worst.domain]})"
 
 
 def _domain_json(d: DomainAssessment) -> dict:
@@ -68,6 +81,8 @@ def _beyond_team(d: DomainAssessment, shift: dict | None, te: float | None,
         return None
     if d.base is None or d.observed_on != today:
         return None
+    if d.decline_z is None or d.decline_z > MONITOR_Z:
+        return None          # his jump is not down: the team line does not explain his flag
     return (d.today - d.base.mean) - shift["median_raw"] < -noise_threshold(te)
 
 
@@ -92,7 +107,7 @@ def build_day(readings: list[Reading], today: date, cw: Crosswalk, log: CleanLog
         group = medians.get(a.pos, {"median_z": None, "n": 0})
         players.append({
             "id": a.athlete_id, "name": a.name, "pos": a.pos,
-            "status": status, "word": word, "magnitude": magnitude(rsi.decline_z),
+            "status": status, "word": word, "magnitude": driver_magnitude(a.domains),
             "reasons": a.reasons or [r for d in a.domains for r in d.reasons],
             "rsi": _domain_json(rsi), "wellness": _domain_json(well),
             "jump_height_cm": _latest(readings, a.athlete_id, JUMP_HEIGHT, today),

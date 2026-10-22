@@ -36,7 +36,7 @@
    "pos": "RP",
    "status": "check_in",
    "word": "Check in",
-   "magnitude": "– within noise",
+   "magnitude": "▼ large (wellness)",
    "reasons": [
     "Wellness 4.1 SD below his 28-day normal and beyond test noise"
    ],
@@ -65,7 +65,7 @@
     "pitches_today": 0,
     "throws_7d": 200
    },
-   "beyond_team": false,
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-09-02",
@@ -606,7 +606,7 @@
    "pos": "RP",
    "status": "check_in",
    "word": "Check in",
-   "magnitude": "▼ large",
+   "magnitude": "▼ large (wellness)",
    "reasons": [
     "2 response domains at or below z -1.2; convergence review rule",
     "Wellness 2.6 SD below his 28-day normal and beyond test noise",
@@ -992,7 +992,7 @@
    "pos": "OF",
    "status": "check_in",
    "word": "Check in",
-   "magnitude": "– within noise",
+   "magnitude": "▼ large (wellness)",
    "reasons": [
     "Wellness 2.2 SD below his 28-day normal and beyond test noise"
    ],
@@ -1021,7 +1021,7 @@
     "pitches_today": 0,
     "throws_7d": 273
    },
-   "beyond_team": false,
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-09-02",
@@ -1566,7 +1566,7 @@
    "pos": "SP",
    "status": "check_in",
    "word": "Check in",
-   "magnitude": "▼ moderate",
+   "magnitude": "▼ moderate (wellness)",
    "reasons": [
     "2 response domains at or below z -1.2; convergence review rule",
     "Wellness 1.8 SD below his 28-day normal and beyond test noise",
@@ -1663,7 +1663,7 @@
    "pos": "RP",
    "status": "watch",
    "word": "Watch",
-   "magnitude": "– within noise",
+   "magnitude": "▼ moderate (wellness)",
    "reasons": [
     "Wellness 1.9 SD below his 28-day normal and beyond test noise"
    ],
@@ -1692,7 +1692,7 @@
     "pitches_today": 26,
     "throws_7d": 246
    },
-   "beyond_team": false,
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-09-02",
@@ -1758,7 +1758,7 @@
    "pos": "OF",
    "status": "watch",
    "word": "Watch",
-   "magnitude": "▼ moderate",
+   "magnitude": "▼ moderate (wellness)",
    "reasons": [
     "Wellness 1.7 SD below his 28-day normal and beyond test noise"
    ],
@@ -1853,7 +1853,7 @@
    "pos": "RP",
    "status": "watch",
    "word": "Watch",
-   "magnitude": "– within noise",
+   "magnitude": "▼ moderate (wellness)",
    "reasons": [
     "Wellness 1.5 SD below his 28-day normal and beyond test noise"
    ],
@@ -1882,7 +1882,7 @@
     "pitches_today": 27,
     "throws_7d": 277
    },
-   "beyond_team": false,
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-09-02",
@@ -2072,7 +2072,7 @@
     "pitches_today": 0,
     "throws_7d": 437
    },
-   "beyond_team": false,
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-09-02",
@@ -2167,7 +2167,7 @@
     "pitches_today": 0,
     "throws_7d": 196
    },
-   "beyond_team": false,
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-09-02",
@@ -2262,7 +2262,7 @@
     "pitches_today": 0,
     "throws_7d": 345
    },
-   "beyond_team": false,
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-09-02",
@@ -2355,7 +2355,7 @@
     "pitches_today": 0,
     "throws_7d": 332
    },
-   "beyond_team": false,
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-09-02",
@@ -2448,7 +2448,7 @@
     "pitches_today": 0,
     "throws_7d": 386
    },
-   "beyond_team": false,
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-09-02",
@@ -2541,7 +2541,7 @@
     "pitches_today": 0,
     "throws_7d": 384
    },
-   "beyond_team": false,
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-09-02",
@@ -2634,7 +2634,7 @@
     "pitches_today": 22,
     "throws_7d": 174
    },
-   "beyond_team": false,
+   "beyond_team": null,
    "trend": [
     {
      "date": "2026-09-02",
