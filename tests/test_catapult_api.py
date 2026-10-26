@@ -96,3 +96,39 @@ def test_settings_problems_and_hosts():
     assert s is None and problems[0] == "CATAPULT_TOKEN" and "CATAPULT_HOST" in problems[1]
     s, _ = CatapultSettings.from_env({"CATAPULT_TOKEN": "x", "CATAPULT_HOST": "apac"})
     assert s.base == "https://openfield.catapultsports.com/api/v6"
+
+
+@pytest.mark.parametrize("raw, host", [
+    ("us", "us.catapultsports.com"), ("EU", "eu.catapultsports.com"),
+    ("apac", "openfield.catapultsports.com"),
+    ("connect-us.catapultsports.com", "connect-us.catapultsports.com"),
+    ("https://connect-us.catapultsports.com", "connect-us.catapultsports.com"),
+    ("https://connect-us.catapultsports.com/", "connect-us.catapultsports.com"),
+    ("backend-cn.catapultsports-cn.com", "backend-cn.catapultsports-cn.com"),
+])
+def test_catapult_host_accepted(raw, host):
+    s, problems = CatapultSettings.from_env({**ENV, "CATAPULT_HOST": raw})
+    assert problems == [] and s.host == host and s.base == f"https://{host}/api/v6"
+
+
+@pytest.mark.parametrize("raw", [
+    "evil.com/.catapultsports.com",
+    "evil.com#.catapultsports.com",
+    "evil.com?.catapultsports.com",
+    "us.catapultsports.com@evil.com",
+    "user@us.catapultsports.com",
+    "https://user:pw@us.catapultsports.com",
+    "us.catapultsports.com:8443",
+    "https://us.catapultsports.com:443",
+    "http://us.catapultsports.com",
+    "ftp://us.catapultsports.com",
+    "https://us.catapultsports.com/api",
+    "us.catapultsports.com.evil.com",
+    "evilcatapultsports.com",
+    ".catapultsports.com",
+    "evil.com\\.catapultsports.com",
+    "evil .catapultsports.com",
+])
+def test_catapult_host_evil_cases_refused(raw):
+    s, problems = CatapultSettings.from_env({**ENV, "CATAPULT_HOST": raw})
+    assert s is None and any("CATAPULT_HOST" in p for p in problems)

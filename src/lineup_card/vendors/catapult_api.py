@@ -12,6 +12,8 @@ parameter slugs; without them those columns stay blank.
 
 from __future__ import annotations
 
+import re
+import urllib.parse
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta, timezone
@@ -21,7 +23,33 @@ from .http import JsonClient
 
 HOSTS = {"us": "us.catapultsports.com", "eu": "eu.catapultsports.com",
          "apac": "openfield.catapultsports.com"}
+ALLOWED_SUFFIXES = (".catapultsports.com", ".catapultsports-cn.com")
+_LABELS = re.compile(r"^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$")
 REQUIRED_ENV = ("CATAPULT_TOKEN", "CATAPULT_HOST")
+
+
+def parse_host(raw: str) -> str | None:
+    """us, eu, apac, a bare Catapult host name, or https://<that host>[/].
+    Returns the host name, or None for anything else: another domain, a path,
+    a query, a user name, a port, or a scheme other than https."""
+    raw = raw.strip().lower()
+    if raw in HOSTS:
+        return HOSTS[raw]
+    text = raw if "://" in raw else f"https://{raw}"
+    try:
+        parts = urllib.parse.urlsplit(text)
+        port = parts.port
+    except ValueError:
+        return None
+    host = parts.hostname or ""
+    if (parts.scheme != "https" or port is not None or parts.username is not None
+            or parts.password is not None or parts.netloc != host
+            or parts.path not in ("", "/") or parts.query or parts.fragment
+            or "#" in text or "?" in text):
+        return None
+    if not _LABELS.match(host) or not any(host.endswith(sfx) for sfx in ALLOWED_SUFFIXES):
+        return None
+    return host
 DEFAULT_LOAD_SLUG = "total_player_load"
 
 
@@ -36,11 +64,11 @@ class CatapultSettings:
     @classmethod
     def from_env(cls, env) -> tuple["CatapultSettings | None", list[str]]:
         problems = [k for k in REQUIRED_ENV if not env.get(k, "").strip()]
-        raw = env.get("CATAPULT_HOST", "").strip().lower()
-        host = HOSTS.get(raw, raw).removeprefix("https://").rstrip("/")
-        if raw and not host.endswith(".catapultsports.com"):
-            problems.append("CATAPULT_HOST (us, eu, apac, or a *.catapultsports.com host name; "
-                            f"got '{raw}')")
+        raw = env.get("CATAPULT_HOST", "").strip()
+        host = parse_host(raw) if raw else None
+        if raw and host is None:
+            problems.append("CATAPULT_HOST (us, eu, apac, or a *.catapultsports.com host name "
+                            "with https and no path or port)")
         if problems:
             return None, problems
         return cls(env["CATAPULT_TOKEN"].strip(), host,
