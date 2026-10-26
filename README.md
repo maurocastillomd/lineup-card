@@ -38,6 +38,23 @@ The drop must be larger than 1.5 x TE. Mauro Castillo chose 1.5 x TE on 2026-10-
 - **No change**: nothing beyond his normal ups and downs.
 - **Not enough data**: no fresh reading, or not enough history yet.
 
+**Signal and noise (review screen).** The review screen shows how sensitive each measure is for this squad, and how big each player's change is in every unit that matters. Worked numbers are RSI-mod on the fictional 2026-09-20.
+
+| Metric | Formula | 2026-09-20 RSI-mod |
+|---|---|---|
+| TE, typical error | SD of day-to-day differences / sqrt(2) | 0.032 m/s |
+| CV | TE / squad mean x 100 | 6.1% |
+| SWC, smallest worthwhile change | 0.2 x between-player SD of each player's normal | 0.008 m/s |
+| SWC / TE | SWC / TE | 0.26 (marginal) |
+| MDC95 | 1.96 x sqrt(2) x TE | 0.087 m/s |
+| Your gate | 1.5 x TE | 0.047 m/s |
+| z | (today - his mean) / his SD | J. Ortega: -2.18 |
+| Change in TE units | (today - his mean) / TE | J. Ortega: -2.9 |
+
+SWC / TE below 1 means one reading cannot settle a change as small as the SWC (Hopkins 2000). That is why a flag also needs the noise gate. The rating bands (1 or more good, 0.5 or more OK, below 0.5 marginal) are a convention.
+
+Two different "SWC" numbers appear in this project. The table's SWC is Hopkins' version: 0.2 x the spread *between* players. The "three straight declines" Watch rule uses 0.2 x *his own* SD, which the review data calls `swc_personal`.
+
 **Context never sets a status.** These are shown next to the status, never used to make it:
 - Position: the median change for his position group (SP, RP, C, IF, OF), with the group size.
 - Team: the median change across everyone tested today.
