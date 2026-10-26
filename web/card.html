@@ -8,38 +8,62 @@
   <link rel="stylesheet" href="css/card.css">
 </head>
 <body>
-<main class="card wrap">
+<main class="card wrap" id="card">
   <header class="card-head">
     <div>
       <span class="fiction">Fictional roster. Not a fitness-to-play decision.</span>
       <h1>Lineup Card</h1>
-      <p id="meta" class="mono"></p>
+      <p id="meta" class="meta"></p>
+      <p id="reviewed" class="reviewed"></p>
     </div>
     <div class="head-actions noprint">
       <a href="index.html">Back to review</a>
-      <button id="print">Print / PDF</button>
+      <div class="share-bar" role="group" aria-label="Share this card">
+        <button id="copy" type="button">Copy for group text</button>
+        <button id="save" type="button">Save as image</button>
+        <button id="print" type="button">Print / PDF</button>
+      </div>
+      <p id="share-msg" class="share-msg" role="status" aria-live="polite"></p>
     </div>
   </header>
   <p id="unreviewed" class="banner" hidden>Not reviewed yet. <a href="index.html">Review first</a>.</p>
-  <section><h2>Check in today</h2>
+
+  <section class="glance" aria-labelledby="glance-h">
+    <h2 id="glance-h" class="sr-only">Today at a glance</h2>
+    <div id="tiles" class="tiles"></div>
     <p id="shift-lead" class="shift-lead" hidden></p>
+  </section>
+
+  <section class="checkins">
+    <h2>Check in today</h2>
     <p id="more-label" class="group-label" hidden>Not explained by the team drop</p>
-    <ol id="checkin" class="checkin"></ol>
+    <div id="checkin" class="action-cards"></div>
     <p id="with-team" class="with-team"></p>
   </section>
-  <p id="shift" class="shift"></p>
-  <section><h2>Today's players</h2>
-    <div class="band-head"><span>Player</span><span class="scale"><span>20% lower</span><span>his normal</span><span>20% higher</span></span><span>Status</span></div>
-    <p class="how">Jump today compared with his own normal (scale: 20% lower to 20% higher). Dot = today (hollow = an earlier day). Centre line = his normal. Shaded area = his usual ups and downs. A dot left of the shading means he is jumping lower than usual.</p>
+
+  <section class="roster">
+    <h2>Today's players</h2>
+    <p class="how">Each dot is his jump today, compared with his own normal (centre line). The shaded area is his usual ups and downs. A dot left of the shading means he is jumping lower than usual. A hollow dot is from an earlier day.</p>
+    <div class="band-head" aria-hidden="true"><span></span><span class="scale"><span>20% lower</span><span>his normal</span><span>20% higher</span></span><span></span></div>
     <div id="today"></div>
     <p id="hidden-summary" class="hidden-summary"></p>
-    <button id="toggle" class="noprint" aria-expanded="false">Show full roster</button>
+    <button id="toggle" class="noprint" type="button" aria-expanded="false">Show full roster</button>
     <div id="rest" hidden></div>
   </section>
+
   <section class="lower">
-    <div><h2>Two-week trend</h2><p class="how">Jump each day for flagged players. Shaded band = his normal.</p><div id="trends"></div></div>
-    <div><h2>Availability board</h2><div id="board"></div><p class="how board-key">Board: one peg per player. Two bars = Check in, one bar = Watch, ring = No change, dashed ring = Not enough data.</p></div>
+    <div>
+      <h2>Jump over two weeks</h2>
+      <p class="how">For flagged players. Shaded band = his usual ups and downs. Last dot = today.</p>
+      <div id="trends"></div>
+    </div>
+    <div>
+      <h2>Availability board</h2>
+      <div id="board"></div>
+      <p class="how board-key">One peg per player. Two bars = Check in. One bar = Watch. Ring = No change. Dashed ring = Not enough data.</p>
+    </div>
   </section>
+
   <footer class="card-foot">
     <p><strong>How a flag works:</strong> a player is flagged only when his drop is big compared with his own last 28 days and bigger than normal test-to-test noise. Team and league notes are context only. Coaches and medical staff decide who plays.</p>
     <p><strong>Jump</strong> = reactive strength from the force-plate jump (RSI-mod). <strong>Sources:</strong> VALD ForceDecks, Catapult (load, throws, pitches), morning wellness form. Fictional roster and data. <span id="league"></span></p>
