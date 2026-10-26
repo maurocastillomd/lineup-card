@@ -67,6 +67,10 @@ def generate(out: Path) -> None:
             w.writerow([lc_id, short, pos, f"V{lc_id[2:]}0", full])
 
     profile = {lc_id: (rng.uniform(0.46, 0.62), rng.uniform(38, 47)) for lc_id, *_ in ROSTER}
+    # Each player's own usual wellness level, from a separate stream so the
+    # main random sequence (and every other scenario) is unchanged.
+    well_rng = random.Random(SEED + 1)
+    well_mean = {lc_id: well_rng.uniform(3.3, 4.5) for lc_id, *_ in ROSTER}
     noise = {lc_id: 0.004 if lc_id == "LC03" else 0.028 for lc_id, *_ in ROSTER}
 
     with (out / "schedule.csv").open("w", newline="") as f:
@@ -121,7 +125,7 @@ def generate(out: Path) -> None:
             w = csv.writer(f)
             w.writerow(["athlete_id", "date", "sleep_quality", "soreness", "fatigue", "stress", "mood"])
             for lc_id, *_ in active:
-                items = [min(5, max(1, round(rng.gauss(4.0, 0.6)))) for _ in range(5)]
+                items = [min(5, max(1, round(rng.gauss(well_mean[lc_id], 0.6)))) for _ in range(5)]
                 if lc_id == "LC01" and day >= date(2026, 9, 18):
                     items = [max(1, i - 1) for i in items]
                 if day == TRAVEL_DAY:

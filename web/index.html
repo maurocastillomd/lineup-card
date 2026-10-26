@@ -11,6 +11,12 @@
     .actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: start; }
     .err { color: var(--alert); font-size: 13px; }
     ul.plain { padding-left: 18px; margin: 0; }
+    table.num { border-collapse: collapse; width: 100%; font: 400 13px/1.4 var(--mono); margin: 8px 0; }
+    table.num th, table.num td { text-align: right; padding: 4px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    table.num th:first-child, table.num td:first-child { text-align: left; }
+    table.num th { font: 500 12px var(--sans); color: var(--ink-dim); }
+    .scroll { overflow-x: auto; }
+    details summary { cursor: pointer; color: var(--accent); margin-top: 8px; }
     @media (max-width: 640px) { .row { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -20,6 +26,13 @@
   <h1>Morning review</h1>
   <p>Check what the pipeline did, mark today's players, then approve the Lineup Card.</p>
   <label>Date <select id="date"></select></label>
+
+  <section class="panel">
+    <h2>Test noise today</h2>
+    <p>How sensitive each measure is for this squad. TE = typical error (test-to-test noise). SWC = smallest worthwhile change (0.2 x between-player SD). MDC95 = change needed to be 95% sure one reading moved. Your gate = 1.5 x TE.</p>
+    <div id="signal"></div>
+    <details><summary>All players' numbers</summary><div id="allnums"></div></details>
+  </section>
 
   <section class="panel">
     <h2>1. Today's players</h2>

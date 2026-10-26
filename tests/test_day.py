@@ -119,3 +119,14 @@ def test_trend_decline_below_flag_threshold_is_labelled_steady_decline():
     cleared = rsi.model_copy(update={"status": Status.CLEARED, "decline_z": 0.1})
     assert driver_magnitude([cleared, well]) == "▼ steady decline (wellness)"
     assert driver_magnitude([rsi.model_copy(update={"decline_z": -1.2})]) == "▼ moderate"
+
+
+def test_day_has_signal_and_noise_numbers():
+    day = build_day(rows(), TODAY, CW, CleanLog(), {"opponent": "", "home_away": "", "note": ""})
+    ortega = {p["id"]: p for p in day["players"]}["LC01"]["rsi"]
+    te = day["te"]["rsi_mod"]
+    assert ortega["change"] == round(ortega["today"] - ortega["mean"], 4)
+    assert ortega["change_te"] == round(ortega["change"] / te, 1)
+    assert ortega["beyond_mdc"] is (ortega["change"] < -round(1.96 * 2 ** 0.5 * te, 4))
+    assert abs(ortega["swc_personal"] - 0.2 * ortega["sd"]) <= 0.2 * 0.0005 + 1e-9   # sd is shown rounded to 3 dp
+    assert "rsi_mod" in day["signal"]          # one player only: sensitivity needs 2+ baselines

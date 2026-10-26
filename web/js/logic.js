@@ -97,3 +97,14 @@ export function plainReason(p) {
   if (["SP", "RP"].includes(p.pos) && p.load?.throws_7d != null) parts.push(`${p.load.throws_7d} throws + pitches in 7 days`);
   return parts.join(" · ");
 }
+
+// Analyst line for the review screen: the size of the change in every unit that matters.
+export function signalLine(label, unit, d, dp = 3) {
+  if (d.change == null) return `${label}: no baseline yet`;
+  const parts = [`${label}: ${d.change.toFixed(dp)} ${unit} (${d.pct.toFixed(1)}%)`];
+  if (d.change_te != null) parts.push(`${d.change_te.toFixed(1)} TE`);
+  parts.push(`z ${d.z.toFixed(2)}`);
+  if (d.beyond_noise != null) parts.push(d.beyond_noise ? "past your gate" : "inside your gate");
+  if (d.beyond_mdc != null) parts.push(d.beyond_mdc ? "past MDC95" : "inside MDC95");
+  return parts.join(" · ");
+}

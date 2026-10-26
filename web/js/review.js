@@ -1,15 +1,10 @@
-import { FLAGGED, WORDS, parseLineup } from "./logic.js";
+import { FLAGGED, WORDS, parseLineup, signalLine } from "./logic.js";
 import { loadReview, saveReview } from "./store.js";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 let day, review;
 
-const noise = (b) => b === null ? "noise not yet estimated" : b ? "beyond test noise" : "inside test noise";
-// Both measures, so a wellness-only flag never looks like a contradiction.
-const gates = (p) => [["RSI-mod", p.rsi], ["Wellness", p.wellness]]
-  .map(([label, d]) => `${label}: z ${d.z ?? "n/a"}${d.z == null ? "" : `, ${noise(d.beyond_noise)}`}`)
-  .join(" · ");
 
 async function load(date) {
   day = await (await fetch(`data/days/${date}.json`)).json();
@@ -19,7 +14,28 @@ async function load(date) {
   render();
 }
 
+const MEASURES = [["rsi_mod", "rsi", "RSI-mod", "m/s", 3], ["wellness_score", "wellness", "Wellness", "pts", 2]];
+
+function renderSignal() {
+  const rows = MEASURES.map(([key, , label, unit, dp]) => {
+    const s = day.signal[key];
+    if (!s) return `<tr><td>${label}</td><td colspan="7">not enough data yet</td></tr>`;
+    return `<tr><td>${label} (${unit})</td><td>${s.te.toFixed(dp)}</td><td>${s.cv_pct}%</td><td>${s.swc.toFixed(dp)}</td>
+      <td>${s.swc_te} (${esc(s.rating)})</td><td>${s.mdc95.toFixed(dp)}</td><td>${s.gate.toFixed(dp)}</td><td>${s.n}</td></tr>`;
+  }).join("");
+  $("signal").innerHTML = `<div class="scroll"><table class="num"><thead><tr><th>Measure</th><th>TE</th><th>CV</th><th>SWC</th>
+    <th>SWC ÷ TE</th><th>MDC95</th><th>Your gate</th><th>n</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p><small>SWC ÷ TE below 1 means one reading cannot settle a change as small as the SWC. Bands (a convention): 1 or more good, 0.5 or more OK, below 0.5 marginal.</small></p>`;
+  const cell = (d, dp) => d.change == null ? "<td>–</td><td>–</td><td>–</td><td>–</td>"
+    : `<td>${d.change.toFixed(dp)}</td><td>${d.pct.toFixed(1)}%</td><td>${d.change_te ?? "–"}</td><td>${d.z.toFixed(2)}</td>`;
+  $("allnums").innerHTML = `<div class="scroll"><table class="num"><thead><tr><th>Player</th><th>Status</th>
+    <th>Jump Δ</th><th>%</th><th>TE units</th><th>z</th><th>Wellness Δ</th><th>%</th><th>TE units</th><th>z</th></tr></thead><tbody>${
+    day.players.map((p) => `<tr><td>${esc(p.name)} ${esc(p.pos)}</td><td>${esc(p.word)}</td>${cell(p.rsi, 3)}${cell(p.wellness, 1)}</tr>`).join("")
+  }</tbody></table></div>`;
+}
+
 function render() {
+  renderSignal();
   $("held").innerHTML = day.held_out.length
     ? `<h3>Not matched (held out)</h3><ul class="plain">${day.held_out.map((h) =>
         `<li>${esc(h.source)}: "${esc(h.raw)}" (${esc(h.reason)})</li>`).join("")}</ul>`
@@ -36,7 +52,7 @@ function render() {
     return `<div class="row" data-id="${esc(p.id)}">
       <div><strong>${esc(p.name)}</strong> ${esc(p.pos)} · <span class="word-${esc(p.status)}">${esc(p.word)}</span> ${esc(p.magnitude)}
         <small>${p.reasons.map(esc).join("; ")}</small>
-        <small>${gates(p)}</small>${state}
+        <small>${esc(signalLine("RSI-mod", "m/s", p.rsi))}</small><small>${esc(signalLine("Wellness", "pts", p.wellness, 1))}</small>${state}
         <span class="err" data-err></span></div>
       <div class="actions">
         <button data-act="confirm">Confirm</button>

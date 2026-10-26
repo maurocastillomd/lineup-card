@@ -139,3 +139,15 @@ test("hasSavedReview is true only when a review key exists", async () => {
   assert.equal(hasSavedReview("2026-09-20"), false);
   delete globalThis.localStorage;
 });
+
+import { signalLine } from "../../web/js/logic.js";
+
+test("signalLine shows change, %, TE units, z and both thresholds", () => {
+  const d = { change: -0.09, pct: -16.9, change_te: -2.9, z: -2.18, beyond_noise: true, beyond_mdc: true };
+  assert.equal(signalLine("RSI-mod", "m/s", d),
+    "RSI-mod: -0.090 m/s (-16.9%) · -2.9 TE · z -2.18 · past your gate · past MDC95");
+  const w = { change: -1.2, pct: -6.0, change_te: -0.8, z: -1.4, beyond_noise: false, beyond_mdc: false };
+  assert.equal(signalLine("Wellness", "pts", w, 1),
+    "Wellness: -1.2 pts (-6.0%) · -0.8 TE · z -1.40 · inside your gate · inside MDC95");
+  assert.equal(signalLine("RSI-mod", "m/s", { change: undefined, z: null }), "RSI-mod: no baseline yet");
+});

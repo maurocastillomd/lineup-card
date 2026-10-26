@@ -8,12 +8,38 @@
   "note": ""
  },
  "te": {
-  "wellness_score": 1.5134,
+  "wellness_score": 1.5076,
   "rsi_mod": 0.0304
  },
  "noise_gate": {
-  "wellness_score": 2.2701,
+  "wellness_score": 2.2614,
   "rsi_mod": 0.0456
+ },
+ "signal": {
+  "wellness_score": {
+   "n": 27,
+   "grand_mean": 18.6024,
+   "between_sd": 1.805,
+   "te": 1.5076,
+   "cv_pct": 8.1,
+   "swc": 0.361,
+   "swc_te": 0.24,
+   "mdc95": 4.1789,
+   "gate": 2.2614,
+   "rating": "marginal"
+  },
+  "rsi_mod": {
+   "n": 27,
+   "grand_mean": 0.5153,
+   "between_sd": 0.0411,
+   "te": 0.0304,
+   "cv_pct": 5.9,
+   "swc": 0.0082,
+   "swc_te": 0.27,
+   "mdc95": 0.0843,
+   "gate": 0.0456,
+   "rating": "marginal"
+  }
  },
  "team_shift": {
   "median_pct": 0.5,
@@ -35,61 +61,69 @@
  },
  "players": [
   {
-   "id": "LC01",
-   "name": "J. Ortega",
-   "pos": "RP",
-   "status": "watch",
-   "word": "Watch",
-   "magnitude": "▼ moderate",
+   "id": "LC27",
+   "name": "D. Achebe",
+   "pos": "OF",
+   "status": "check_in",
+   "word": "Check in",
+   "magnitude": "▼ large (wellness)",
    "reasons": [
-    "RSI-mod 1.6 SD below his 28-day normal and beyond test noise"
+    "Wellness 2.2 SD below his 28-day normal and beyond test noise"
    ],
    "rsi": {
-    "today": 0.496,
-    "mean": 0.55,
-    "sd": 0.034,
-    "z": -1.58,
-    "pct": -9.8,
-    "beyond_noise": true,
+    "today": 0.516,
+    "mean": 0.5,
+    "sd": 0.024,
+    "z": 0.63,
+    "pct": 3.0,
+    "beyond_noise": false,
+    "change": 0.0155,
+    "change_te": 0.5,
+    "beyond_mdc": false,
+    "swc_personal": 0.0048,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
-    "today": 18.0,
-    "mean": 19.667,
-    "sd": 1.239,
-    "z": -1.34,
-    "pct": -8.5,
-    "beyond_noise": false,
+    "today": 19.0,
+    "mean": 21.75,
+    "sd": 1.225,
+    "z": -2.25,
+    "pct": -12.6,
+    "beyond_noise": true,
+    "change": -2.75,
+    "change_te": -1.8,
+    "beyond_mdc": false,
+    "swc_personal": 0.2449,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
-   "jump_height_cm": 37.6,
-   "position_median_z": -0.38,
-   "position_n": 8,
+   "jump_height_cm": 45.0,
+   "position_median_z": 0.63,
+   "position_n": 5,
    "load": {
-    "player_load_today": 119.0,
-    "throws_today": 25,
+    "player_load_today": 191.7,
+    "throws_today": 57,
     "pitches_today": 0,
-    "throws_7d": 196
+    "throws_7d": 341
    },
    "beyond_team": null,
    "trend": [
     {
      "date": "2026-09-03",
-     "z": -1.06
+     "z": -0.2
     },
     {
      "date": "2026-09-04",
-     "z": -2.03
+     "z": -0.33
     },
     {
      "date": "2026-09-05",
-     "z": -0.72
+     "z": 0.74
     },
     {
      "date": "2026-09-06",
-     "z": -0.7
+     "z": 1.49
     },
     {
      "date": "2026-09-07",
@@ -97,27 +131,27 @@
     },
     {
      "date": "2026-09-08",
-     "z": -0.71
+     "z": -1.34
     },
     {
      "date": "2026-09-09",
-     "z": -0.07
+     "z": -0.65
     },
     {
      "date": "2026-09-10",
-     "z": -0.61
+     "z": -0.52
     },
     {
      "date": "2026-09-11",
-     "z": 2.34
+     "z": -0.92
     },
     {
      "date": "2026-09-12",
-     "z": -1.91
+     "z": -1.34
     },
     {
      "date": "2026-09-13",
-     "z": -0.37
+     "z": 0.18
     },
     {
      "date": "2026-09-14",
@@ -125,11 +159,11 @@
     },
     {
      "date": "2026-09-15",
-     "z": -0.56
+     "z": -1.28
     },
     {
      "date": "2026-09-16",
-     "z": -1.58
+     "z": 0.63
     }
    ]
   },
@@ -137,11 +171,11 @@
    "id": "LC03",
    "name": "T. Brandt",
    "pos": "OF",
-   "status": "watch",
-   "word": "Watch",
-   "magnitude": "▼ moderate (wellness)",
+   "status": "check_in",
+   "word": "Check in",
+   "magnitude": "▼ large (wellness)",
    "reasons": [
-    "Wellness 1.4 SD below his 28-day normal and beyond test noise"
+    "Wellness 2.2 SD below his 28-day normal and beyond test noise"
    ],
    "rsi": {
     "today": 0.525,
@@ -150,16 +184,24 @@
     "z": 0.6,
     "pct": 0.5,
     "beyond_noise": false,
+    "change": 0.0027,
+    "change_te": 0.1,
+    "beyond_mdc": false,
+    "swc_personal": 0.0008,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
-    "today": 17.0,
-    "mean": 19.333,
-    "sd": 1.711,
-    "z": -1.36,
-    "pct": -12.1,
+    "today": 18.0,
+    "mean": 20.875,
+    "sd": 1.329,
+    "z": -2.16,
+    "pct": -13.8,
     "beyond_noise": true,
+    "change": -2.875,
+    "change_te": -1.9,
+    "beyond_mdc": false,
+    "swc_personal": 0.2658,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -233,6 +275,113 @@
    ]
   },
   {
+   "id": "LC01",
+   "name": "J. Ortega",
+   "pos": "RP",
+   "status": "watch",
+   "word": "Watch",
+   "magnitude": "▼ moderate",
+   "reasons": [
+    "RSI-mod 1.6 SD below his 28-day normal and beyond test noise"
+   ],
+   "rsi": {
+    "today": 0.496,
+    "mean": 0.55,
+    "sd": 0.034,
+    "z": -1.58,
+    "pct": -9.8,
+    "beyond_noise": true,
+    "change": -0.054,
+    "change_te": -1.8,
+    "beyond_mdc": false,
+    "swc_personal": 0.0068,
+    "observed_on": "2026-09-16",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 18.0,
+    "mean": 20.167,
+    "sd": 1.308,
+    "z": -1.66,
+    "pct": -10.7,
+    "beyond_noise": false,
+    "change": -2.1667,
+    "change_te": -1.4,
+    "beyond_mdc": false,
+    "swc_personal": 0.2615,
+    "observed_on": "2026-09-16",
+    "days_old": 0
+   },
+   "jump_height_cm": 37.6,
+   "position_median_z": -0.38,
+   "position_n": 8,
+   "load": {
+    "player_load_today": 119.0,
+    "throws_today": 25,
+    "pitches_today": 0,
+    "throws_7d": 196
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-09-03",
+     "z": -1.06
+    },
+    {
+     "date": "2026-09-04",
+     "z": -2.03
+    },
+    {
+     "date": "2026-09-05",
+     "z": -0.72
+    },
+    {
+     "date": "2026-09-06",
+     "z": -0.7
+    },
+    {
+     "date": "2026-09-07",
+     "z": null
+    },
+    {
+     "date": "2026-09-08",
+     "z": -0.71
+    },
+    {
+     "date": "2026-09-09",
+     "z": -0.07
+    },
+    {
+     "date": "2026-09-10",
+     "z": -0.61
+    },
+    {
+     "date": "2026-09-11",
+     "z": 2.34
+    },
+    {
+     "date": "2026-09-12",
+     "z": -1.91
+    },
+    {
+     "date": "2026-09-13",
+     "z": -0.37
+    },
+    {
+     "date": "2026-09-14",
+     "z": null
+    },
+    {
+     "date": "2026-09-15",
+     "z": -0.56
+    },
+    {
+     "date": "2026-09-16",
+     "z": -1.58
+    }
+   ]
+  },
+  {
    "id": "LC11",
    "name": "E. Castellano",
    "pos": "RP",
@@ -240,7 +389,7 @@
    "word": "Watch",
    "magnitude": "▼ moderate (wellness)",
    "reasons": [
-    "Wellness 1.3 SD below his 28-day normal and beyond test noise"
+    "Wellness 1.5 SD below his 28-day normal and beyond test noise"
    ],
    "rsi": {
     "today": 0.451,
@@ -249,16 +398,24 @@
     "z": -1.14,
     "pct": -7.4,
     "beyond_noise": false,
+    "change": -0.0359,
+    "change_te": -1.2,
+    "beyond_mdc": false,
+    "swc_personal": 0.0063,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
-    "today": 18.0,
-    "mean": 20.348,
-    "sd": 1.774,
-    "z": -1.32,
-    "pct": -11.5,
+    "today": 16.0,
+    "mean": 19.0,
+    "sd": 2.0,
+    "z": -1.5,
+    "pct": -15.8,
     "beyond_noise": true,
+    "change": -3.0,
+    "change_te": -2.0,
+    "beyond_mdc": false,
+    "swc_personal": 0.4,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -431,105 +588,6 @@
    ]
   },
   {
-   "id": "LC12",
-   "name": "B. Yamada",
-   "pos": "RP",
-   "status": "no_change",
-   "word": "No change",
-   "magnitude": "– within noise",
-   "reasons": [
-    "Wellness drop inside test noise (TE 1.5134 pts)"
-   ],
-   "rsi": {
-    "today": 0.568,
-    "mean": 0.557,
-    "sd": 0.025,
-    "z": 0.42,
-    "pct": 1.9,
-    "beyond_noise": false,
-    "observed_on": "2026-09-16",
-    "days_old": 0
-   },
-   "wellness": {
-    "today": 18.0,
-    "mean": 19.708,
-    "sd": 1.197,
-    "z": -1.43,
-    "pct": -8.7,
-    "beyond_noise": false,
-    "observed_on": "2026-09-16",
-    "days_old": 0
-   },
-   "jump_height_cm": 39.3,
-   "position_median_z": -0.38,
-   "position_n": 8,
-   "load": {
-    "player_load_today": 214.7,
-    "throws_today": 15,
-    "pitches_today": 26,
-    "throws_7d": 190
-   },
-   "beyond_team": null,
-   "trend": [
-    {
-     "date": "2026-09-03",
-     "z": 0.1
-    },
-    {
-     "date": "2026-09-04",
-     "z": -0.06
-    },
-    {
-     "date": "2026-09-05",
-     "z": -0.61
-    },
-    {
-     "date": "2026-09-06",
-     "z": -0.34
-    },
-    {
-     "date": "2026-09-07",
-     "z": null
-    },
-    {
-     "date": "2026-09-08",
-     "z": -0.67
-    },
-    {
-     "date": "2026-09-09",
-     "z": 0.97
-    },
-    {
-     "date": "2026-09-10",
-     "z": -0.08
-    },
-    {
-     "date": "2026-09-11",
-     "z": -1.82
-    },
-    {
-     "date": "2026-09-12",
-     "z": 1.8
-    },
-    {
-     "date": "2026-09-13",
-     "z": 0.24
-    },
-    {
-     "date": "2026-09-14",
-     "z": null
-    },
-    {
-     "date": "2026-09-15",
-     "z": -2.61
-    },
-    {
-     "date": "2026-09-16",
-     "z": 0.42
-    }
-   ]
-  },
-  {
    "id": "LC09",
    "name": "P. Haddad",
    "pos": "SP",
@@ -546,16 +604,24 @@
     "z": -1.34,
     "pct": -8.0,
     "beyond_noise": false,
+    "change": -0.0407,
+    "change_te": -1.3,
+    "beyond_mdc": false,
+    "swc_personal": 0.0061,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
-    "today": 22.0,
-    "mean": 19.208,
-    "sd": 1.179,
-    "z": 2.37,
-    "pct": 14.5,
+    "today": 20.0,
+    "mean": 16.958,
+    "sd": 1.083,
+    "z": 2.81,
+    "pct": 17.9,
     "beyond_noise": false,
+    "change": 3.0417,
+    "change_te": 2.0,
+    "beyond_mdc": false,
+    "swc_personal": 0.2165,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -629,103 +695,6 @@
    ]
   },
   {
-   "id": "LC21",
-   "name": "J. Mabry",
-   "pos": "IF",
-   "status": "no_change",
-   "word": "No change",
-   "magnitude": "– within noise",
-   "reasons": [],
-   "rsi": {
-    "today": 0.663,
-    "mean": 0.617,
-    "sd": 0.033,
-    "z": 1.39,
-    "pct": 7.5,
-    "beyond_noise": false,
-    "observed_on": "2026-09-16",
-    "days_old": 0
-   },
-   "wellness": {
-    "today": 18.0,
-    "mean": 20.083,
-    "sd": 1.767,
-    "z": -1.18,
-    "pct": -10.4,
-    "beyond_noise": false,
-    "observed_on": "2026-09-16",
-    "days_old": 0
-   },
-   "jump_height_cm": 45.0,
-   "position_median_z": -0.09,
-   "position_n": 6,
-   "load": {
-    "player_load_today": 211.7,
-    "throws_today": 46,
-    "pitches_today": 0,
-    "throws_7d": 386
-   },
-   "beyond_team": null,
-   "trend": [
-    {
-     "date": "2026-09-03",
-     "z": -0.8
-    },
-    {
-     "date": "2026-09-04",
-     "z": 0.01
-    },
-    {
-     "date": "2026-09-05",
-     "z": -0.51
-    },
-    {
-     "date": "2026-09-06",
-     "z": 2.07
-    },
-    {
-     "date": "2026-09-07",
-     "z": null
-    },
-    {
-     "date": "2026-09-08",
-     "z": -0.08
-    },
-    {
-     "date": "2026-09-09",
-     "z": 0.26
-    },
-    {
-     "date": "2026-09-10",
-     "z": 0.85
-    },
-    {
-     "date": "2026-09-11",
-     "z": -0.33
-    },
-    {
-     "date": "2026-09-12",
-     "z": 0.41
-    },
-    {
-     "date": "2026-09-13",
-     "z": -0.88
-    },
-    {
-     "date": "2026-09-14",
-     "z": null
-    },
-    {
-     "date": "2026-09-15",
-     "z": -0.71
-    },
-    {
-     "date": "2026-09-16",
-     "z": 1.39
-    }
-   ]
-  },
-  {
    "id": "LC05",
    "name": "A. Whitcomb",
    "pos": "SP",
@@ -740,16 +709,24 @@
     "z": -1.14,
     "pct": -6.3,
     "beyond_noise": false,
+    "change": -0.0331,
+    "change_te": -1.1,
+    "beyond_mdc": false,
+    "swc_personal": 0.0058,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
-    "today": 19.0,
-    "mean": 20.0,
-    "sd": 1.445,
-    "z": -0.69,
-    "pct": -5.0,
+    "today": 20.0,
+    "mean": 21.583,
+    "sd": 1.472,
+    "z": -1.08,
+    "pct": -7.3,
     "beyond_noise": false,
+    "change": -1.5833,
+    "change_te": -1.1,
+    "beyond_mdc": false,
+    "swc_personal": 0.2944,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -823,6 +800,321 @@
    ]
   },
   {
+   "id": "LC12",
+   "name": "B. Yamada",
+   "pos": "RP",
+   "status": "no_change",
+   "word": "No change",
+   "magnitude": "– within noise",
+   "reasons": [],
+   "rsi": {
+    "today": 0.568,
+    "mean": 0.557,
+    "sd": 0.025,
+    "z": 0.42,
+    "pct": 1.9,
+    "beyond_noise": false,
+    "change": 0.0109,
+    "change_te": 0.4,
+    "beyond_mdc": false,
+    "swc_personal": 0.005,
+    "observed_on": "2026-09-16",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 19.0,
+    "mean": 20.292,
+    "sd": 1.268,
+    "z": -1.02,
+    "pct": -6.4,
+    "beyond_noise": false,
+    "change": -1.2917,
+    "change_te": -0.9,
+    "beyond_mdc": false,
+    "swc_personal": 0.2535,
+    "observed_on": "2026-09-16",
+    "days_old": 0
+   },
+   "jump_height_cm": 39.3,
+   "position_median_z": -0.38,
+   "position_n": 8,
+   "load": {
+    "player_load_today": 214.7,
+    "throws_today": 15,
+    "pitches_today": 26,
+    "throws_7d": 190
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-09-03",
+     "z": 0.1
+    },
+    {
+     "date": "2026-09-04",
+     "z": -0.06
+    },
+    {
+     "date": "2026-09-05",
+     "z": -0.61
+    },
+    {
+     "date": "2026-09-06",
+     "z": -0.34
+    },
+    {
+     "date": "2026-09-07",
+     "z": null
+    },
+    {
+     "date": "2026-09-08",
+     "z": -0.67
+    },
+    {
+     "date": "2026-09-09",
+     "z": 0.97
+    },
+    {
+     "date": "2026-09-10",
+     "z": -0.08
+    },
+    {
+     "date": "2026-09-11",
+     "z": -1.82
+    },
+    {
+     "date": "2026-09-12",
+     "z": 1.8
+    },
+    {
+     "date": "2026-09-13",
+     "z": 0.24
+    },
+    {
+     "date": "2026-09-14",
+     "z": null
+    },
+    {
+     "date": "2026-09-15",
+     "z": -2.61
+    },
+    {
+     "date": "2026-09-16",
+     "z": 0.42
+    }
+   ]
+  },
+  {
+   "id": "LC22",
+   "name": "I. Novak",
+   "pos": "IF",
+   "status": "no_change",
+   "word": "No change",
+   "magnitude": "– within noise",
+   "reasons": [],
+   "rsi": {
+    "today": 0.522,
+    "mean": 0.483,
+    "sd": 0.035,
+    "z": 1.14,
+    "pct": 8.2,
+    "beyond_noise": false,
+    "change": 0.0393,
+    "change_te": 1.3,
+    "beyond_mdc": false,
+    "swc_personal": 0.007,
+    "observed_on": "2026-09-16",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 17.0,
+    "mean": 18.083,
+    "sd": 1.412,
+    "z": -0.77,
+    "pct": -6.0,
+    "beyond_noise": false,
+    "change": -1.0833,
+    "change_te": -0.7,
+    "beyond_mdc": false,
+    "swc_personal": 0.2823,
+    "observed_on": "2026-09-16",
+    "days_old": 0
+   },
+   "jump_height_cm": 40.4,
+   "position_median_z": -0.09,
+   "position_n": 6,
+   "load": {
+    "player_load_today": 164.3,
+    "throws_today": 45,
+    "pitches_today": 0,
+    "throws_7d": 346
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-09-03",
+     "z": -1.91
+    },
+    {
+     "date": "2026-09-04",
+     "z": -0.22
+    },
+    {
+     "date": "2026-09-05",
+     "z": -1.9
+    },
+    {
+     "date": "2026-09-06",
+     "z": 0.28
+    },
+    {
+     "date": "2026-09-07",
+     "z": null
+    },
+    {
+     "date": "2026-09-08",
+     "z": 1.6
+    },
+    {
+     "date": "2026-09-09",
+     "z": 1.32
+    },
+    {
+     "date": "2026-09-10",
+     "z": 0.83
+    },
+    {
+     "date": "2026-09-11",
+     "z": -0.01
+    },
+    {
+     "date": "2026-09-12",
+     "z": -0.31
+    },
+    {
+     "date": "2026-09-13",
+     "z": 1.2
+    },
+    {
+     "date": "2026-09-14",
+     "z": null
+    },
+    {
+     "date": "2026-09-15",
+     "z": -3.61
+    },
+    {
+     "date": "2026-09-16",
+     "z": 1.14
+    }
+   ]
+  },
+  {
+   "id": "LC15",
+   "name": "H. Soto-Reyes",
+   "pos": "RP",
+   "status": "no_change",
+   "word": "No change",
+   "magnitude": "– within noise",
+   "reasons": [],
+   "rsi": {
+    "today": 0.492,
+    "mean": 0.458,
+    "sd": 0.035,
+    "z": 0.97,
+    "pct": 7.5,
+    "beyond_noise": false,
+    "change": 0.0338,
+    "change_te": 1.1,
+    "beyond_mdc": false,
+    "swc_personal": 0.007,
+    "observed_on": "2026-09-16",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 16.0,
+    "mean": 17.087,
+    "sd": 1.443,
+    "z": -0.75,
+    "pct": -6.4,
+    "beyond_noise": false,
+    "change": -1.087,
+    "change_te": -0.7,
+    "beyond_mdc": false,
+    "swc_personal": 0.2887,
+    "observed_on": "2026-09-16",
+    "days_old": 0
+   },
+   "jump_height_cm": 46.1,
+   "position_median_z": -0.38,
+   "position_n": 8,
+   "load": {
+    "player_load_today": 88.4,
+    "throws_today": 25,
+    "pitches_today": 0,
+    "throws_7d": 181
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-09-03",
+     "z": 0.56
+    },
+    {
+     "date": "2026-09-04",
+     "z": -2.05
+    },
+    {
+     "date": "2026-09-05",
+     "z": 1.09
+    },
+    {
+     "date": "2026-09-06",
+     "z": -1.66
+    },
+    {
+     "date": "2026-09-07",
+     "z": null
+    },
+    {
+     "date": "2026-09-08",
+     "z": 0.98
+    },
+    {
+     "date": "2026-09-09",
+     "z": 1.59
+    },
+    {
+     "date": "2026-09-10",
+     "z": 0.01
+    },
+    {
+     "date": "2026-09-11",
+     "z": 0.94
+    },
+    {
+     "date": "2026-09-12",
+     "z": -1.02
+    },
+    {
+     "date": "2026-09-13",
+     "z": 1.7
+    },
+    {
+     "date": "2026-09-14",
+     "z": null
+    },
+    {
+     "date": "2026-09-15",
+     "z": -2.16
+    },
+    {
+     "date": "2026-09-16",
+     "z": 0.97
+    }
+   ]
+  },
+  {
    "id": "LC23",
    "name": "Z. Pellegrino",
    "pos": "IF",
@@ -837,16 +1129,24 @@
     "z": -0.71,
     "pct": -3.7,
     "beyond_noise": false,
+    "change": -0.0192,
+    "change_te": -0.6,
+    "beyond_mdc": false,
+    "swc_personal": 0.0053,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
-    "today": 19.0,
-    "mean": 19.565,
-    "sd": 1.619,
-    "z": -0.35,
-    "pct": -2.9,
+    "today": 17.0,
+    "mean": 16.565,
+    "sd": 1.472,
+    "z": 0.3,
+    "pct": 2.6,
     "beyond_noise": false,
+    "change": 0.4348,
+    "change_te": 0.3,
+    "beyond_mdc": false,
+    "swc_personal": 0.2943,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -934,16 +1234,24 @@
     "z": -0.66,
     "pct": -3.6,
     "beyond_noise": false,
+    "change": -0.0186,
+    "change_te": -0.6,
+    "beyond_mdc": false,
+    "swc_personal": 0.0056,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
-    "today": 21.0,
-    "mean": 19.435,
-    "sd": 1.903,
-    "z": 0.82,
-    "pct": 8.1,
+    "today": 22.0,
+    "mean": 21.348,
+    "sd": 1.921,
+    "z": 0.34,
+    "pct": 3.1,
     "beyond_noise": false,
+    "change": 0.6522,
+    "change_te": 0.4,
+    "beyond_mdc": false,
+    "swc_personal": 0.3843,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -1017,103 +1325,6 @@
    ]
   },
   {
-   "id": "LC17",
-   "name": "O. Kessler",
-   "pos": "C",
-   "status": "no_change",
-   "word": "No change",
-   "magnitude": "– within noise",
-   "reasons": [],
-   "rsi": {
-    "today": 0.504,
-    "mean": 0.475,
-    "sd": 0.028,
-    "z": 1.02,
-    "pct": 6.1,
-    "beyond_noise": false,
-    "observed_on": "2026-09-16",
-    "days_old": 0
-   },
-   "wellness": {
-    "today": 19.0,
-    "mean": 19.917,
-    "sd": 1.442,
-    "z": -0.64,
-    "pct": -4.6,
-    "beyond_noise": false,
-    "observed_on": "2026-09-16",
-    "days_old": 0
-   },
-   "jump_height_cm": 42.4,
-   "position_median_z": 0.47,
-   "position_n": 3,
-   "load": {
-    "player_load_today": 158.1,
-    "throws_today": 47,
-    "pitches_today": 0,
-    "throws_7d": 345
-   },
-   "beyond_team": null,
-   "trend": [
-    {
-     "date": "2026-09-03",
-     "z": 0.37
-    },
-    {
-     "date": "2026-09-04",
-     "z": -1.52
-    },
-    {
-     "date": "2026-09-05",
-     "z": 1.13
-    },
-    {
-     "date": "2026-09-06",
-     "z": -1.06
-    },
-    {
-     "date": "2026-09-07",
-     "z": null
-    },
-    {
-     "date": "2026-09-08",
-     "z": -0.8
-    },
-    {
-     "date": "2026-09-09",
-     "z": -1.38
-    },
-    {
-     "date": "2026-09-10",
-     "z": 1.29
-    },
-    {
-     "date": "2026-09-11",
-     "z": -0.81
-    },
-    {
-     "date": "2026-09-12",
-     "z": 0.62
-    },
-    {
-     "date": "2026-09-13",
-     "z": -1.32
-    },
-    {
-     "date": "2026-09-14",
-     "z": null
-    },
-    {
-     "date": "2026-09-15",
-     "z": -1.2
-    },
-    {
-     "date": "2026-09-16",
-     "z": 1.02
-    }
-   ]
-  },
-  {
    "id": "LC20",
    "name": "F. Quintero",
    "pos": "IF",
@@ -1128,16 +1339,24 @@
     "z": -0.49,
     "pct": -3.3,
     "beyond_noise": false,
+    "change": -0.017,
+    "change_te": -0.6,
+    "beyond_mdc": false,
+    "swc_personal": 0.0071,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
-    "today": 20.0,
-    "mean": 19.458,
-    "sd": 1.318,
-    "z": 0.41,
-    "pct": 2.8,
+    "today": 17.0,
+    "mean": 16.708,
+    "sd": 1.517,
+    "z": 0.19,
+    "pct": 1.7,
     "beyond_noise": false,
+    "change": 0.2917,
+    "change_te": 0.2,
+    "beyond_mdc": false,
+    "swc_personal": 0.3035,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -1225,16 +1444,24 @@
     "z": -0.48,
     "pct": -2.4,
     "beyond_noise": false,
+    "change": -0.013,
+    "change_te": -0.4,
+    "beyond_mdc": false,
+    "swc_personal": 0.0053,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
-    "today": 20.0,
-    "mean": 19.913,
-    "sd": 1.703,
-    "z": 0.05,
-    "pct": 0.4,
+    "today": 17.0,
+    "mean": 17.696,
+    "sd": 1.795,
+    "z": -0.39,
+    "pct": -3.9,
     "beyond_noise": false,
+    "change": -0.6957,
+    "change_te": -0.5,
+    "beyond_mdc": false,
+    "swc_personal": 0.359,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -1308,6 +1535,111 @@
    ]
   },
   {
+   "id": "LC21",
+   "name": "J. Mabry",
+   "pos": "IF",
+   "status": "no_change",
+   "word": "No change",
+   "magnitude": "– within noise",
+   "reasons": [],
+   "rsi": {
+    "today": 0.663,
+    "mean": 0.617,
+    "sd": 0.033,
+    "z": 1.39,
+    "pct": 7.5,
+    "beyond_noise": false,
+    "change": 0.0464,
+    "change_te": 1.5,
+    "beyond_mdc": false,
+    "swc_personal": 0.0066,
+    "observed_on": "2026-09-16",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 17.0,
+    "mean": 17.542,
+    "sd": 1.179,
+    "z": -0.46,
+    "pct": -3.1,
+    "beyond_noise": false,
+    "change": -0.5417,
+    "change_te": -0.4,
+    "beyond_mdc": false,
+    "swc_personal": 0.2358,
+    "observed_on": "2026-09-16",
+    "days_old": 0
+   },
+   "jump_height_cm": 45.0,
+   "position_median_z": -0.09,
+   "position_n": 6,
+   "load": {
+    "player_load_today": 211.7,
+    "throws_today": 46,
+    "pitches_today": 0,
+    "throws_7d": 386
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-09-03",
+     "z": -0.8
+    },
+    {
+     "date": "2026-09-04",
+     "z": 0.01
+    },
+    {
+     "date": "2026-09-05",
+     "z": -0.51
+    },
+    {
+     "date": "2026-09-06",
+     "z": 2.07
+    },
+    {
+     "date": "2026-09-07",
+     "z": null
+    },
+    {
+     "date": "2026-09-08",
+     "z": -0.08
+    },
+    {
+     "date": "2026-09-09",
+     "z": 0.26
+    },
+    {
+     "date": "2026-09-10",
+     "z": 0.85
+    },
+    {
+     "date": "2026-09-11",
+     "z": -0.33
+    },
+    {
+     "date": "2026-09-12",
+     "z": 0.41
+    },
+    {
+     "date": "2026-09-13",
+     "z": -0.88
+    },
+    {
+     "date": "2026-09-14",
+     "z": null
+    },
+    {
+     "date": "2026-09-15",
+     "z": -0.71
+    },
+    {
+     "date": "2026-09-16",
+     "z": 1.39
+    }
+   ]
+  },
+  {
    "id": "LC14",
    "name": "G. Pruitt",
    "pos": "RP",
@@ -1322,16 +1654,24 @@
     "z": -0.45,
     "pct": -3.1,
     "beyond_noise": false,
+    "change": -0.0145,
+    "change_te": -0.5,
+    "beyond_mdc": false,
+    "swc_personal": 0.0066,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
-    "today": 20.0,
-    "mean": 20.083,
-    "sd": 1.501,
-    "z": -0.06,
-    "pct": -0.4,
+    "today": 18.0,
+    "mean": 17.5,
+    "sd": 1.719,
+    "z": 0.29,
+    "pct": 2.9,
     "beyond_noise": false,
+    "change": 0.5,
+    "change_te": 0.3,
+    "beyond_mdc": false,
+    "swc_personal": 0.3439,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -1405,103 +1745,6 @@
    ]
   },
   {
-   "id": "LC27",
-   "name": "D. Achebe",
-   "pos": "OF",
-   "status": "no_change",
-   "word": "No change",
-   "magnitude": "– within noise",
-   "reasons": [],
-   "rsi": {
-    "today": 0.516,
-    "mean": 0.5,
-    "sd": 0.024,
-    "z": 0.63,
-    "pct": 3.0,
-    "beyond_noise": false,
-    "observed_on": "2026-09-16",
-    "days_old": 0
-   },
-   "wellness": {
-    "today": 19.0,
-    "mean": 19.792,
-    "sd": 1.865,
-    "z": -0.42,
-    "pct": -4.0,
-    "beyond_noise": false,
-    "observed_on": "2026-09-16",
-    "days_old": 0
-   },
-   "jump_height_cm": 45.0,
-   "position_median_z": 0.63,
-   "position_n": 5,
-   "load": {
-    "player_load_today": 191.7,
-    "throws_today": 57,
-    "pitches_today": 0,
-    "throws_7d": 341
-   },
-   "beyond_team": null,
-   "trend": [
-    {
-     "date": "2026-09-03",
-     "z": -0.2
-    },
-    {
-     "date": "2026-09-04",
-     "z": -0.33
-    },
-    {
-     "date": "2026-09-05",
-     "z": 0.74
-    },
-    {
-     "date": "2026-09-06",
-     "z": 1.49
-    },
-    {
-     "date": "2026-09-07",
-     "z": null
-    },
-    {
-     "date": "2026-09-08",
-     "z": -1.34
-    },
-    {
-     "date": "2026-09-09",
-     "z": -0.65
-    },
-    {
-     "date": "2026-09-10",
-     "z": -0.52
-    },
-    {
-     "date": "2026-09-11",
-     "z": -0.92
-    },
-    {
-     "date": "2026-09-12",
-     "z": -1.34
-    },
-    {
-     "date": "2026-09-13",
-     "z": 0.18
-    },
-    {
-     "date": "2026-09-14",
-     "z": null
-    },
-    {
-     "date": "2026-09-15",
-     "z": -1.28
-    },
-    {
-     "date": "2026-09-16",
-     "z": 0.63
-    }
-   ]
-  },
-  {
    "id": "LC18",
    "name": "V. Ibarra",
    "pos": "C",
@@ -1516,16 +1759,24 @@
     "z": -0.4,
     "pct": -2.2,
     "beyond_noise": false,
+    "change": -0.0117,
+    "change_te": -0.4,
+    "beyond_mdc": false,
+    "swc_personal": 0.0059,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
     "today": 22.0,
-    "mean": 19.913,
-    "sd": 1.24,
-    "z": 1.68,
-    "pct": 10.5,
+    "mean": 19.957,
+    "sd": 1.261,
+    "z": 1.62,
+    "pct": 10.2,
     "beyond_noise": false,
+    "change": 2.0435,
+    "change_te": 1.4,
+    "beyond_mdc": false,
+    "swc_personal": 0.2521,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -1599,103 +1850,6 @@
    ]
   },
   {
-   "id": "LC15",
-   "name": "H. Soto-Reyes",
-   "pos": "RP",
-   "status": "no_change",
-   "word": "No change",
-   "magnitude": "– within noise",
-   "reasons": [],
-   "rsi": {
-    "today": 0.492,
-    "mean": 0.458,
-    "sd": 0.035,
-    "z": 0.97,
-    "pct": 7.5,
-    "beyond_noise": false,
-    "observed_on": "2026-09-16",
-    "days_old": 0
-   },
-   "wellness": {
-    "today": 19.0,
-    "mean": 19.609,
-    "sd": 1.725,
-    "z": -0.35,
-    "pct": -3.1,
-    "beyond_noise": false,
-    "observed_on": "2026-09-16",
-    "days_old": 0
-   },
-   "jump_height_cm": 46.1,
-   "position_median_z": -0.38,
-   "position_n": 8,
-   "load": {
-    "player_load_today": 88.4,
-    "throws_today": 25,
-    "pitches_today": 0,
-    "throws_7d": 181
-   },
-   "beyond_team": null,
-   "trend": [
-    {
-     "date": "2026-09-03",
-     "z": 0.56
-    },
-    {
-     "date": "2026-09-04",
-     "z": -2.05
-    },
-    {
-     "date": "2026-09-05",
-     "z": 1.09
-    },
-    {
-     "date": "2026-09-06",
-     "z": -1.66
-    },
-    {
-     "date": "2026-09-07",
-     "z": null
-    },
-    {
-     "date": "2026-09-08",
-     "z": 0.98
-    },
-    {
-     "date": "2026-09-09",
-     "z": 1.59
-    },
-    {
-     "date": "2026-09-10",
-     "z": 0.01
-    },
-    {
-     "date": "2026-09-11",
-     "z": 0.94
-    },
-    {
-     "date": "2026-09-12",
-     "z": -1.02
-    },
-    {
-     "date": "2026-09-13",
-     "z": 1.7
-    },
-    {
-     "date": "2026-09-14",
-     "z": null
-    },
-    {
-     "date": "2026-09-15",
-     "z": -2.16
-    },
-    {
-     "date": "2026-09-16",
-     "z": 0.97
-    }
-   ]
-  },
-  {
    "id": "LC13",
    "name": "C. Duvall",
    "pos": "RP",
@@ -1710,16 +1864,24 @@
     "z": -0.3,
     "pct": -1.9,
     "beyond_noise": false,
+    "change": -0.009,
+    "change_te": -0.3,
+    "beyond_mdc": false,
+    "swc_personal": 0.006,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
     "today": 22.0,
-    "mean": 20.0,
-    "sd": 1.859,
-    "z": 1.08,
-    "pct": 10.0,
+    "mean": 20.217,
+    "sd": 1.858,
+    "z": 0.96,
+    "pct": 8.8,
     "beyond_noise": false,
+    "change": 1.7826,
+    "change_te": 1.2,
+    "beyond_mdc": false,
+    "swc_personal": 0.3715,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -1807,16 +1969,24 @@
     "z": -0.28,
     "pct": -1.3,
     "beyond_noise": false,
+    "change": -0.0077,
+    "change_te": -0.3,
+    "beyond_mdc": false,
+    "swc_personal": 0.0055,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
     "today": 21.0,
-    "mean": 19.833,
-    "sd": 1.88,
-    "z": 0.62,
-    "pct": 5.9,
+    "mean": 19.75,
+    "sd": 1.939,
+    "z": 0.64,
+    "pct": 6.3,
     "beyond_noise": false,
+    "change": 1.25,
+    "change_te": 0.8,
+    "beyond_mdc": false,
+    "swc_personal": 0.3879,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -1904,16 +2074,24 @@
     "z": -0.23,
     "pct": -1.6,
     "beyond_noise": false,
+    "change": -0.008,
+    "change_te": -0.3,
+    "beyond_mdc": false,
+    "swc_personal": 0.0069,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
-    "today": 20.0,
-    "mean": 19.833,
-    "sd": 1.579,
-    "z": 0.11,
-    "pct": 0.8,
+    "today": 19.0,
+    "mean": 17.583,
+    "sd": 1.381,
+    "z": 1.03,
+    "pct": 8.1,
     "beyond_noise": false,
+    "change": 1.4167,
+    "change_te": 0.9,
+    "beyond_mdc": false,
+    "swc_personal": 0.2761,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -1987,200 +2165,6 @@
    ]
   },
   {
-   "id": "LC22",
-   "name": "I. Novak",
-   "pos": "IF",
-   "status": "no_change",
-   "word": "No change",
-   "magnitude": "– within noise",
-   "reasons": [],
-   "rsi": {
-    "today": 0.522,
-    "mean": 0.483,
-    "sd": 0.035,
-    "z": 1.14,
-    "pct": 8.2,
-    "beyond_noise": false,
-    "observed_on": "2026-09-16",
-    "days_old": 0
-   },
-   "wellness": {
-    "today": 19.0,
-    "mean": 19.25,
-    "sd": 1.359,
-    "z": -0.18,
-    "pct": -1.3,
-    "beyond_noise": false,
-    "observed_on": "2026-09-16",
-    "days_old": 0
-   },
-   "jump_height_cm": 40.4,
-   "position_median_z": -0.09,
-   "position_n": 6,
-   "load": {
-    "player_load_today": 164.3,
-    "throws_today": 45,
-    "pitches_today": 0,
-    "throws_7d": 346
-   },
-   "beyond_team": null,
-   "trend": [
-    {
-     "date": "2026-09-03",
-     "z": -1.91
-    },
-    {
-     "date": "2026-09-04",
-     "z": -0.22
-    },
-    {
-     "date": "2026-09-05",
-     "z": -1.9
-    },
-    {
-     "date": "2026-09-06",
-     "z": 0.28
-    },
-    {
-     "date": "2026-09-07",
-     "z": null
-    },
-    {
-     "date": "2026-09-08",
-     "z": 1.6
-    },
-    {
-     "date": "2026-09-09",
-     "z": 1.32
-    },
-    {
-     "date": "2026-09-10",
-     "z": 0.83
-    },
-    {
-     "date": "2026-09-11",
-     "z": -0.01
-    },
-    {
-     "date": "2026-09-12",
-     "z": -0.31
-    },
-    {
-     "date": "2026-09-13",
-     "z": 1.2
-    },
-    {
-     "date": "2026-09-14",
-     "z": null
-    },
-    {
-     "date": "2026-09-15",
-     "z": -3.61
-    },
-    {
-     "date": "2026-09-16",
-     "z": 1.14
-    }
-   ]
-  },
-  {
-   "id": "LC08",
-   "name": "S. Marrero",
-   "pos": "SP",
-   "status": "no_change",
-   "word": "No change",
-   "magnitude": "– within noise",
-   "reasons": [],
-   "rsi": {
-    "today": 0.535,
-    "mean": 0.529,
-    "sd": 0.028,
-    "z": 0.2,
-    "pct": 1.1,
-    "beyond_noise": false,
-    "observed_on": "2026-09-16",
-    "days_old": 0
-   },
-   "wellness": {
-    "today": 20.0,
-    "mean": 19.609,
-    "sd": 1.53,
-    "z": 0.26,
-    "pct": 2.0,
-    "beyond_noise": false,
-    "observed_on": "2026-09-16",
-    "days_old": 0
-   },
-   "jump_height_cm": 38.9,
-   "position_median_z": 0.2,
-   "position_n": 5,
-   "load": {
-    "player_load_today": 101.4,
-    "throws_today": 26,
-    "pitches_today": 0,
-    "throws_7d": 259
-   },
-   "beyond_team": null,
-   "trend": [
-    {
-     "date": "2026-09-03",
-     "z": 0.42
-    },
-    {
-     "date": "2026-09-04",
-     "z": 0.77
-    },
-    {
-     "date": "2026-09-05",
-     "z": -1.62
-    },
-    {
-     "date": "2026-09-06",
-     "z": 0.47
-    },
-    {
-     "date": "2026-09-07",
-     "z": null
-    },
-    {
-     "date": "2026-09-08",
-     "z": 1.43
-    },
-    {
-     "date": "2026-09-09",
-     "z": 1.53
-    },
-    {
-     "date": "2026-09-10",
-     "z": -0.93
-    },
-    {
-     "date": "2026-09-11",
-     "z": -0.16
-    },
-    {
-     "date": "2026-09-12",
-     "z": 0.54
-    },
-    {
-     "date": "2026-09-13",
-     "z": -0.14
-    },
-    {
-     "date": "2026-09-14",
-     "z": null
-    },
-    {
-     "date": "2026-09-15",
-     "z": -3.06
-    },
-    {
-     "date": "2026-09-16",
-     "z": 0.2
-    }
-   ]
-  },
-  {
    "id": "LC25",
    "name": "M. Serrano",
    "pos": "OF",
@@ -2195,16 +2179,24 @@
     "z": 2.15,
     "pct": 9.9,
     "beyond_noise": false,
+    "change": 0.0546,
+    "change_te": 1.8,
+    "beyond_mdc": false,
+    "swc_personal": 0.0051,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
-    "today": 20.0,
-    "mean": 19.696,
-    "sd": 1.49,
-    "z": 0.2,
-    "pct": 1.5,
+    "today": 17.0,
+    "mean": 17.304,
+    "sd": 1.396,
+    "z": -0.22,
+    "pct": -1.8,
     "beyond_noise": false,
+    "change": -0.3043,
+    "change_te": -0.2,
+    "beyond_mdc": false,
+    "swc_personal": 0.2792,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -2278,6 +2270,216 @@
    ]
   },
   {
+   "id": "LC17",
+   "name": "O. Kessler",
+   "pos": "C",
+   "status": "no_change",
+   "word": "No change",
+   "magnitude": "– within noise",
+   "reasons": [],
+   "rsi": {
+    "today": 0.504,
+    "mean": 0.475,
+    "sd": 0.028,
+    "z": 1.02,
+    "pct": 6.1,
+    "beyond_noise": false,
+    "change": 0.0291,
+    "change_te": 1.0,
+    "beyond_mdc": false,
+    "swc_personal": 0.0057,
+    "observed_on": "2026-09-16",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 17.0,
+    "mean": 17.208,
+    "sd": 1.56,
+    "z": -0.13,
+    "pct": -1.2,
+    "beyond_noise": false,
+    "change": -0.2083,
+    "change_te": -0.1,
+    "beyond_mdc": false,
+    "swc_personal": 0.312,
+    "observed_on": "2026-09-16",
+    "days_old": 0
+   },
+   "jump_height_cm": 42.4,
+   "position_median_z": 0.47,
+   "position_n": 3,
+   "load": {
+    "player_load_today": 158.1,
+    "throws_today": 47,
+    "pitches_today": 0,
+    "throws_7d": 345
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-09-03",
+     "z": 0.37
+    },
+    {
+     "date": "2026-09-04",
+     "z": -1.52
+    },
+    {
+     "date": "2026-09-05",
+     "z": 1.13
+    },
+    {
+     "date": "2026-09-06",
+     "z": -1.06
+    },
+    {
+     "date": "2026-09-07",
+     "z": null
+    },
+    {
+     "date": "2026-09-08",
+     "z": -0.8
+    },
+    {
+     "date": "2026-09-09",
+     "z": -1.38
+    },
+    {
+     "date": "2026-09-10",
+     "z": 1.29
+    },
+    {
+     "date": "2026-09-11",
+     "z": -0.81
+    },
+    {
+     "date": "2026-09-12",
+     "z": 0.62
+    },
+    {
+     "date": "2026-09-13",
+     "z": -1.32
+    },
+    {
+     "date": "2026-09-14",
+     "z": null
+    },
+    {
+     "date": "2026-09-15",
+     "z": -1.2
+    },
+    {
+     "date": "2026-09-16",
+     "z": 1.02
+    }
+   ]
+  },
+  {
+   "id": "LC08",
+   "name": "S. Marrero",
+   "pos": "SP",
+   "status": "no_change",
+   "word": "No change",
+   "magnitude": "– within noise",
+   "reasons": [],
+   "rsi": {
+    "today": 0.535,
+    "mean": 0.529,
+    "sd": 0.028,
+    "z": 0.2,
+    "pct": 1.1,
+    "beyond_noise": false,
+    "change": 0.0056,
+    "change_te": 0.2,
+    "beyond_mdc": false,
+    "swc_personal": 0.0057,
+    "observed_on": "2026-09-16",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 22.0,
+    "mean": 20.913,
+    "sd": 1.345,
+    "z": 0.81,
+    "pct": 5.2,
+    "beyond_noise": false,
+    "change": 1.087,
+    "change_te": 0.7,
+    "beyond_mdc": false,
+    "swc_personal": 0.2691,
+    "observed_on": "2026-09-16",
+    "days_old": 0
+   },
+   "jump_height_cm": 38.9,
+   "position_median_z": 0.2,
+   "position_n": 5,
+   "load": {
+    "player_load_today": 101.4,
+    "throws_today": 26,
+    "pitches_today": 0,
+    "throws_7d": 259
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-09-03",
+     "z": 0.42
+    },
+    {
+     "date": "2026-09-04",
+     "z": 0.77
+    },
+    {
+     "date": "2026-09-05",
+     "z": -1.62
+    },
+    {
+     "date": "2026-09-06",
+     "z": 0.47
+    },
+    {
+     "date": "2026-09-07",
+     "z": null
+    },
+    {
+     "date": "2026-09-08",
+     "z": 1.43
+    },
+    {
+     "date": "2026-09-09",
+     "z": 1.53
+    },
+    {
+     "date": "2026-09-10",
+     "z": -0.93
+    },
+    {
+     "date": "2026-09-11",
+     "z": -0.16
+    },
+    {
+     "date": "2026-09-12",
+     "z": 0.54
+    },
+    {
+     "date": "2026-09-13",
+     "z": -0.14
+    },
+    {
+     "date": "2026-09-14",
+     "z": null
+    },
+    {
+     "date": "2026-09-15",
+     "z": -3.06
+    },
+    {
+     "date": "2026-09-16",
+     "z": 0.2
+    }
+   ]
+  },
+  {
    "id": "LC06",
    "name": "R. Okafor",
    "pos": "SP",
@@ -2292,16 +2494,24 @@
     "z": 0.22,
     "pct": 1.4,
     "beyond_noise": false,
+    "change": 0.0069,
+    "change_te": 0.2,
+    "beyond_mdc": false,
+    "swc_personal": 0.0061,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
-    "today": 22.0,
-    "mean": 20.0,
-    "sd": 1.784,
-    "z": 1.12,
-    "pct": 10.0,
+    "today": 19.0,
+    "mean": 17.913,
+    "sd": 1.564,
+    "z": 0.69,
+    "pct": 6.1,
     "beyond_noise": false,
+    "change": 1.087,
+    "change_te": 0.7,
+    "beyond_mdc": false,
+    "swc_personal": 0.3128,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -2389,16 +2599,24 @@
     "z": 0.3,
     "pct": 1.6,
     "beyond_noise": false,
+    "change": 0.0078,
+    "change_te": 0.3,
+    "beyond_mdc": false,
+    "swc_personal": 0.0049,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
-    "today": 21.0,
-    "mean": 19.696,
-    "sd": 1.46,
-    "z": 0.89,
-    "pct": 6.6,
+    "today": 17.0,
+    "mean": 16.348,
+    "sd": 1.641,
+    "z": 0.4,
+    "pct": 4.0,
     "beyond_noise": false,
+    "change": 0.6522,
+    "change_te": 0.4,
+    "beyond_mdc": false,
+    "swc_personal": 0.3281,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -2486,16 +2704,24 @@
     "z": 0.47,
     "pct": 2.9,
     "beyond_noise": false,
+    "change": 0.0167,
+    "change_te": 0.5,
+    "beyond_mdc": false,
+    "swc_personal": 0.0072,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
-    "today": 23.0,
-    "mean": 19.833,
-    "sd": 1.465,
-    "z": 2.16,
-    "pct": 16.0,
+    "today": 20.0,
+    "mean": 16.75,
+    "sd": 1.152,
+    "z": 2.82,
+    "pct": 19.4,
     "beyond_noise": false,
+    "change": 3.25,
+    "change_te": 2.2,
+    "beyond_mdc": false,
+    "swc_personal": 0.2303,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -2583,16 +2809,24 @@
     "z": 1.64,
     "pct": 9.1,
     "beyond_noise": false,
+    "change": 0.0494,
+    "change_te": 1.6,
+    "beyond_mdc": false,
+    "swc_personal": 0.0061,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
-    "today": 21.0,
-    "mean": 19.5,
-    "sd": 1.319,
-    "z": 1.14,
-    "pct": 7.7,
+    "today": 18.0,
+    "mean": 16.042,
+    "sd": 1.574,
+    "z": 1.24,
+    "pct": 12.2,
     "beyond_noise": false,
+    "change": 1.9583,
+    "change_te": 1.3,
+    "beyond_mdc": false,
+    "swc_personal": 0.3147,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
@@ -2680,16 +2914,24 @@
     "z": 2.34,
     "pct": 12.7,
     "beyond_noise": false,
+    "change": 0.0594,
+    "change_te": 2.0,
+    "beyond_mdc": false,
+    "swc_personal": 0.005,
     "observed_on": "2026-09-16",
     "days_old": 0
    },
    "wellness": {
-    "today": 22.0,
-    "mean": 20.0,
-    "sd": 1.18,
-    "z": 1.7,
-    "pct": 10.0,
+    "today": 21.0,
+    "mean": 19.125,
+    "sd": 1.191,
+    "z": 1.57,
+    "pct": 9.8,
     "beyond_noise": false,
+    "change": 1.875,
+    "change_te": 1.2,
+    "beyond_mdc": false,
+    "swc_personal": 0.2382,
     "observed_on": "2026-09-16",
     "days_old": 0
    },

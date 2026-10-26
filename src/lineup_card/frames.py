@@ -64,3 +64,33 @@ def team_shift(raw_changes: list[float], pct_changes: list[float], te: float | N
             "median_raw": round(median_raw, 4),
             "beyond_noise": te is not None and median_raw < 0 and abs(median_raw) > noise_threshold(te),
             "n": len(raw_changes)}
+
+
+MDC95_FACTOR = 1.96 * 2 ** 0.5   # 95% minimal detectable change = 1.96 x sqrt(2) x TE
+
+
+def test_sensitivity(player_means: list[float], te: float | None) -> dict | None:
+    """How sensitive is this test for this squad? (Hopkins 2000)
+
+    SWC is 0.2 x the between-player SD of each player's normal. When TE is
+    bigger than SWC, one reading cannot settle a change that small. Rating
+    bands (a convention): SWC/TE >= 1 good, >= 0.5 OK, below 0.5 marginal.
+    """
+    if te is None or len(player_means) < 2:
+        return None
+    grand_mean = statistics.fmean(player_means)
+    between_sd = statistics.stdev(player_means)
+    swc = 0.2 * between_sd
+    ratio = swc / te
+    return {
+        "n": len(player_means),
+        "grand_mean": round(grand_mean, 4),
+        "between_sd": round(between_sd, 4),
+        "te": te,
+        "cv_pct": round(te / grand_mean * 100, 1),
+        "swc": round(swc, 4),
+        "swc_te": round(ratio, 2),
+        "mdc95": round(MDC95_FACTOR * te, 4),
+        "gate": round(noise_threshold(te), 4),
+        "rating": "good" if ratio >= 1 else "OK" if ratio >= 0.5 else "marginal",
+    }

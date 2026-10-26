@@ -15,11 +15,6 @@
     "LC01": {
       "action": "confirm"
     },
-    "LC20": {
-      "action": "change",
-      "status": "no_change",
-      "note": "Tested 20 minutes after treatment; retest tomorrow"
-    },
     "LC13": {
       "action": "confirm"
     }

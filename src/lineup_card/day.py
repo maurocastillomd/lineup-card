@@ -9,7 +9,7 @@ from .clean import CleanLog
 from .crosswalk import Crosswalk
 from .engine import (MONITOR_Z, assess_squad, compute_baseline, goodness, load_context,
                      noise_threshold, z_score)
-from .frames import LEAGUE_REFERENCE, position_medians, team_shift, typical_error
+from .frames import LEAGUE_REFERENCE, MDC95_FACTOR, test_sensitivity, position_medians, team_shift, typical_error
 from .models import JUMP_HEIGHT, METRICS, AthleteAssessment, Domain, DomainAssessment, Reading, Status
 
 CLUB = "Fictional Triple-A Club"
@@ -46,7 +46,7 @@ def driver_magnitude(domains: list[DomainAssessment]) -> str:
     return size if worst.domain is Domain.NEUROMUSCULAR else f"{size} ({DOMAIN_NAMES[worst.domain]})"
 
 
-def _domain_json(d: DomainAssessment, today: date) -> dict:
+def _domain_json(d: DomainAssessment, today: date, te: float | None) -> dict:
     """observed_on / days_old say which day the reading is from, so a jump a few
     days old is never shown as today's. Both null when there is no reading."""
     when = {"observed_on": None if d.observed_on is None else d.observed_on.isoformat(),
@@ -54,8 +54,14 @@ def _domain_json(d: DomainAssessment, today: date) -> dict:
     if d.base is None:
         return {"today": d.today, "mean": None, "sd": None, "z": None, "pct": None,
                 "beyond_noise": None, **when}
+    change = round(d.today - d.base.mean, 4)        # both domains: higher is better
     return {"today": d.today, "mean": round(d.base.mean, 3), "sd": round(d.base.sd, 3),
-            "z": round(d.decline_z, 2), "pct": d.pct, "beyond_noise": d.beyond_noise, **when}
+            "z": round(d.decline_z, 2), "pct": d.pct, "beyond_noise": d.beyond_noise,
+            "change": change,
+            "change_te": None if not te else round(change / te, 1),
+            "beyond_mdc": None if not te else change < -round(MDC95_FACTOR * te, 4),
+            "swc_personal": round(d.base.swc, 4),     # 0.2 x HIS SD (trend rule), not Hopkins' SWC
+            **when}
 
 
 def _trend(readings: list[Reading], lc_id: str, today: date) -> list[dict]:
@@ -115,7 +121,8 @@ def build_day(readings: list[Reading], today: date, cw: Crosswalk, log: CleanLog
             "id": a.athlete_id, "name": a.name, "pos": a.pos,
             "status": status, "word": word, "magnitude": driver_magnitude(a.domains),
             "reasons": a.reasons or [r for d in a.domains for r in d.reasons],
-            "rsi": _domain_json(rsi, today), "wellness": _domain_json(well, today),
+            "rsi": _domain_json(rsi, today, te["rsi_mod"]),
+            "wellness": _domain_json(well, today, te["wellness_score"]),
             "jump_height_cm": _latest(readings, a.athlete_id, JUMP_HEIGHT, today),
             "position_median_z": group["median_z"], "position_n": group["n"],
             # Morning card: load runs through yesterday so tonight's game is not counted.
@@ -129,6 +136,10 @@ def build_day(readings: list[Reading], today: date, cw: Crosswalk, log: CleanLog
         "date": today.isoformat(), "synthetic": True, "club": CLUB, "schedule": schedule,
         "te": te,
         "noise_gate": {k: None if v is None else round(noise_threshold(v), 4) for k, v in te.items()},
+        "signal": {spec.column: test_sensitivity(
+            [d.base.mean for a in assessed for d in a.domains
+             if d.domain is spec.domain and d.base is not None], te[spec.column])
+            for spec in METRICS.values()},
         "team_shift": shift, "league_reference": LEAGUE_REFERENCE,
         "players": players,
         "held_out": log.held_out,

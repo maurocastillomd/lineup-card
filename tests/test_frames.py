@@ -66,3 +66,24 @@ def test_team_shift_reports_median_raw():
 def test_team_shift_up_is_never_beyond_noise():
     shift = team_shift([0.04, 0.05, 0.03], [8.0, 9.0, 6.0], te=0.02)
     assert shift["median_raw"] == 0.04 and shift["beyond_noise"] is False
+
+
+def test_test_sensitivity_worked_example():
+    from lineup_card.frames import test_sensitivity
+    # player means 0.45, 0.50, 0.55 -> grand mean 0.50, between-player SD 0.05
+    out = test_sensitivity([0.45, 0.50, 0.55], te=0.03)
+    assert out["grand_mean"] == 0.5 and out["between_sd"] == 0.05
+    assert out["swc"] == 0.01                       # 0.2 x 0.05
+    assert out["cv_pct"] == 6.0                     # 0.03 / 0.50 x 100
+    assert out["swc_te"] == 0.33                    # 0.01 / 0.03
+    assert out["mdc95"] == round(1.96 * 2 ** 0.5 * 0.03, 4)
+    assert out["gate"] == 0.045                     # 1.5 x TE
+    assert out["rating"] == "marginal" and out["n"] == 3
+
+
+def test_test_sensitivity_ratings_and_gaps():
+    from lineup_card.frames import test_sensitivity
+    assert test_sensitivity([0.4, 0.6], te=0.01)["rating"] == "good"
+    assert test_sensitivity([0.45, 0.55], te=0.02)["rating"] == "OK"     # SWC 0.0141 / TE 0.02 = 0.71
+    assert test_sensitivity([0.5], te=0.03) is None
+    assert test_sensitivity([0.4, 0.6], te=None) is None
