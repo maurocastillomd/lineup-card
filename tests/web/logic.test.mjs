@@ -151,3 +151,63 @@ test("signalLine shows change, %, TE units, z and both thresholds", () => {
     "Wellness: -1.2 pts (-6.0%) · -0.8 TE · z -1.40 · inside your gate · inside MDC95");
   assert.equal(signalLine("RSI-mod", "m/s", { change: undefined, z: null }), "RSI-mod: no baseline yet");
 });
+
+import { plainSummary } from "../../web/js/logic.js";
+
+const sumDay = (team_shift, note = "") => ({
+  date: "2026-09-20",
+  schedule: { opponent: "Lakeside Fictionals", home_away: "away", note },
+  team_shift,
+});
+const sumPlayers = [
+  { id: "LC01", name: "J. Ortega", pos: "RP", status: "check_in", beyond_team: null,
+    rsi: { pct: -16.9, z: -2.18, days_old: 0 }, wellness: { z: -2.34 }, load: { throws_7d: 196 } },
+  { id: "LC13", name: "C. Duvall", pos: "RP", status: "watch", beyond_team: false,
+    rsi: { pct: -11.2, z: -1.4, days_old: 0 }, wellness: { z: -0.3 }, load: { throws_7d: 185 } },
+  { id: "LC03", name: "T. Brandt", pos: "OF", status: "no_change", rsi: { pct: -1.4, z: -0.2, days_old: 0 }, wellness: {}, load: {} },
+  { id: "LC02", name: "K. Ruiz", pos: "SP", status: "not_enough_data", rsi: { pct: null, today: null }, wellness: {}, load: {} },
+];
+
+test("plainSummary on a normal day: date, flagged players with reasons, counts, disclaimer", () => {
+  const text = plainSummary(sumDay({ median_pct: 1.0, beyond_noise: false, n: 27 }), sumPlayers, ["LC03"]);
+  assert.equal(text, [
+    "Lineup Card, Sun Sep 20, vs Lakeside Fictionals (away)",
+    "Check in (1): J. Ortega RP, jump 17% below his normal, wellness low, 196 throws + pitches in 7 days",
+    "Watch (1): C. Duvall RP, jump 11% below his normal, 185 throws + pitches in 7 days",
+    "No change: 1. Not enough data: 1 (K. Ruiz).",
+    "Fictional roster. Not a fitness-to-play decision.",
+  ].join("\n"));
+});
+
+test("plainSummary on a team-shift day leads with the team line and keeps the grouping", () => {
+  const text = plainSummary(sumDay({ median_pct: -10.2, beyond_noise: true, n: 27 }, "Road trip: 4 a.m. arrival"),
+    sumPlayers, []);
+  assert.equal(text, [
+    "Lineup Card, Sun Sep 20, vs Lakeside Fictionals (away)",
+    "Whole team jumping 10% below normal. Road trip: 4 a.m. arrival.",
+    "Not explained by the team drop:",
+    "Check in (1): J. Ortega RP, jump 17% below his normal, wellness low, 196 throws + pitches in 7 days",
+    "Down with the team (1): C. Duvall.",
+    "No change: 1. Not enough data: 1 (K. Ruiz).",
+    "Fictional roster. Not a fitness-to-play decision.",
+  ].join("\n"));
+});
+
+test("plainSummary when nobody is flagged", () => {
+  const calm = sumPlayers.map((p) => ({ ...p, status: p.status === "not_enough_data" ? p.status : "no_change" }));
+  const text = plainSummary({ ...sumDay(null), date: "2026-09-05" }, calm, []);
+  assert.equal(text, [
+    "Lineup Card, Sat Sep 5, vs Lakeside Fictionals (away)",
+    "Nobody to check in on today.",
+    "No change: 3. Not enough data: 1 (K. Ruiz).",
+    "Fictional roster. Not a fitness-to-play decision.",
+  ].join("\n"));
+});
+
+test("plainSummary adds the review note and never shifts the date", () => {
+  const p = [{ ...sumPlayers[2], status: "watch", reviewNote: "Changed to Watch: Mentioned hamstring" }];
+  const text = plainSummary({ ...sumDay(null), date: "2026-01-01" }, p, []);
+  assert.match(text, /^Lineup Card, Thu Jan 1,/);
+  assert.match(text, /Watch \(1\): T\. Brandt OF, jump 1% below his normal \(Changed to Watch: Mentioned hamstring\)/);
+  assert.match(text, /No change: 0\. Not enough data: 0\./);
+});

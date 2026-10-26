@@ -108,3 +108,63 @@ export function signalLine(label, unit, d, dp = 3) {
   if (d.beyond_mdc != null) parts.push(d.beyond_mdc ? "past MDC95" : "inside MDC95");
   return parts.join(" · ");
 }
+
+// Plain-text summary for a group text. Whole roster, after review decisions.
+const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+// "2026-09-20" -> "Sun Sep 20", read in UTC so the day never shifts with the viewer's time zone.
+export function shortDate(iso) {
+  const d = new Date(`${iso}T00:00:00Z`);
+  return `${DAYS[d.getUTCDay()]} ${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`;
+}
+
+// "Whole team jumping 10% below normal." plus the schedule note, if any.
+export function teamLine(day) {
+  const s = day.team_shift;
+  if (!s?.beyond_noise) return "";
+  const note = day.schedule?.note ? ` ${day.schedule.note.replace(/\.$/, "")}.` : "";
+  return `Whole team jumping ${Math.abs(Math.round(s.median_pct))}% ${s.median_pct < 0 ? "below" : "above"} normal.${note}`;
+}
+
+export function countByStatus(players) {
+  const out = { check_in: 0, watch: 0, no_change: 0, not_enough_data: 0 };
+  for (const p of players) if (p.status in out) out[p.status]++;
+  return out;
+}
+
+const lowerFirst = (s) => s.charAt(0).toLowerCase() + s.slice(1);
+
+export function plainSummary(day, players, todayIds = []) {
+  // todayIds is accepted so callers can pass the lineup; the summary always covers the whole roster,
+  // so a flagged player who is not in today's lineup is still named.
+  void todayIds;
+  const who = (p) => {
+    const reason = plainReason(p).split(" · ").filter(Boolean).map(lowerFirst).join(", ");
+    return `${p.name} ${p.pos}${reason ? `, ${reason}` : ""}${p.reviewNote ? ` (${p.reviewNote})` : ""}`;
+  };
+  const statusLines = (list) => ["check_in", "watch"].flatMap((s) => {
+    const xs = list.filter((p) => p.status === s);
+    return xs.length ? [`${WORDS[s]} (${xs.length}): ${xs.map(who).join("; ")}`] : [];
+  });
+
+  const lines = [`Lineup Card, ${shortDate(day.date)}, vs ${day.schedule.opponent} (${day.schedule.home_away})`];
+  const groups = groupCheckins(players, day.team_shift);
+  if (groups.lead) {
+    lines.push(teamLine(day));
+    if (groups.more.length) lines.push("Not explained by the team drop:", ...statusLines(groups.more));
+    else lines.push("Nobody is down more than the team.");
+    if (groups.withTeam.length) {
+      lines.push(`Down with the team (${groups.withTeam.length}): ${groups.withTeam.map((p) => p.name).join(", ")}.`);
+    }
+  } else if (groups.more.length) {
+    lines.push(...statusLines(groups.more));
+  } else {
+    lines.push("Nobody to check in on today.");
+  }
+  const n = countByStatus(players);
+  const missing = players.filter((p) => p.status === "not_enough_data").map((p) => p.name);
+  lines.push(`No change: ${n.no_change}. Not enough data: ${n.not_enough_data}${missing.length ? ` (${missing.join(", ")})` : ""}.`);
+  lines.push("Fictional roster. Not a fitness-to-play decision.");
+  return lines.join("\n");
+}
