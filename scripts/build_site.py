@@ -34,13 +34,23 @@ def _resolve(path: str) -> Path:
     return p if p.is_absolute() else ROOT / p
 
 
+def _has_rows(folder: Path) -> bool:
+    """A day counts only if at least one export has a data row. Header-only
+    files (an off day, or every vendor down) do not make an empty card."""
+    for f in folder.glob("*.csv"):
+        with f.open(encoding="utf-8-sig") as stream:
+            if sum(1 for line in stream if line.strip()) > 1:
+                return True
+    return False
+
+
 def build(data: Path, out: Path) -> list[str]:
     inbox = data / "inbox"
     if not inbox.is_dir():
         raise SystemExit(f"No inbox folder at {inbox}. Run scripts/pull.py first.")
     if not (data / "crosswalk.csv").exists():
         raise SystemExit(f"No crosswalk.csv in {data}. Make one before building (see README).")
-    dates = sorted(p.name for p in inbox.iterdir() if p.is_dir())[-SHOW_DAYS:]
+    dates = sorted(p.name for p in inbox.iterdir() if p.is_dir() and _has_rows(p))[-SHOW_DAYS:]
     if not dates:
         raise SystemExit(f"No dated folders in {inbox}.")
     (out / "days").mkdir(parents=True, exist_ok=True)
