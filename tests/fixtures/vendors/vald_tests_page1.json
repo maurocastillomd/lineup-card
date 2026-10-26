@@ -1,0 +1,16 @@
+{"tests": [
+ {"testId": "aaaaaaaa-0000-0000-0000-000000000001", "tenantId": "99999999-9999-9999-9999-999999999999",
+  "profileId": "11111111-1111-1111-1111-111111111111", "recordingId": "cccccccc-0000-0000-0000-000000000001",
+  "modifiedDateUtc": "2026-09-20T12:45:00.120Z", "recordedDateUtc": "2026-09-20T12:40:00.417Z",
+  "recordedDateOffset": -300, "recordedDateTimezone": "Central Standard Time",
+  "analysedDateUtc": "2026-09-20T12:45:00.000Z", "analysedDateOffset": -300, "analysedDateTimezone": "Central Standard Time",
+  "testType": "CMJ", "notes": "", "weight": 92.1, "parameter": {"resultId": 655381, "value": 0},
+  "extendedParameters": [], "attributes": []},
+ {"testId": "aaaaaaaa-0000-0000-0000-000000000002", "tenantId": "99999999-9999-9999-9999-999999999999",
+  "profileId": "11111111-1111-1111-1111-111111111111", "recordingId": "cccccccc-0000-0000-0000-000000000002",
+  "modifiedDateUtc": "2026-09-20T12:50:00.000Z", "recordedDateUtc": "2026-09-20T12:48:00.000Z",
+  "recordedDateOffset": -300, "recordedDateTimezone": "Central Standard Time",
+  "analysedDateUtc": "2026-09-20T12:50:00.000Z", "analysedDateOffset": -300, "analysedDateTimezone": "Central Standard Time",
+  "testType": "QSB", "notes": "", "weight": -1, "parameter": {"resultId": 655381, "value": 15},
+  "extendedParameters": [], "attributes": []}
+]}

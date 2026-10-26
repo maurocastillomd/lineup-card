@@ -1,0 +1,22 @@
+{"resultDefinitions": [
+ {"resultId": 6553607, "resultIdString": "JUMP_HEIGHT", "resultName": "Jump Height (Flight Time)",
+  "resultDescription": "Jump height calculated from flight time", "resultGroup": "Takeoff", "supportsAsymmetry": false,
+  "isRepeatResult": false, "resultUnit": "Centimeter", "resultUnitName": "cm", "resultUnitScaleFactor": 1,
+  "numberOfDecimalPlaces": 1, "trendDirection": "Positive"},
+ {"resultId": 900001, "resultIdString": "FAKE_JUMP_HEIGHT_IMP_MOM", "resultName": "Jump Height (Imp-Mom)",
+  "resultDescription": "Fictional definition for tests", "resultGroup": "Takeoff", "supportsAsymmetry": false,
+  "isRepeatResult": false, "resultUnit": "Centimeter", "resultUnitName": "cm", "resultUnitScaleFactor": 100,
+  "numberOfDecimalPlaces": 1, "trendDirection": "Positive"},
+ {"resultId": 900002, "resultIdString": "FAKE_JUMP_HEIGHT_IMP_MOM_INCHES", "resultName": "Jump Height (Imp-Mom) in Inches",
+  "resultDescription": "Fictional definition for tests", "resultGroup": "Takeoff", "supportsAsymmetry": false,
+  "isRepeatResult": false, "resultUnit": "Inch", "resultUnitName": "in", "resultUnitScaleFactor": 39.3701,
+  "numberOfDecimalPlaces": 1, "trendDirection": "Positive"},
+ {"resultId": 900003, "resultIdString": "RSI_MODIFIED", "resultName": "RSI-modified",
+  "resultDescription": "Fictional definition for tests", "resultGroup": "Performance", "supportsAsymmetry": false,
+  "isRepeatResult": false, "resultUnit": "RSIModified", "resultUnitName": "m/s", "resultUnitScaleFactor": 1,
+  "numberOfDecimalPlaces": 2, "trendDirection": "Positive"},
+ {"resultId": 6553608, "resultIdString": "JUMP_HEIGHT_RELATIVE_LANDING_RFD", "resultName": "Jump Height (FT) Relative Landing RFD",
+  "resultDescription": "Jump Height (FT) Relative Landing RFD", "resultGroup": "Landing", "supportsAsymmetry": false,
+  "isRepeatResult": false, "resultUnit": "NewtonPerSecondPerCentimeter", "resultUnitName": "N/s/cm",
+  "resultUnitScaleFactor": 1, "numberOfDecimalPlaces": 2, "trendDirection": "None"}
+]}
