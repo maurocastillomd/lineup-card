@@ -4,7 +4,8 @@ Run: .venv/bin/python scripts/build_site.py                      (fictional demo
      .venv/bin/python scripts/build_site.py --data data/live     (real data -> data/live/site/)
 
 Real data never goes into web/: a live build copies the web app into
-<data>/site/ (git-ignored) and writes the day files there.
+<data>/site/ (git-ignored) and writes the day files there. A folder outside
+data/live needs --allow-any-dir.
 """
 
 from __future__ import annotations
@@ -19,9 +20,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
+from lineup_card.paths import is_inside  # noqa: E402
 from lineup_card.pipeline import run_day  # noqa: E402
 
 FICTIONAL = ROOT / "data" / "fictional"
+LIVE = ROOT / "data" / "live"
 WEB = ROOT / "web"
 SHOW_DAYS = 14
 
@@ -53,11 +56,18 @@ def main(argv=None) -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--data", default=str(FICTIONAL.relative_to(ROOT)),
                         help="Data folder (default: data/fictional)")
+    parser.add_argument("--allow-any-dir", action="store_true",
+                        help="Allow real data outside data/live. That folder is not git-ignored.")
     args = parser.parse_args(argv)
     data = _resolve(args.data)
     if data.resolve() == FICTIONAL.resolve():
         build(data, WEB / "data")
         return
+    if not is_inside(data, LIVE):
+        if not args.allow_any_dir:
+            raise SystemExit(f"Refusing to build real data in {data}: it is not under data/live, "
+                             "which is git-ignored. Use data/live, or add --allow-any-dir if you are sure.")
+        print(f"Warning: {data} is not under data/live, so it is not git-ignored. Never commit it.")
     site = data / "site"
     shutil.copytree(WEB, site, dirs_exist_ok=True,
                     ignore=shutil.ignore_patterns("data", "examples", "shots"))

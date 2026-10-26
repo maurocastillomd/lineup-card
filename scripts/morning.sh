@@ -15,5 +15,14 @@ for name in VALD_CLIENT_ID VALD_CLIENT_SECRET VALD_TENANT_ID VALD_REGION VALD_CM
     export "$name=$value"
   fi
 done
-.venv/bin/python scripts/pull.py --date yesterday --to today --data data/live
+# pull.py exits 3 when one source failed; the other source's files are already
+# written and each day's _status.json says which one failed, so the build still
+# runs and the card says which data is not from this morning. Any other
+# non-zero code (2 = settings) stops here.
+pull_code=0
+.venv/bin/python scripts/pull.py --date yesterday --to today --data data/live || pull_code=$?
+if [[ $pull_code -ne 0 && $pull_code -ne 3 ]]; then
+  exit $pull_code
+fi
 .venv/bin/python scripts/build_site.py --data data/live
+exit $pull_code
