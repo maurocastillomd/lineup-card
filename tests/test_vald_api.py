@@ -149,3 +149,48 @@ def test_missing_settings_are_named():
     assert s is None
     assert problems[:2] == ["VALD_CLIENT_SECRET", "VALD_TENANT_ID"]
     assert "VALD_REGION" in problems[2]
+
+
+def test_missing_expires_in_defaults_to_300_seconds():
+    now = [1000.0]
+    t = FakeTransport().on("POST", "/oauth/token", ok({"access_token": "tok"}))
+    c = make_client(t, clock=lambda: now[0])
+    c.token()
+    now[0] += 200            # inside 300 s minus the 60 s margin
+    c.token()
+    assert t.paths().count("/oauth/token") == 1
+    now[0] += 50             # past 240 s: refresh
+    c.token()
+    assert t.paths().count("/oauth/token") == 2
+
+
+def _test(n, modified):
+    return {"testId": f"tie-{n}", "profileId": "p", "modifiedDateUtc": modified,
+            "recordedDateUtc": modified, "testType": "CMJ"}
+
+
+def test_paging_moves_past_a_full_page_that_shares_one_time():
+    tie = "2026-09-20T12:00:00.000Z"
+    t = FakeTransport().on("POST", "/oauth/token", ok(fixture("vald_token.json")))
+    t.on("GET", "/tests", ok({"tests": [_test(1, tie), _test(2, tie), _test(3, tie)]}),
+         modifiedFromUtc="2026-09-19T00:00:00.000Z")
+    t.on("GET", "/tests", ok({"tests": [_test(1, tie), _test(2, tie), _test(3, tie)]}),
+         modifiedFromUtc=tie)
+    t.on("GET", "/tests", ok({"tests": [_test(4, "2026-09-20T13:00:00.000Z")]}),
+         modifiedFromUtc="2026-09-20T12:00:00.001Z")
+    t.on("GET", "/tests", status(204), modifiedFromUtc="2026-09-20T13:00:00.000Z")
+    t.on("GET", "/tests", status(204), modifiedFromUtc="2026-09-20T13:00:00.001Z")
+    c = make_client(t)
+    tests = c.tests(datetime(2026, 9, 19, tzinfo=timezone.utc))
+    assert [x["testId"] for x in tests] == ["tie-1", "tie-2", "tie-3", "tie-4"]
+    assert len(c.warnings) == 1
+    assert "3 tests share modifiedDateUtc 2026-09-20T12:00:00.000Z" in c.warnings[0]
+
+
+def test_paging_still_capped():
+    t = FakeTransport().on("POST", "/oauth/token", ok(fixture("vald_token.json")))
+    counter = iter(range(10_000))
+    t.on("GET", "/tests", lambda body: ok({"tests": [
+        _test(n := next(counter), f"2026-09-20T12:{n // 60 % 60:02d}:{n % 60:02d}.000Z")]}))
+    with pytest.raises(VendorError, match="did not finish after 5 pages"):
+        make_client(t).tests(datetime(2026, 9, 19, tzinfo=timezone.utc), max_pages=5)

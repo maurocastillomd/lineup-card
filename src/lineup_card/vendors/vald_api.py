@@ -30,6 +30,7 @@ TO_CM = {"Centimeter": 1.0, "Meter": 100.0, "Millimeter": 0.1, "Inch": 2.54}
 TO_M_PER_S = {"MeterPerSecond": 1.0, "RSIModified": 1.0,
               "CentimeterPerSecond": 0.01, "MillimeterPerSecond": 0.001}
 
+DEFAULT_TOKEN_SECONDS = 300   # used when the token reply has no expires_in
 REQUIRED_ENV = ("VALD_CLIENT_ID", "VALD_CLIENT_SECRET", "VALD_TENANT_ID", "VALD_REGION")
 
 
@@ -84,6 +85,12 @@ def parse_utc(stamp: str) -> datetime:
     return moment if moment.tzinfo else moment.replace(tzinfo=timezone.utc)
 
 
+def _cursor(moment: datetime) -> str:
+    """UTC time as VALD's modifiedFromUtc wants it, to the millisecond."""
+    utc = moment.astimezone(timezone.utc)
+    return f"{utc:%Y-%m-%dT%H:%M:%S}.{utc.microsecond // 1000:03d}Z"
+
+
 def local_time(utc: str, offset_minutes: int | None) -> datetime:
     """recordedOffset is minutes to add to the UTC time (VALD guide)."""
     return (parse_utc(utc) + timedelta(minutes=offset_minutes or 0)).replace(tzinfo=None)
@@ -92,6 +99,7 @@ def local_time(utc: str, offset_minutes: int | None) -> datetime:
 class ValdClient:
     def __init__(self, settings: ValdSettings, http: JsonClient, clock=time.time):
         self.s, self.http, self.clock = settings, http, clock
+        self.warnings: list[str] = []
         self._token: str | None = None
         self._expires_at = 0.0
 
@@ -105,7 +113,7 @@ class ValdClient:
         if not reply.get("access_token"):
             raise VendorError("VALD token reply had no access_token", None, "POST oauth/token")
         self._token = reply["access_token"]
-        self._expires_at = self.clock() + float(reply.get("expires_in") or 0)
+        self._expires_at = self.clock() + float(reply.get("expires_in") or DEFAULT_TOKEN_SECONDS)
         return self._token
 
     def _get(self, url: str, params: dict | None = None, call: str = ""):
@@ -124,8 +132,14 @@ class ValdClient:
 
     def tests(self, modified_from: datetime, max_pages: int = 1000) -> list[dict]:
         """Page by moving modifiedFromUtc to the last test's modifiedDateUtc until 204.
-        A page may repeat the last test, so tests are de-duplicated by testId."""
-        cursor = modified_from.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+        A page may repeat the last test, so tests are de-duplicated by testId.
+
+        If a page ends on the time it was asked from (several tests share one
+        modifiedDateUtc, or the last test repeats), asking again would return the
+        same page forever. The cursor then moves 1 ms past that time. When more
+        than one test shares the time, a warning names it, because tests with that
+        same time beyond this page cannot be reached."""
+        cursor = _cursor(modified_from)
         seen: dict[str, dict] = {}
         for _ in range(max_pages):
             data = self._get(f"{self.s.forcedecks}/tests",
@@ -134,13 +148,19 @@ class ValdClient:
             page = (data or {}).get("tests") or []
             if not page:
                 break
-            new = [t for t in page if t["testId"] not in seen]
             for t in page:
                 seen[t["testId"]] = t
-            next_cursor = page[-1]["modifiedDateUtc"]
-            if not new and next_cursor == cursor:
-                break   # the API keeps returning the same last test; nothing more to read
-            cursor = next_cursor
+            last, at = parse_utc(page[-1]["modifiedDateUtc"]), parse_utc(cursor)
+            if last > at:
+                cursor = page[-1]["modifiedDateUtc"]
+            elif last < at:
+                break   # nothing newer than the cursor came back; nothing more to read
+            else:
+                if len(page) > 1:
+                    self.warnings.append(
+                        f"VALD /tests: {len(page)} tests share modifiedDateUtc {cursor}; moved 1 ms "
+                        "past it. Any more tests with that exact time beyond this page were not read.")
+                cursor = _cursor(last + timedelta(milliseconds=1))
         else:
             raise VendorError(f"VALD /tests did not finish after {max_pages} pages", None, "GET /tests")
         return list(seen.values())
