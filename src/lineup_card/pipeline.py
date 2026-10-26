@@ -18,6 +18,8 @@ from .day import build_day
 
 
 def _schedule(data: Path, today: date) -> dict:
+    if not (data / "schedule.csv").exists():      # optional for live data
+        return {"opponent": "", "home_away": "", "note": ""}
     with (data / "schedule.csv").open(newline="") as f:
         for row in csv.DictReader(f):
             if row["date"] == today.isoformat():

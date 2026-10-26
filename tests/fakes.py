@@ -18,8 +18,9 @@ def fixture(name: str):
 class FakeTransport:
     """Answers requests from a list of (matcher, reply) routes, in order.
 
-    A matcher is a function(method, url) -> bool. A reply is a Response or a
-    list of Responses (served one per call, the last one repeating).
+    A matcher is a function(method, url) -> bool. A reply is a Response, a
+    list of Responses (served one per call, the last one repeating), or a
+    function(body) -> Response.
     Every call is recorded in `calls` as dicts.
     """
 
@@ -43,6 +44,8 @@ class FakeTransport:
         for route in self.routes:
             if route[0](method, url):
                 replies = route[1]
+                if callable(replies[0]):
+                    return replies[0](body)
                 return replies.pop(0) if len(replies) > 1 else replies[0]
         raise AssertionError(f"unexpected request {method} {url}")
 

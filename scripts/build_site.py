@@ -1,11 +1,17 @@
-"""Run the pipeline for the last 14 game days and write web/data/.
+"""Run the pipeline for the last 14 game days and write the site data.
 
-Run: .venv/bin/python scripts/build_site.py
+Run: .venv/bin/python scripts/build_site.py                      (fictional demo -> web/data/)
+     .venv/bin/python scripts/build_site.py --data data/live     (real data -> data/live/site/)
+
+Real data never goes into web/: a live build copies the web app into
+<data>/site/ (git-ignored) and writes the day files there.
 """
 
 from __future__ import annotations
 
+import argparse
 import json
+import shutil
 import sys
 from datetime import date
 from pathlib import Path
@@ -15,19 +21,48 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from lineup_card.pipeline import run_day  # noqa: E402
 
-DATA = ROOT / "data" / "fictional"
-OUT = ROOT / "web" / "data"
+FICTIONAL = ROOT / "data" / "fictional"
+WEB = ROOT / "web"
 SHOW_DAYS = 14
 
 
-def main() -> None:
-    dates = sorted(p.name for p in (DATA / "inbox").iterdir() if p.is_dir())[-SHOW_DAYS:]
-    (OUT / "days").mkdir(parents=True, exist_ok=True)
+def _resolve(path: str) -> Path:
+    p = Path(path)
+    return p if p.is_absolute() else ROOT / p
+
+
+def build(data: Path, out: Path) -> list[str]:
+    inbox = data / "inbox"
+    if not inbox.is_dir():
+        raise SystemExit(f"No inbox folder at {inbox}. Run scripts/pull.py first.")
+    if not (data / "crosswalk.csv").exists():
+        raise SystemExit(f"No crosswalk.csv in {data}. Make one before building (see README).")
+    dates = sorted(p.name for p in inbox.iterdir() if p.is_dir())[-SHOW_DAYS:]
+    if not dates:
+        raise SystemExit(f"No dated folders in {inbox}.")
+    (out / "days").mkdir(parents=True, exist_ok=True)
     for d in dates:
-        day = run_day(DATA, date.fromisoformat(d))
-        (OUT / "days" / f"{d}.json").write_text(json.dumps(day, indent=1, ensure_ascii=False))
+        day = run_day(data, date.fromisoformat(d))
+        (out / "days" / f"{d}.json").write_text(json.dumps(day, indent=1, ensure_ascii=False))
         print(f"{d}: {sum(p['status'] == 'check_in' for p in day['players'])} check in")
-    (OUT / "index.json").write_text(json.dumps({"dates": dates, "latest": dates[-1]}, indent=1))
+    (out / "index.json").write_text(json.dumps({"dates": dates, "latest": dates[-1]}, indent=1))
+    return dates
+
+
+def main(argv=None) -> None:
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--data", default=str(FICTIONAL.relative_to(ROOT)),
+                        help="Data folder (default: data/fictional)")
+    args = parser.parse_args(argv)
+    data = _resolve(args.data)
+    if data.resolve() == FICTIONAL.resolve():
+        build(data, WEB / "data")
+        return
+    site = data / "site"
+    shutil.copytree(WEB, site, dirs_exist_ok=True,
+                    ignore=shutil.ignore_patterns("data", "examples", "shots"))
+    build(data, site / "data")
+    print(f"Open it with: python3 -m http.server 8765 --directory {site}")
 
 
 if __name__ == "__main__":
