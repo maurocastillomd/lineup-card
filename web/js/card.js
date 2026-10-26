@@ -1,6 +1,6 @@
 import {
-  applyDecisions, countByStatus, groupCheckins, hiddenSummary, isStale, jumpPosition, plainChange, plainReason,
-  plainSummary, shortDate, WORDS,
+  applyDecisions, countByStatus, disclaimer, groupCheckins, hiddenSummary, isStale, jumpPosition, plainChange,
+  plainReason, plainSummary, shortDate, sourcesNote, WORDS,
 } from "./logic.js";
 import { hasSavedReview, loadReview } from "./store.js";
 
@@ -28,6 +28,13 @@ if (!hasSavedReview(date)) {
 }
 const players = applyDecisions(day.players, review.decisions);
 const todayIds = review.todayIds.length ? review.todayIds : players.map((p) => p.id);
+
+// Labels: "Fictional roster" only on the demo; a line when a source did not update this morning.
+const synthetic = day.synthetic === true;
+$("disclaimer").textContent = disclaimer(day);
+$("fiction-foot").hidden = !synthetic;
+$("stale").textContent = sourcesNote(day);
+$("stale").hidden = !sourcesNote(day);
 
 const sched = day.schedule;
 $("meta").textContent = `${day.club}. ${shortDate(date)}, ${date.slice(0, 4)}. ` +
@@ -69,8 +76,10 @@ if (groups.lead) {
     : `<p class="nobody">Nobody needs a check-in today.</p>`;
 }
 
+// The league figure is illustrative, so it is shown on the fictional demo only.
 const league = day.league_reference.rsi_mod;
-$("league").textContent = `For context only: a typical jump score at this level is about ${league.value} ${league.unit} (${league.label}).`;
+$("league").textContent = synthetic
+  ? `For context only: a typical jump score at this level is about ${league.value} ${league.unit} (${league.label}).` : "";
 
 // ---- roster rows ----
 const gatePct = (p) => (day.noise_gate.rsi_mod && p.rsi.mean ? day.noise_gate.rsi_mod / p.rsi.mean * 100 : null);
@@ -129,15 +138,23 @@ function spark(p) {
 }
 $("trends").innerHTML = flagged.slice(0, 5).map(spark).join("") || `<p class="nobody">No flagged players today.</p>`;
 
-// ---- availability board ----
-try {
-  const res = await fetch("figures/board/board.svg");
-  if (!res.ok) throw new Error("no board");
-  $("board").innerHTML = await res.text();
-  for (const p of players) $("board").querySelector(`.peg[data-id="${CSS.escape(p.id)}"]`)?.setAttribute("data-status", p.status);
-} catch {
-  $("board").textContent = "Board figure not built yet.";
+// ---- availability board (drawn for the fictional roster, so demo only) ----
+async function drawBoard() {
+  if (!synthetic) {
+    $("board").textContent = "Board available in the demo only.";
+    document.querySelector(".board-key").hidden = true;
+    return;
+  }
+  try {
+    const res = await fetch("figures/board/board.svg");
+    if (!res.ok) throw new Error("no board");
+    $("board").innerHTML = await res.text();
+    for (const p of players) $("board").querySelector(`.peg[data-id="${CSS.escape(p.id)}"]`)?.setAttribute("data-status", p.status);
+  } catch {
+    $("board").textContent = "Board figure not built yet.";
+  }
 }
+await drawBoard();
 
 // ---- share bar ----
 const say = (text) => { $("share-msg").textContent = text; };

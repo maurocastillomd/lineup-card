@@ -69,8 +69,10 @@ def main(argv=None) -> None:
                              "which is git-ignored. Use data/live, or add --allow-any-dir if you are sure.")
         print(f"Warning: {data} is not under data/live, so it is not git-ignored. Never commit it.")
     site = data / "site"
+    # The availability board is drawn for the fictional roster, so a live site leaves it out.
     shutil.copytree(WEB, site, dirs_exist_ok=True,
-                    ignore=shutil.ignore_patterns("data", "examples", "shots"))
+                    ignore=lambda folder, names: [n for n in names if n in ("data", "examples", "shots")
+                                                  or (Path(folder) == WEB / "figures" and n == "board")])
     build(data, site / "data")
     print(f"Open it with: python3 -m http.server 8765 --directory {site}")
 

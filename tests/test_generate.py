@@ -1,6 +1,9 @@
 import csv
+from pathlib import Path
 
 from generate_fictional import generate
+
+ROOT_DATA = Path(__file__).parent.parent / "data" / "fictional"
 
 
 def test_generator_is_deterministic(tmp_path):
@@ -24,3 +27,11 @@ def test_roster_and_scenario_files(tmp_path):
     assert "Mike Daley" in cat and "Session Total" in cat
     schedule = list(csv.DictReader((tmp_path / "schedule.csv").open()))
     assert any("Road trip" in s["note"] for s in schedule)
+
+
+def test_generator_writes_the_fictional_club_file(tmp_path):
+    import json
+    generate(tmp_path)
+    assert json.loads((tmp_path / "club.json").read_text()) == {"name": "Fictional Triple-A Club",
+                                                              "synthetic": True}
+    assert (tmp_path / "club.json").read_bytes() == (ROOT_DATA / "club.json").read_bytes()

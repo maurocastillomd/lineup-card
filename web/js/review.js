@@ -1,4 +1,4 @@
-import { FLAGGED, WORDS, parseLineup, signalLine } from "./logic.js";
+import { FLAGGED, WORDS, disclaimer, parseLineup, signalLine, sourcesNote } from "./logic.js";
 import { loadReview, saveReview } from "./store.js";
 
 const $ = (id) => document.getElementById(id);
@@ -9,6 +9,9 @@ let day, review;
 async function load(date) {
   day = await (await fetch(`data/days/${date}.json`)).json();
   review = loadReview(date);
+  $("disclaimer").textContent = disclaimer(day);
+  $("stale").textContent = sourcesNote(day);
+  $("stale").hidden = !sourcesNote(day);
   const names = day.players.filter((p) => review.todayIds.includes(p.id)).map((p) => p.name);
   $("lineup").value = names.join("\n");
   render();

@@ -60,6 +60,7 @@ def _rsi_today(rng, base, noise, lc_id, day):
 def generate(out: Path) -> None:
     rng = random.Random(SEED)
     out.mkdir(parents=True, exist_ok=True)
+    (out / "club.json").write_text('{"name": "Fictional Triple-A Club", "synthetic": true}\n')
     with (out / "crosswalk.csv").open("w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["lc_id", "name", "pos", "vald_external_id", "catapult_name"])

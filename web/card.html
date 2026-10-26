@@ -11,7 +11,7 @@
 <main class="card wrap" id="card">
   <header class="card-head">
     <div>
-      <span class="fiction">Fictional roster. Not a fitness-to-play decision.</span>
+      <span class="fiction" id="disclaimer">Not a fitness-to-play decision.</span>
       <h1>Lineup Card</h1>
       <p id="meta" class="meta"></p>
       <p id="reviewed" class="reviewed"></p>
@@ -27,6 +27,7 @@
     </div>
   </header>
   <p id="unreviewed" class="banner" hidden>Not reviewed yet. <a href="index.html">Review first</a>.</p>
+  <p id="stale" class="stale-note" role="status" hidden></p>
 
   <section class="glance" aria-labelledby="glance-h">
     <h2 id="glance-h" class="sr-only">Today at a glance</h2>
@@ -66,7 +67,7 @@
 
   <footer class="card-foot">
     <p><strong>How a flag works:</strong> a player is flagged only when his drop is big compared with his own last 28 days and bigger than normal test-to-test noise. Team and league notes are context only. Coaches and medical staff decide who plays.</p>
-    <p><strong>Jump</strong> = reactive strength from the force-plate jump (RSI-mod). <strong>Sources:</strong> VALD ForceDecks, Catapult (load, throws, pitches), morning wellness form. Fictional roster and data. <span id="league"></span></p>
+    <p><strong>Jump</strong> = reactive strength from the force-plate jump (RSI-mod). <strong>Sources:</strong> VALD ForceDecks, Catapult (load, throws, pitches), morning wellness form. <span id="fiction-foot" hidden>Fictional roster and data.</span> <span id="league"></span></p>
   </footer>
 </main>
 <script type="module" src="js/card.js"></script>

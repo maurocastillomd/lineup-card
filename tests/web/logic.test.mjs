@@ -154,8 +154,10 @@ test("signalLine shows change, %, TE units, z and both thresholds", () => {
 
 import { plainSummary } from "../../web/js/logic.js";
 
+// synthetic: true matches the fictional demo's day JSON.
 const sumDay = (team_shift, note = "") => ({
   date: "2026-09-20",
+  synthetic: true,
   schedule: { opponent: "Lakeside Fictionals", home_away: "away", note },
   team_shift,
 });
@@ -210,4 +212,35 @@ test("plainSummary adds the review note and never shifts the date", () => {
   assert.match(text, /^Lineup Card, Thu Jan 1,/);
   assert.match(text, /Watch \(1\): T\. Brandt OF, jump 1% below his normal \(Changed to Watch: Mentioned hamstring\)/);
   assert.match(text, /No change: 0\. Not enough data: 0\./);
+});
+
+import { disclaimer, sourcesNote } from "../../web/js/logic.js";
+
+test("disclaimer: fictional line only when the day is synthetic", () => {
+  assert.equal(disclaimer({ synthetic: true }), "Fictional roster. Not a fitness-to-play decision.");
+  assert.equal(disclaimer({ synthetic: false }), "Not a fitness-to-play decision.");
+  assert.equal(disclaimer({}), "Not a fitness-to-play decision.");
+});
+
+test("plainSummary on a real-data day leaves out the fictional line", () => {
+  const text = plainSummary({ ...sumDay(null), synthetic: false }, sumPlayers, []);
+  const lines = text.split("\n");
+  assert.equal(lines.at(-1), "Not a fitness-to-play decision.");
+  assert.doesNotMatch(text, /Fictional roster/);
+});
+
+test("sourcesNote names a source that did not update", () => {
+  assert.equal(sourcesNote({ sources: { vald: "ok", catapult: "failed" } }), "Catapult data not updated this morning.");
+  assert.equal(sourcesNote({ sources: { vald: "failed", catapult: "ok" } }), "VALD data not updated this morning.");
+  assert.equal(sourcesNote({ sources: { vald: "failed", catapult: "failed" } }),
+    "VALD and Catapult data not updated this morning.");
+  assert.equal(sourcesNote({ sources: { vald: "ok", catapult: "ok" } }), "");
+  assert.equal(sourcesNote({ sources: { vald: "ok" } }), "");
+  assert.equal(sourcesNote({}), "");
+});
+
+test("plainSummary carries the not-updated line after the title", () => {
+  const day = { ...sumDay(null), sources: { vald: "ok", catapult: "failed" } };
+  const lines = plainSummary(day, sumPlayers, []).split("\n");
+  assert.equal(lines[1], "Catapult data not updated this morning.");
 });

@@ -133,6 +133,17 @@ export function countByStatus(players) {
   return out;
 }
 
+// "Fictional roster." only on the fictional demo (day.synthetic === true).
+export const disclaimer = (day) =>
+  `${day?.synthetic === true ? "Fictional roster. " : ""}Not a fitness-to-play decision.`;
+
+// From the pull's _status.json: names a source that failed this morning, or "".
+const SOURCE_NAMES = [["vald", "VALD"], ["catapult", "Catapult"]];
+export function sourcesNote(day) {
+  const failed = SOURCE_NAMES.filter(([key]) => day?.sources?.[key] === "failed").map(([, name]) => name);
+  return failed.length ? `${failed.join(" and ")} data not updated this morning.` : "";
+}
+
 const lowerFirst = (s) => s.charAt(0).toLowerCase() + s.slice(1);
 
 export function plainSummary(day, players, todayIds = []) {
@@ -149,6 +160,8 @@ export function plainSummary(day, players, todayIds = []) {
   });
 
   const lines = [`Lineup Card, ${shortDate(day.date)}, vs ${day.schedule.opponent} (${day.schedule.home_away})`];
+  const stale = sourcesNote(day);
+  if (stale) lines.push(stale);
   const groups = groupCheckins(players, day.team_shift);
   if (groups.lead) {
     lines.push(teamLine(day));
@@ -165,6 +178,6 @@ export function plainSummary(day, players, todayIds = []) {
   const n = countByStatus(players);
   const missing = players.filter((p) => p.status === "not_enough_data").map((p) => p.name);
   lines.push(`No change: ${n.no_change}. Not enough data: ${n.not_enough_data}${missing.length ? ` (${missing.join(", ")})` : ""}.`);
-  lines.push("Fictional roster. Not a fitness-to-play decision.");
+  lines.push(disclaimer(day));
   return lines.join("\n");
 }

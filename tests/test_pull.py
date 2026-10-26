@@ -239,6 +239,8 @@ def test_build_site_on_live_data_stays_out_of_web(tmp_path):
     site = tmp_path / "site"
     assert json.loads((site / "data" / "index.json").read_text())["latest"] == "2026-09-20"
     assert (site / "card.html").exists() and not (site / "examples").exists()
+    assert not (site / "figures" / "board" / "board.svg").exists()     # the board is demo only
+    assert not (site / "figures" / "board").exists()
 
 
 def test_build_site_refuses_a_folder_outside_data_live(tmp_path):

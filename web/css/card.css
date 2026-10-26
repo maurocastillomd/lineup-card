@@ -15,6 +15,7 @@
 .share-bar button:disabled { opacity: .6; cursor: progress; }
 .share-msg { margin: 0; font-size: 13px; color: var(--ink-dim); min-height: 1.2em; text-align: right; }
 .banner { background: var(--accent-wash); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+.stale-note { border: 1px solid var(--line); border-left: 4px solid var(--st-watch); border-radius: 10px; padding: 8px 12px; margin: 12px 0 0; }
 section { margin-top: 20px; }
 section h2 { font-size: 20px; }
 
@@ -145,6 +146,7 @@ section h2 { font-size: 20px; }
   section { margin-top: 6px; }
   section h2 { font-size: 12px; margin: 0 0 2px; }
   .fiction { font-size: 8px; padding: 0 6px; }
+  .stale-note { font-size: 9px; padding: 2px 8px; margin: 4px 0 0; }
   .card-head h1 { font-size: 18px; margin: 2px 0 0; }
   .meta { font-size: 9.5px; } .reviewed { font-size: 8.5px; }
   .glyph { width: 9px; height: 9px; vertical-align: -1px; }

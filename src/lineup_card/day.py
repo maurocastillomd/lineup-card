@@ -99,7 +99,10 @@ def _beyond_team(d: DomainAssessment, shift: dict | None, te: float | None,
 
 
 def build_day(readings: list[Reading], today: date, cw: Crosswalk, log: CleanLog,
-              schedule: dict) -> dict:
+              schedule: dict, club: dict | None = None, sources: dict | None = None) -> dict:
+    """club: {"name", "synthetic"} from club.json (default: the fictional demo club).
+    sources: the pull status for today, added as "sources" only when there is one."""
+    club = club or {"name": CLUB, "synthetic": True}
     te = {spec.column: typical_error(readings, spec.column, today) for spec in METRICS.values()}
     assessed: list[AthleteAssessment] = assess_squad(readings, today, te)
 
@@ -132,8 +135,9 @@ def build_day(readings: list[Reading], today: date, cw: Crosswalk, log: CleanLog
             "trend": _trend(readings, a.athlete_id, today),
         })
 
-    return {
-        "date": today.isoformat(), "synthetic": True, "club": CLUB, "schedule": schedule,
+    out = {
+        "date": today.isoformat(), "synthetic": club["synthetic"], "club": club["name"],
+        "schedule": schedule,
         "te": te,
         "noise_gate": {k: None if v is None else round(noise_threshold(v), 4) for k, v in te.items()},
         "signal": {spec.column: test_sensitivity(
@@ -145,3 +149,6 @@ def build_day(readings: list[Reading], today: date, cw: Crosswalk, log: CleanLog
         "held_out": log.held_out,
         "cleaning_log": [e.model_dump(mode="json") for e in log.entries if e.day == today],
     }
+    if sources:
+        out["sources"] = sources
+    return out
