@@ -1,0 +1,15 @@
+[
+ {
+  "athlete_name": "Jorge Ortega",
+  "activity_name": "Fictional early work 9/20",
+  "activity_id": "act-lift-0920",
+  "period_id": "p-lift",
+  "period_name": "Early work",
+  "start_time": 1789912800,
+  "end_time": 1789916400,
+  "total_player_load": 20.0,
+  "total_distance": 1234.5,
+  "date": "2026-09-20",
+  "fake_throw_count": 0
+ }
+]

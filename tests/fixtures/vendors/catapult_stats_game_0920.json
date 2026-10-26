@@ -1,0 +1,54 @@
+[
+ {
+  "athlete_name": "Jorge Ortega",
+  "activity_name": "Fictional game 9/20",
+  "activity_id": "act-game-0920",
+  "period_id": "p-game",
+  "period_name": "Game",
+  "start_time": 1789945500,
+  "end_time": 1789957800,
+  "total_player_load": 112.4,
+  "total_distance": 1234.5,
+  "date": "2026-09-20",
+  "fake_throw_count": 22
+ },
+ {
+  "athlete_name": "Jorge Ortega",
+  "activity_name": "Fictional game 9/20",
+  "activity_id": "act-game-0920",
+  "period_id": "p-warm",
+  "period_name": "Warm-up",
+  "start_time": 1789938300,
+  "end_time": 1789941300,
+  "total_player_load": 71.0,
+  "total_distance": 1234.5,
+  "date": "2026-09-20",
+  "fake_throw_count": 30
+ },
+ {
+  "athlete_name": "Jorge Ortega",
+  "activity_name": "Fictional game 9/20",
+  "activity_id": "act-game-0920",
+  "period_id": "p-total",
+  "period_name": "Session Total",
+  "start_time": 1789938300,
+  "end_time": 1789957800,
+  "total_player_load": 183.4,
+  "total_distance": 1234.5,
+  "date": "2026-09-20",
+  "fake_throw_count": 52
+ },
+ {
+  "athlete_name": "Kevin Ruiz",
+  "activity_name": "Fictional game 9/20",
+  "activity_id": "act-game-0920",
+  "period_id": "p-warm",
+  "period_name": "Warm-up",
+  "start_time": 1789938300,
+  "end_time": 1789941300,
+  "total_player_load": "64.5",
+  "total_distance": 1234.5,
+  "date": "2026-09-20",
+  "fake_throw_count": "18"
+ }
+]

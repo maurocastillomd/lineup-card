@@ -1,0 +1,28 @@
+[
+ {
+  "athlete_name": "Jorge Ortega",
+  "activity_name": "Fictional game 9/19",
+  "activity_id": "act-game-0919",
+  "period_id": "p-g19",
+  "period_name": "Game",
+  "start_time": 1789859100,
+  "end_time": 1789873200,
+  "total_player_load": 120.0,
+  "total_distance": 1234.5,
+  "date": "2026-09-19",
+  "fake_throw_count": 25
+ },
+ {
+  "athlete_name": "Jorge Ortega",
+  "activity_name": "Fictional game 9/19",
+  "activity_id": "act-game-0919",
+  "period_id": "p-x19",
+  "period_name": "Extra innings",
+  "start_time": 1789881000,
+  "end_time": 1789882800,
+  "total_player_load": 15.0,
+  "total_distance": 1234.5,
+  "date": "2026-09-20",
+  "fake_throw_count": 4
+ }
+]
