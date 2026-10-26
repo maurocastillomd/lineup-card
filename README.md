@@ -89,18 +89,104 @@ The generator is seeded, so every run makes the same files.
 
 ## Run it every morning
 
-This crontab line would rebuild the day's data at 7 a.m. It is documented here and is not installed:
+The morning job pulls yesterday and today from VALD and Catapult, then builds the live site. Yesterday is pulled again because last night's game happened after the morning pull.
+
+```bash
+.venv/bin/python scripts/pull.py --date yesterday --to today --data data/live
+.venv/bin/python scripts/build_site.py --data data/live
+python3 -m http.server 8765 --directory data/live/site
+```
+
+`scripts/morning.sh` runs the first two lines. It reads the settings from the macOS Keychain, so no key sits in a file. Store each setting once (macOS asks for the value):
+
+```bash
+security add-generic-password -a "$USER" -s lineup-card.VALD_CLIENT_SECRET -w
+```
+
+Repeat for each name in `.env.example` that you use. Both schedules below are documented here and are not installed.
+
+**launchd (macOS).** Save as `~/Library/LaunchAgents/com.lineupcard.morning.plist`, then run `launchctl load ~/Library/LaunchAgents/com.lineupcard.morning.plist`. It runs at 7:00 a.m.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.lineupcard.morning</string>
+  <key>ProgramArguments</key>
+  <array><string>/bin/zsh</string><string>-c</string><string>~/lineup-card/scripts/morning.sh</string></array>
+  <key>StartCalendarInterval</key>
+  <dict><key>Hour</key><integer>7</integer><key>Minute</key><integer>0</integer></dict>
+  <key>StandardOutPath</key><string>/tmp/lineup-card-morning.log</string>
+  <key>StandardErrorPath</key><string>/tmp/lineup-card-morning.log</string>
+</dict>
+</plist>
+```
+
+**cron.** The same job as a crontab line:
 
 ```
-0 7 * * * cd ~/lineup-card && .venv/bin/python scripts/build_site.py
+0 7 * * * ~/lineup-card/scripts/morning.sh >> /tmp/lineup-card-morning.log 2>&1
 ```
+
+The Keychain must be unlocked (you are logged in) for either schedule to read the settings. The fictional demo is rebuilt with plain `scripts/build_site.py` and never touches `data/live`.
 
 ## Real data
 
-- The export column names are modeled on public examples of VALD ForceDecks and Catapult OpenField exports. Check them against your own club's exports before use.
-- Catapult times are in UTC. The session date is the club's local date, so a 7 p.m. game stays on its own day.
-- A live VALD or Catapult connection needs a club account, API credentials and a data agreement. `src/lineup_card/adapters/api_stub.py` shows where that client would plug in.
-- Never put real athlete data in a public repository.
+Status: **built to the vendors' published documents, tested against mocked responses, not yet tested against a live account.** Every fact and its source is in `docs/api-sources.md`, with a list of what is still unverified.
+
+| Part | Built | Tested with mocks | Tested live |
+|---|---|---|---|
+| VALD token, cached until it expires | Yes | Yes | Not yet |
+| VALD tests, paged until the end, repeats removed | Yes | Yes | Not yet |
+| VALD trials: jump height and RSI-modified found by name, scale factor and units checked | Yes | Yes | Not yet |
+| Catapult activities for the club day | Yes | Yes | Not yet |
+| Catapult stats by player and period, session totals skipped | Yes | Yes | Not yet |
+| Catapult throw and pitch counts | Yes, once the club sets the slugs | Yes | Not yet |
+| Inbox CSVs in the same format as a manual export | Yes | Yes (read back by the CSV readers) | Not yet |
+| Pull, then build the card from `data/live` | Yes | Yes | Not yet |
+| Wellness form | Not from an API. Drop `wellness.csv` into `data/live/inbox/<date>/` | Yes (CSV) | Not yet |
+
+**Getting VALD keys.** Email support@vald.com and ask for External API access. Include your VALD Hub organization ID. VALD sends an API License Agreement to sign. After that they send a client ID and client secret through a link that expires in 7 days. You also need your tenant ID (from the Tenants API or VALD support) and your region: `use` (United States East), `aue` (Australia East) or `euw` (Europe West).
+
+**Getting a Catapult token.** Catapult has to enable API access on the club's OpenField account. Once it is on, an API token can be made in OpenField Cloud. Ask your Catapult contact if you do not see the option. Your host is `us`, `eu` or `apac`. Throw and pitch counts come from Catapult's baseball module, and their parameter names differ by account. Ask Catapult for the two slugs, or list them with the API's `/parameters` call, and set `CATAPULT_THROW_SLUG` and `CATAPULT_PITCH_SLUG`. Until then those columns stay blank.
+
+**Settings.** All settings are environment variables. `.env.example` lists every name with an empty value.
+
+| Variable | Needed | What it is |
+|---|---|---|
+| `VALD_CLIENT_ID`, `VALD_CLIENT_SECRET` | Yes, for VALD | Keys from VALD support |
+| `VALD_TENANT_ID` | Yes, for VALD | Your team's tenant ID |
+| `VALD_REGION` | Yes, for VALD | `use`, `aue` or `euw` |
+| `VALD_CMJ_TEST_TYPE` | No | Test type code for the jump. Default `CMJ` |
+| `VALD_JUMP_RESULT`, `VALD_RSI_RESULT` | No | Exact result name, idString or id, if the defaults are not found |
+| `CATAPULT_TOKEN` | Yes, for Catapult | API token from OpenField Cloud |
+| `CATAPULT_HOST` | Yes, for Catapult | `us`, `eu` or `apac` |
+| `CATAPULT_LOAD_SLUG` | No | Default `total_player_load` |
+| `CATAPULT_THROW_SLUG`, `CATAPULT_PITCH_SLUG` | No | Baseball module slugs. Blank columns until set |
+
+**Matching players.** `data/live/crosswalk.csv` has the same columns as the fictional one: `lc_id,name,pos,vald_external_id,catapult_name`. Set each player's External ID in his VALD profile to the `vald_external_id` value, or put his VALD profile ID in that column. `catapult_name` must match the athlete name in OpenField exactly. Anyone not in the crosswalk is held out and listed in the review, never guessed. `schedule.csv` is optional for live data.
+
+**Pull one day by hand.**
+
+```bash
+export VALD_CLIENT_ID=... VALD_CLIENT_SECRET=... VALD_TENANT_ID=... VALD_REGION=use
+export CATAPULT_TOKEN=... CATAPULT_HOST=us
+.venv/bin/python scripts/pull.py --date 2026-09-20
+.venv/bin/python scripts/pull.py --date 2026-09-20 --source vald
+```
+
+It prints one line per source: rows written, players, and which dates got files. Exit code 0 means it worked. Exit code 2 means a setting is missing or wrong; the message names it. Exit code 3 means the vendor answered with an error; the message names the call and the HTTP status. On 2 or 3 nothing is written. Files are written to a temporary name and then renamed, so a failed run never leaves half a file.
+
+**Security.**
+- Keys live only in environment variables or the macOS Keychain. Never in a file in this folder, never in the repo, never in a log.
+- `.env` and `data/live/` are in `.gitignore`. Real athlete data must never be committed or put in a public repository.
+- A live build goes to `data/live/site/`, never to `web/data/`, which holds the fictional demo.
+- The live site still carries the demo's "Fictional roster" labels. Change them before showing it to staff.
+
+**Other notes.**
+- The CSV column names are modeled on public examples of VALD ForceDecks and Catapult OpenField exports. Check them against your own club's exports if you load files by hand.
+- Catapult times are in UTC. The session date is the club's local date (America/Chicago), so a 7 p.m. game stays on its own day.
 
 ## Built on Readiness
 
