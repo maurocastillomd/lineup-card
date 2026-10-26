@@ -97,7 +97,7 @@ The morning job pulls yesterday and today from VALD and Catapult, then builds th
 python3 -m http.server 8765 --directory data/live/site
 ```
 
-`scripts/morning.sh` runs the first two lines. It reads the settings from the macOS Keychain, so no key sits in a file. Store each setting once (macOS asks for the value):
+`scripts/morning.sh` runs the first two lines. If one source fails (pull exit code 3), it still builds the site from the source that worked, and the card says which data is not from this morning. It then ends with code 3 so the log shows the problem. A missing setting (code 2) stops it before the build. It reads the settings from the macOS Keychain, so no key sits in a file. Store each setting once (macOS asks for the value):
 
 ```bash
 security add-generic-password -a "$USER" -s lineup-card.VALD_CLIENT_SECRET -w
@@ -105,7 +105,9 @@ security add-generic-password -a "$USER" -s lineup-card.VALD_CLIENT_SECRET -w
 
 Repeat for each name in `.env.example` that you use. Both schedules below are documented here and are not installed.
 
-**launchd (macOS).** Save as `~/Library/LaunchAgents/com.lineupcard.morning.plist`, then run `launchctl load ~/Library/LaunchAgents/com.lineupcard.morning.plist`. It runs at 7:00 a.m.
+Both schedules write the log to `~/Library/Logs/lineup-card-morning.log`, inside your own user folder (only your account can read it). The log holds call names and HTTP status codes, never keys or tokens.
+
+**launchd (macOS).** Save as `~/Library/LaunchAgents/com.lineupcard.morning.plist`, then run `launchctl load ~/Library/LaunchAgents/com.lineupcard.morning.plist`. It runs at 7:00 a.m. launchd does not expand `~`, so replace `YOUR_USER` with your macOS user name.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -117,8 +119,8 @@ Repeat for each name in `.env.example` that you use. Both schedules below are do
   <array><string>/bin/zsh</string><string>-c</string><string>~/lineup-card/scripts/morning.sh</string></array>
   <key>StartCalendarInterval</key>
   <dict><key>Hour</key><integer>7</integer><key>Minute</key><integer>0</integer></dict>
-  <key>StandardOutPath</key><string>/tmp/lineup-card-morning.log</string>
-  <key>StandardErrorPath</key><string>/tmp/lineup-card-morning.log</string>
+  <key>StandardOutPath</key><string>/Users/YOUR_USER/Library/Logs/lineup-card-morning.log</string>
+  <key>StandardErrorPath</key><string>/Users/YOUR_USER/Library/Logs/lineup-card-morning.log</string>
 </dict>
 </plist>
 ```
@@ -126,7 +128,7 @@ Repeat for each name in `.env.example` that you use. Both schedules below are do
 **cron.** The same job as a crontab line:
 
 ```
-0 7 * * * ~/lineup-card/scripts/morning.sh >> /tmp/lineup-card-morning.log 2>&1
+0 7 * * * ~/lineup-card/scripts/morning.sh >> ~/Library/Logs/lineup-card-morning.log 2>&1
 ```
 
 The Keychain must be unlocked (you are logged in) for either schedule to read the settings. The fictional demo is rebuilt with plain `scripts/build_site.py` and never touches `data/live`.
@@ -167,6 +169,14 @@ Status: **built to the vendors' published documents, tested against mocked respo
 
 **Matching players.** `data/live/crosswalk.csv` has the same columns as the fictional one: `lc_id,name,pos,vald_external_id,catapult_name`. Set each player's External ID in his VALD profile to the `vald_external_id` value, or put his VALD profile ID in that column. `catapult_name` must match the athlete name in OpenField exactly. Anyone not in the crosswalk is held out and listed in the review, never guessed. `schedule.csv` is optional for live data.
 
+**Club name and labels.** Make `data/live/club.json`:
+
+```json
+{"name": "Your Club Name", "synthetic": false}
+```
+
+With `"synthetic": false` the card and review page drop the "Fictional roster" label (they always say "Not a fitness-to-play decision."), hide the illustrative league line and leave out the availability board, which is drawn for the fictional roster. Without this file the card keeps the fictional demo labels.
+
 **Pull one day by hand.**
 
 ```bash
@@ -176,13 +186,23 @@ export CATAPULT_TOKEN=... CATAPULT_HOST=us
 .venv/bin/python scripts/pull.py --date 2026-09-20 --source vald
 ```
 
-It prints one line per source: rows written, players, and which dates got files. Exit code 0 means it worked. Exit code 2 means a setting is missing or wrong; the message names it. Exit code 3 means the vendor answered with an error; the message names the call and the HTTP status. On 2 or 3 nothing is written. Files are written to a temporary name and then renamed, so a failed run never leaves half a file.
+It prints one line per source: rows written, players, and which dates got files. Every day in the range gets a file for each source that worked, with only the header row when there was nothing that day, so pulling a day again clears old rows.
+
+- Exit code 0: every source worked.
+- Exit code 2: a setting is missing or wrong, or the folder is refused. The message names it. Nothing is written.
+- Exit code 3: at least one source failed (a vendor error, a data problem, or the time budget ran out). The message names the call and the HTTP status, and ends with which source failed and which worked. Each source is written as soon as it works, so a Catapult failure keeps the VALD files, and the other way round. A failed source's old files are left as they were.
+
+Each day folder also gets `_status.json`, for example `{"vald": "ok", "catapult": "failed", "pulled_at": "..."}`. The card reads it and shows "Catapult data not updated this morning." when a source failed.
+
+The whole pull stops after 15 minutes (set `LINEUP_PULL_BUDGET_S` in seconds to change it). Real data goes to `data/live` (git-ignored). Any other folder needs `--allow-any-dir`, and the tool warns that the folder is not git-ignored. `data/fictional` is always refused, however the path is spelled. Files are written to a temporary name and then renamed, so a failed run never leaves half a file.
 
 **Security.**
-- Keys live only in environment variables or the macOS Keychain. Never in a file in this folder, never in the repo, never in a log.
+- Keys live only in environment variables or the macOS Keychain. Never in a file in this folder, never in the repo.
+- Logs hold call names and HTTP status codes, never keys, tokens or reply bodies. An error message keeps at most a short error code from the vendor (for example `invalid_client`).
+- Redirects from a vendor are refused, so a key is only ever sent to the vendor address in the code. `CATAPULT_HOST` must be `us`, `eu`, `apac` or an https Catapult host name with no path or port.
 - `.env` and `data/live/` are in `.gitignore`. Real athlete data must never be committed or put in a public repository.
 - A live build goes to `data/live/site/`, never to `web/data/`, which holds the fictional demo.
-- The live site still carries the demo's "Fictional roster" labels. Change them before showing it to staff.
+- Add `data/live/club.json` with `"synthetic": false` (see "Club name and labels") before showing the live site to staff. Without it the site still says "Fictional roster".
 
 **Other notes.**
 - The CSV column names are modeled on public examples of VALD ForceDecks and Catapult OpenField exports. Check them against your own club's exports if you load files by hand.

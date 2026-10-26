@@ -14,7 +14,7 @@ Status: built to these documents and tested against mocked replies. Not yet test
 | ForceDecks host `https://prd-{region}-api-extforcedecks.valdperformance.com`; Profiles host `https://prd-{region}-api-externalprofile.valdperformance.com`. | [A], [S1], [S2], [R] `R/config.R` |
 | `GET /profiles?tenantId=` returns `{"profiles":[{profileId, givenName, familyName, externalId, ...}]}` or 204. | [S2] schema `GetProfileSearchResponse`; [R] `R/profiles.R` uses `tenantId` |
 | `GET /tests?tenantId=&modifiedFromUtc=` returns `{"tests":[{testId, profileId, modifiedDateUtc, recordedDateUtc, recordedDateOffset, testType, ...}]}` or 204. First value format `YYYY-MM-DDT00:00:00.000Z`. | [A] Scenario 1; [S1] schema `GetCursorPagedTestsResponse` / `TestResponse` |
-| Paging: tests come ordered by `modifiedDateUtc`; set `modifiedFromUtc` to the last test's `modifiedDateUtc` and repeat until 204. The last test can repeat, so tests are de-duplicated by `testId`. | [A] Scenario 1; [R] `R/forcedecks_tests.R` |
+| Paging: tests come ordered by `modifiedDateUtc`; set `modifiedFromUtc` to the last test's `modifiedDateUtc` and repeat until 204. The last test can repeat, so tests are de-duplicated by `testId`. Tie handling (our choice, not from VALD): when a page ends on the time it was asked from, the cursor moves 1 ms past it so paging cannot stall; if several tests share that time, a warning names it, since tests with that time beyond the page are not reachable this way. | [A] Scenario 1; [R] `R/forcedecks_tests.R` |
 | `GET /v2019q3/teams/{teamId}/tests/{testId}/trials` returns an array of trials `{id, hubAthleteId, recordedUTC, recordedOffset, limb, results:[{resultId, value, limb, repeat, definition}]}`. teamId is the tenant ID. | [A] Scenario 2; [S1] schema `TrialDTO`, `TeamDTO` ("Team/Tenant Id") |
 | `recordedOffset` / `recordedDateOffset` are minutes to add to the UTC time. | [A] FAQ |
 | Whole-body metrics such as jump height have one result with limb `Both` (the guide) or `Trial` (the Swagger enum). Both are accepted. `repeat` is zero-based; only repeat 0 is used. | [A] FAQ; [S1] `ResultLimb` enum |
@@ -61,10 +61,11 @@ Each item below is handled in the code so it can be fixed with a setting, not a 
 3. **VALD units.** The tool multiplies by `resultUnitScaleFactor` and then converts the `resultUnit` to cm or m/s. It treats VALD's `RSIModified` unit as m/s (RSI-modified is jump height in metres over time to take-off in seconds, and ForceDecks exports label it [m/s]). Any other unit (for example `CentimeterSI` or `NoUnit`) stops the pull.
 4. **VALD limb value for jump height.** The guide says `Both`, the Swagger enum says `Trial`. Both are accepted.
 5. **Which VALD profile field the club fills.** Identity uses the profile's External ID, falling back to the VALD profileId. The crosswalk must hold the same value.
-6. **VALD paging edge cases.** If a page returns only the same last test again, paging stops. Not seen live.
+6. **VALD paging edge cases.** If a page ends on the same time it was asked from (the last test repeats, or several tests share one `modifiedDateUtc`), the tool moves 1 ms past that time and asks again. When more than one test shares the time it prints a warning, because tests with that exact time beyond that page cannot be reached. Paging still stops after 1000 pages. Not seen live.
 7. **Catapult activities window.** Assumed to return activities that start between `startTime` and `endTime`. The tool asks from one day early and keeps only periods whose own start falls on the requested local day.
 8. **Catapult stats row fields.** Field names come from the catapultR demo, not from a live reply. Numbers sent as strings are accepted.
 9. **Catapult throw and pitch slugs.** Not public. Columns stay blank until `CATAPULT_THROW_SLUG` and `CATAPULT_PITCH_SLUG` are set.
 10. **Catapult load slug.** `total_player_load` is the demo's parameter. The tool writes it as `player_load`. Set `CATAPULT_LOAD_SLUG` if the club uses another.
 11. **Catapult period IDs.** Periods are told apart by `period_id` (or the name when missing). Activity and period IDs are assumed to be strings or numbers; either works.
-12. **Rate limit headers.** A `Retry-After` header in seconds is honored if present. Neither vendor documents one.
+12. **Rate limit headers.** A `Retry-After` header in seconds is honored if present, up to 60 seconds. Neither vendor documents one. A server error (5xx) is retried once.
+13. **VALD token life.** If the token reply has no `expires_in`, the token is treated as good for 300 seconds.
