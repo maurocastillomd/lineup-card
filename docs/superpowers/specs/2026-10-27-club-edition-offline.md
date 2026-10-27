@@ -19,7 +19,7 @@ internet, data never leaves the laptop.
 1. Double-click `lineup-card.html` (Edge or Chrome, Windows or Mac).
 2. Drop in the exports: VALD ForceDecks CSV(s), Catapult CSV(s), wellness
    CSV(s) covering at least the last 28 days, plus `roster.csv` (crosswalk).
-3. Tick today's lineup (or drop `lineup.csv`).
+3. Paste or type today's lineup on the review screen (names or IDs, one per line), as in the hosted demo.
 4. Review screen: confirm or dismiss each flag, add a note. Same screen as now,
    including TE, SWC, z, MDC95 on the analyst side.
 5. Card: print to one page, save as image, or copy for group text.
