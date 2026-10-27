@@ -127,6 +127,13 @@ export function teamLine(day) {
   return `Whole team jumping ${Math.abs(Math.round(s.median_pct))}% ${s.median_pct < 0 ? "below" : "above"} normal.${note}`;
 }
 
+// The card's top line: club, date and, when the schedule names one, the opponent.
+export function metaLine(day, date) {
+  const s = day.schedule ?? {};
+  const game = s.opponent ? ` ${s.home_away === "away" ? "Away at" : "Home vs"} ${s.opponent}.` : "";
+  return `${day.club}. ${shortDate(date)}, ${date.slice(0, 4)}.${game}`;
+}
+
 export function countByStatus(players) {
   const out = { check_in: 0, watch: 0, no_change: 0, not_enough_data: 0 };
   for (const p of players) if (p.status in out) out[p.status]++;
@@ -159,7 +166,8 @@ export function plainSummary(day, players, todayIds = []) {
     return xs.length ? [`${WORDS[s]} (${xs.length}): ${xs.map(who).join("; ")}`] : [];
   });
 
-  const lines = [`Lineup Card, ${shortDate(day.date)}, vs ${day.schedule.opponent} (${day.schedule.home_away})`];
+  const s = day.schedule ?? {};
+  const lines = [`Lineup Card, ${shortDate(day.date)}${s.opponent ? `, vs ${s.opponent} (${s.home_away})` : ""}`];
   const stale = sourcesNote(day);
   if (stale) lines.push(stale);
   const groups = groupCheckins(players, day.team_shift);

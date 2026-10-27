@@ -1,5 +1,5 @@
 import {
-  applyDecisions, countByStatus, disclaimer, groupCheckins, hiddenSummary, isStale, jumpPosition, plainChange,
+  applyDecisions, countByStatus, disclaimer, groupCheckins, hiddenSummary, isStale, jumpPosition, metaLine, plainChange,
   plainReason, plainSummary, shortDate, sourcesNote, WORDS,
 } from "./logic.js";
 import { hasSavedReview, loadReview } from "./store.js";
@@ -73,8 +73,7 @@ export async function init(src) {
   $("stale").hidden = !sourcesNote(day);
 
   const sched = day.schedule;
-  $("meta").textContent = `${day.club}. ${shortDate(date)}, ${date.slice(0, 4)}. ` +
-    `${sched.home_away === "away" ? "Away at" : "Home vs"} ${sched.opponent}.`;
+  $("meta").textContent = metaLine(day, date);
   $("reviewed").textContent = review.approvedAt
     ? `Reviewed by ${review.reviewer}${example ? " (example review)" : ""}.` : "";
   $("unreviewed").hidden = Boolean(review.approvedAt);

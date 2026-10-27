@@ -250,3 +250,17 @@ test("review keys: demo key unchanged, club data scoped by club", () => {
   assert.equal(reviewKey("2026-09-20"), "lineupcard:review:2026-09-20");
   assert.equal(reviewKey("2026-09-20", "Memphis"), "lineupcard:review:Memphis:2026-09-20");
 });
+
+import { metaLine } from "../../web/js/logic.js";
+
+test("metaLine names the opponent only when the schedule has one", () => {
+  const day = (opponent, home_away) => ({ club: "Fictional Triple-A Club", schedule: { opponent, home_away, note: "" } });
+  assert.equal(metaLine(day("Riverton", "home"), "2026-09-20"), "Fictional Triple-A Club. Sun Sep 20, 2026. Home vs Riverton.");
+  assert.equal(metaLine(day("Riverton", "away"), "2026-09-20"), "Fictional Triple-A Club. Sun Sep 20, 2026. Away at Riverton.");
+  assert.equal(metaLine(day("", ""), "2026-09-20"), "Fictional Triple-A Club. Sun Sep 20, 2026.");
+});
+
+test("plainSummary leaves out the opponent when there is no schedule", () => {
+  const day = { ...sumDay(null), schedule: { opponent: "", home_away: "", note: "" } };
+  assert.equal(plainSummary(day, sumPlayers, []).split("\n")[0], "Lineup Card, Sun Sep 20");
+});
