@@ -211,7 +211,15 @@ export async function init(src) {
     try {
       const lib = await loadLib();
       const keep = (node) => !(node.classList && (node.classList.contains("noprint") || node.classList.contains("banner")));
-      const blob = await lib.toBlob($("card"), {
+      // Capture the card at its own size; without this its centring margin is copied
+      // into the image and pushes the right side out of frame.
+      const card = $("card");
+      const width = Math.ceil(Math.max(card.scrollWidth, card.getBoundingClientRect().width));
+      const height = Math.ceil(Math.max(card.scrollHeight, card.getBoundingClientRect().height));
+      const blob = await lib.toBlob(card, {
+        width,
+        height,
+        style: { margin: "0" },
         pixelRatio: 2,
         backgroundColor: getComputedStyle(document.body).backgroundColor,
         filter: keep,

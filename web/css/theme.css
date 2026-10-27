@@ -2,7 +2,7 @@
 :root {
   --bg: #FAFAF9; --surface: #F1F1F0; --card: #FFFFFF;
   --ink: #0B0B0C; --ink-dim: #52525B; --ink-faint: #666670;
-  --accent: #2039C4; --accent-dim: #182C93; --accent-wash: rgba(32, 57, 196, 0.06);
+  --accent: #2039C4; --accent-dim: #182C93; --on-accent: #FFFFFF; --accent-wash: rgba(32, 57, 196, 0.06);
   --line: rgba(11, 11, 12, 0.08);
   --ok: #246346; --warn: #815410; --alert: #9F3C2E;
   /* status colours (validated): amber is for marks and fills only, never for text */
@@ -17,7 +17,7 @@
   :root:not([data-theme="light"]) {
     --bg: #0E0E10; --surface: #17171A; --card: #1C1C20;
     --ink: #F4F4F5; --ink-dim: #A1A1AA; --ink-faint: #8B8B94;
-    --accent: #8C9BFF; --accent-dim: #6F80F5; --accent-wash: rgba(140, 155, 255, 0.10);
+    --accent: #8C9BFF; --accent-dim: #6F80F5; --on-accent: #0E0E10; --accent-wash: rgba(140, 155, 255, 0.10);
     --line: rgba(255, 255, 255, 0.10);
     --ok: #6FCF9E; --warn: #E0B25C; --alert: #F08A7A;
     --st-check: #DB4433; --st-watch: #CF9420;
@@ -32,7 +32,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 500; line-height: 1.2; ma
 .panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px; margin: 16px 0; }
 button, select, textarea, input { font: inherit; color: inherit; }
 button { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 6px 12px; cursor: pointer; }
-button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+button.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 textarea { width: 100%; min-height: 120px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px; }
 .word-check_in { color: var(--st-check); } .word-watch { color: var(--ink); }
 .word-no_change { color: var(--ink-dim); } .word-not_enough_data { color: var(--ink-faint); }
