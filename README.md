@@ -210,7 +210,7 @@ The whole pull stops after 15 minutes (set `LINEUP_PULL_BUDGET_S` in seconds to 
 
 ## Club Edition (offline)
 
-The Club Edition is one HTML file, `lineup-card.html`, that staff open from disk in Chrome. Edge uses the same engine but has not been checked yet. They drop in VALD, Catapult and wellness CSV exports plus `roster.csv`, review the flags, approve, and print the card. No install, no Python, no internet and no AI inside: a Content-Security-Policy in the file makes the browser refuse every network request.
+The Club Edition is one HTML file, `lineup-card.html`, that staff open from disk in Chrome. Edge uses the same engine but has not been checked yet. They drop in VALD, Catapult and wellness CSV exports plus `roster.csv`, review the flags, approve, and print the card with the "Print / PDF" button (Ctrl+P works too). No install, no Python, no internet and no AI inside: a Content-Security-Policy in the file makes the browser refuse every network request.
 
 **Build the share package.**
 

@@ -194,6 +194,7 @@ export async function init(src) {
 
   // ---- share bar ----
   const say = (text) => { $("share-msg").textContent = text; };
+  $("print").addEventListener("click", () => print());
 
   let copyTimer;
   $("copy").addEventListener("click", async () => {
