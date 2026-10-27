@@ -13,6 +13,7 @@
 .share-bar { display: flex; flex-wrap: wrap; gap: 8px; justify-content: end; }
 .share-bar button { white-space: nowrap; }
 .share-bar button:disabled { opacity: .6; cursor: progress; }
+.share-bar #export:disabled { cursor: not-allowed; }
 .share-msg { margin: 0; font-size: 13px; color: var(--ink-dim); min-height: 1.2em; text-align: right; }
 .banner { background: var(--accent-wash); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
 .stale-note { border: 1px solid var(--line); border-left: 4px solid var(--st-watch); border-radius: 10px; padding: 8px 12px; margin: 12px 0 0; }
