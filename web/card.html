@@ -18,16 +18,17 @@
       <p id="reviewed" class="reviewed"></p>
     </div>
     <div class="head-actions noprint">
-      <a href="index.html">Back to review</a>
+      <a href="index.html" data-go="review">Back to review</a>
       <div class="share-bar" role="group" aria-label="Share this card">
         <button id="copy" type="button">Copy for group text</button>
         <button id="save" type="button">Save as image</button>
         <button id="print" type="button">Print / PDF</button>
+        <button id="export" type="button">Export review</button>
       </div>
       <p id="share-msg" class="share-msg" role="status" aria-live="polite"></p>
     </div>
   </header>
-  <p id="unreviewed" class="banner" hidden>Not reviewed yet. <a href="index.html">Review first</a>.</p>
+  <p id="unreviewed" class="banner" hidden>Not reviewed yet. <a href="index.html" data-go="review">Review first</a>.</p>
   <p id="stale" class="stale-note" role="status" hidden></p>
 
   <section class="glance" aria-labelledby="glance-h">
@@ -71,6 +72,10 @@
     <p><strong>Jump</strong> = reactive strength from the force-plate jump (RSI-mod). <strong>Sources:</strong> VALD ForceDecks, Catapult (load, throws, pitches), morning wellness form. <span id="fiction-foot" hidden>Fictional roster and data.</span> <span id="league"></span></p>
   </footer>
 </main>
-<script type="module" src="js/card.js"></script>
+<script type="module">
+  import { init } from "./js/card.js";
+  import { fetchSource } from "./js/source.js";
+  init(fetchSource());
+</script>
 </body>
 </html>

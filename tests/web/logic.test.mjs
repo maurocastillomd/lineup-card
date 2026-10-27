@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { applyDecisions, bandPosition, groupCheckins, hiddenSummary, parseLineup } from "../../web/js/logic.js";
+import { reviewKey } from "../../web/js/store.js";
 
 const players = [
   { id: "LC01", name: "J. Ortega", pos: "RP", status: "check_in", word: "Check in" },
@@ -243,4 +244,9 @@ test("plainSummary carries the not-updated line after the title", () => {
   const day = { ...sumDay(null), sources: { vald: "ok", catapult: "failed" } };
   const lines = plainSummary(day, sumPlayers, []).split("\n");
   assert.equal(lines[1], "Catapult data not updated this morning.");
+});
+
+test("review keys: demo key unchanged, club data scoped by club", () => {
+  assert.equal(reviewKey("2026-09-20"), "lineupcard:review:2026-09-20");
+  assert.equal(reviewKey("2026-09-20", "Memphis"), "lineupcard:review:Memphis:2026-09-20");
 });

@@ -60,6 +60,10 @@
     <span id="approve-msg" class="err"></span>
   </section>
 </main>
-<script type="module" src="js/review.js"></script>
+<script type="module">
+  import { init } from "./js/review.js";
+  import { fetchSource } from "./js/source.js";
+  init(fetchSource());
+</script>
 </body>
 </html>
