@@ -97,6 +97,8 @@ export async function init(src) {
     const open = day.players.filter((p) => FLAGGED.has(p.status) && !review.decisions[p.id]);
     if (!review.todayIds.length) { $("approve-msg").textContent = "Mark today's players first."; return; }
     if (open.length) { $("approve-msg").textContent = `Decide on every flag first (${open.length} left).`; return; }
+    // The approval belongs to whoever clicked Approve, even on a review someone else started.
+    review.reviewer = src.reviewer;
     review.approvedAt = new Date().toISOString();
     if (!saveReview(day.date, review, src.scope)) {
       review.approvedAt = null;
