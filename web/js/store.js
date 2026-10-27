@@ -2,7 +2,9 @@
 // private windows and blocked storage must not break the page.
 // scope "" is the hosted demo (old keys, unchanged); the offline edition scopes keys by club.
 const PREFIX = "lineupcard:review:";
-export const reviewKey = (date, scope = "") => `${PREFIX}${scope ? `${scope}:` : ""}${date}`;
+// The club name is encoded, so no club name can contain the ":" that ends another's prefix.
+const scopePart = (scope) => (scope ? `${encodeURIComponent(scope)}:` : "");
+export const reviewKey = (date, scope = "") => `${PREFIX}${scopePart(scope)}${date}`;
 
 export function loadReview(date, scope = "") {
   try {
@@ -32,7 +34,8 @@ export function saveReview(date, review, scope = "") {
 
 // Removes every saved review for one club. Returns how many were removed.
 export function clearReviews(scope) {
-  const start = `${PREFIX}${scope}:`;
+  if (!scope) return 0;   // never clear every club at once
+  const start = `${PREFIX}${scopePart(scope)}`;
   let n = 0;
   try {
     const keys = [];
