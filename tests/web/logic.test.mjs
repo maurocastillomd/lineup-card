@@ -264,3 +264,11 @@ test("plainSummary leaves out the opponent when there is no schedule", () => {
   const day = { ...sumDay(null), schedule: { opponent: "", home_away: "", note: "" } };
   assert.equal(plainSummary(day, sumPlayers, []).split("\n")[0], "Lineup Card, Sun Sep 20");
 });
+
+test("plainSummary starts with NOT REVIEWED YET. only when the review is not approved", () => {
+  const day = sumDay(null);
+  const approved = plainSummary(day, sumPlayers, []);
+  assert.equal(plainSummary(day, sumPlayers, [], { reviewed: true }), approved);
+  const open = plainSummary(day, sumPlayers, [], { reviewed: false });
+  assert.equal(open, `NOT REVIEWED YET.\n${approved}`);
+});

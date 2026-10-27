@@ -153,7 +153,8 @@ export function sourcesNote(day) {
 
 const lowerFirst = (s) => s.charAt(0).toLowerCase() + s.slice(1);
 
-export function plainSummary(day, players, todayIds = []) {
+// reviewed: false puts "NOT REVIEWED YET." first, so an unapproved card is never pasted as approved.
+export function plainSummary(day, players, todayIds = [], { reviewed = true } = {}) {
   // todayIds is accepted so callers can pass the lineup; the summary always covers the whole roster,
   // so a flagged player who is not in today's lineup is still named.
   void todayIds;
@@ -167,7 +168,8 @@ export function plainSummary(day, players, todayIds = []) {
   });
 
   const s = day.schedule ?? {};
-  const lines = [`Lineup Card, ${shortDate(day.date)}${s.opponent ? `, vs ${s.opponent} (${s.home_away})` : ""}`];
+  const lines = reviewed ? [] : ["NOT REVIEWED YET."];
+  lines.push(`Lineup Card, ${shortDate(day.date)}${s.opponent ? `, vs ${s.opponent} (${s.home_away})` : ""}`);
   const stale = sourcesNote(day);
   if (stale) lines.push(stale);
   const groups = groupCheckins(players, day.team_shift);

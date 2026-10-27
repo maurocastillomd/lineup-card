@@ -8,7 +8,8 @@ The card already did that with fixed math, and you approved each flag on the rev
 
 - Use only the Copilot or ChatGPT your club has approved. Sign in with your club account.
 - Follow your club's rules on player data. If you are not sure, replace each name with initials before you paste.
-- Paste only text from the approved card. The AI never decides who is flagged. The card did that with fixed math, and you approved it.
+- Only paste a card you approved. If the copied text starts with "NOT REVIEWED YET", review it first, then copy it again.
+- The AI never decides who is flagged. The card did that with fixed math, and you approved it.
 - Read every answer before you send it. You are the one sending it.
 
 ## 2. Staff note from today's card

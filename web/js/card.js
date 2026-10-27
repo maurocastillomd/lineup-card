@@ -197,7 +197,7 @@ export async function init(src) {
 
   let copyTimer;
   $("copy").addEventListener("click", async () => {
-    const ok = await copyText(plainSummary(day, players, todayIds));
+    const ok = await copyText(plainSummary(day, players, todayIds, { reviewed: Boolean(review.approvedAt) }));
     const btn = $("copy");
     btn.textContent = ok ? "Copied" : "Could not copy";
     clearTimeout(copyTimer);
