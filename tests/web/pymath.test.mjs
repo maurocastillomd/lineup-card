@@ -43,3 +43,19 @@ test("dates", () => {
   assert.equal(localDayChicago("2026-09-20T21:05:00+00:00"), "2026-09-20");
   assert.throws(() => localDayChicago("2026-09-20T21:05:00"), /time zone/);
 });
+
+// Regression: a 0.0 in the list once made stdev loop forever. Values from Python 3.13.
+test("stdev, fmean and median with zeros in the list", () => {
+  const cases = [
+    { xs: [0.0, 0.448, 0.452], fmean: 0.3, median: 0.448, stdev: 0.2598153190248797 },
+    { xs: [0.0, 0.0], fmean: 0.0, median: 0.0, stdev: 0.0 },
+    { xs: [0.0, 1e-300, 5.0], fmean: 1.6666666666666667, median: 1e-300, stdev: 2.8867513459481287 },
+    { xs: [-0.0, 0.0, 2.5, -2.5], fmean: 0.0, median: 0.0, stdev: 2.041241452319315 },
+  ];
+  for (const c of cases) {
+    const label = JSON.stringify(c.xs);
+    assert.equal(fmean(c.xs), c.fmean, label);
+    assert.equal(median(c.xs), c.median, label);
+    assert.equal(stdev(c.xs), c.stdev, label);
+  }
+});
