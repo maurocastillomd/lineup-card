@@ -2,6 +2,16 @@
 // numbers as the Python reference (src/lineup_card), to the last digit, so
 // rounding, sums and SD copy CPython's exact behaviour.
 
+// Python tuple order: compare item by item with < (strings by code point,
+// never localeCompare). Used for every sorted() on tuples.
+export function cmpTuple(a, b) {
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] < b[i]) return -1;
+    if (a[i] > b[i]) return 1;
+  }
+  return 0;
+}
+
 // round(x, n): round the exact binary value, ties to even (CPython).
 export function pyRound(x, n = 0) {
   return Number(pyFixed(x, n));

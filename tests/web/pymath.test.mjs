@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { fmean, fsum, median, pyFixed, pyG, pyInt, pyFloat, pyRound, stdev } from "../../web/js/core/pymath.mjs";
+import { cmpTuple, fmean, fsum, median, pyFixed, pyG, pyInt, pyFloat, pyRound, stdev } from "../../web/js/core/pymath.mjs";
 import { addDays, daysBetween, localDayChicago } from "../../web/js/core/dates.mjs";
 
 const V = JSON.parse(readFileSync(new URL("../fixtures/pymath.json", import.meta.url)));
@@ -42,6 +42,22 @@ test("dates", () => {
   assert.equal(localDayChicago("2026-09-21T02:30:00Z"), "2026-09-20");   // 9:30 p.m. CDT
   assert.equal(localDayChicago("2026-09-20T21:05:00+00:00"), "2026-09-20");
   assert.throws(() => localDayChicago("2026-09-20T21:05:00"), /time zone/);
+});
+
+test("localDayChicago accepts the offsets Python's fromisoformat accepts", () => {
+  assert.equal(localDayChicago("2026-09-21T01:10:00+00"), "2026-09-20");
+  assert.equal(localDayChicago("2026-09-21T01:10:00+0000"), "2026-09-20");
+  assert.equal(localDayChicago("2026-09-21T01:10:00-05"), "2026-09-21");
+  assert.equal(localDayChicago("2026-09-20T23:30:00-05:00"), "2026-09-20");
+  // Python's adapter only rewrites a capital Z, so a small z is refused in both
+  assert.throws(() => localDayChicago("2026-09-21T01:10:00z"), /time zone/);
+});
+
+test("cmpTuple compares element by element like Python tuples", () => {
+  assert.equal(cmpTuple(["a", 2], ["a", 10]), -1);
+  assert.equal(cmpTuple(["b", 0], ["a", 9]), 1);
+  assert.equal(cmpTuple(["2026-09-20", 0.4], ["2026-09-20", 0.4]), 0);
+  assert.equal(cmpTuple(["Z"], ["a"]), -1);   // code points, not locale order
 });
 
 // Regression: a 0.0 in the list once made stdev loop forever. Values from Python 3.13.

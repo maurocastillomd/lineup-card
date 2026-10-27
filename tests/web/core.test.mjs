@@ -223,3 +223,83 @@ test("assessAthlete refuses two identities for one athlete", () => {
   rows[0] = { ...rows[0], name: "Someone Else" };
   assert.throws(() => assessAthlete(rows, SQ_TODAY), /Conflicting athlete identities/);
 });
+
+// ---- Review fixes: run.mjs (files in, days out) ----
+import { buildDays, sortFiles } from "../../web/js/core/run.mjs";
+
+const ROSTER = { name: "roster.csv", text: "lc_id,name,pos,vald_external_id,catapult_name\nLC01,J. Ortega,RP,V010,Jorge Ortega\n" };
+const WELL_HEAD = "athlete_id,date,sleep_quality,soreness,fatigue,stress,mood\n";
+const VALD_HEAD = "Name,ExternalId,Date,Time,Test Type,Trial,Jump Height (Imp-Mom) [cm],RSI-modified [m/s]\n";
+const CAT_HEAD = "player_name,period_name,period_number,start_time,end_time,duration,player_load,throw_count,pitch_count\n";
+const logOf = (out, day) => out.days[day].cleaning_log;
+
+test("buildDays gives the same result whatever order the files are dropped in", () => {
+  const a = { name: "a-wellness.csv", text: WELL_HEAD + "LC01,2026-09-20,3,3,3,3,3\n" };
+  const b = { name: "b-wellness.csv", text: WELL_HEAD + "LC01,2026-09-20,4,4,4,4,4\n" };
+  const one = buildDays([ROSTER, a, b], null);
+  const two = buildDays([b, ROSTER, a], null);
+  assert.deepEqual(two, one);
+  // files are read by name, so b's form is the later one and wins
+  assert.equal(one.days["2026-09-20"].players[0].wellness.today, 20);
+});
+
+test("Catapult duplicate periods across files do not depend on drop order", () => {
+  const a = { name: "a-cat.csv", text: CAT_HEAD + "Jorge Ortega,Game,1,2026-09-19T18:00:00Z,,,100,,\n" };
+  const b = { name: "b-cat.csv", text: CAT_HEAD + "Jorge Ortega,Game,1,2026-09-19T18:00:00Z,,,200,,\n" };
+  const w = { name: "w.csv", text: WELL_HEAD + "LC01,2026-09-20,3,3,3,3,3\n" };
+  const one = buildDays([ROSTER, a, b, w], null);
+  assert.deepEqual(buildDays([ROSTER, w, b, a], null), one);
+  // first period wins (duplicate_period), and a-cat.csv is read first
+  assert.equal(one.days["2026-09-20"].players[0].load.player_load_today, 100);
+});
+
+test("the same VALD trial with a differently spelled Name counts once", () => {
+  const a = { name: "a-vald.csv", text: VALD_HEAD + "J. Ortega,V010,2026-09-20,07:41,CMJ,1,33.9,0.448\nJ. Ortega,V010,2026-09-20,07:42,CMJ,2,34.1,0.452\n" };
+  const b = { name: "b-vald.csv", text: VALD_HEAD + "Jorge Ortega,V010,2026-09-20,07:41,CMJ,1,33.9,0.448\nJorge Ortega,V010,2026-09-20,07:42,CMJ,2,34.1,0.452\n" };
+  const out = buildDays([ROSTER, a, b], null);
+  assert.deepEqual(logOf(out, "2026-09-20").filter((e) => e.rule === "duplicate_row"),
+    [{ lc_id: "", day: "2026-09-20", source: "vald", rule: "duplicate_row", detail: "2 vald row(s) appeared in two files; counted once" }]);
+});
+
+test("Catapult overlap keys on the normalised player name; wellness on id, day and score", () => {
+  const a = { name: "a-cat.csv", text: CAT_HEAD + "Jorge Ortega,Game,1,2026-09-20T18:00:00Z,x,y,100,,\n" };
+  const b = { name: "b-cat.csv", text: CAT_HEAD + "jorge  ortega,Game,1,2026-09-20T18:00:00Z,,,100,,\n" };
+  const w1 = { name: "w1.csv", text: WELL_HEAD + "LC01,2026-09-20,3,3,3,3,3\n" };
+  const w2 = { name: "w2.csv", text: WELL_HEAD + "LC01,2026-09-20,4,2,3,3,3\n" };   // same total, other items
+  const rules = logOf(buildDays([ROSTER, a, b, w1, w2], null), "2026-09-20").filter((e) => e.rule === "duplicate_row");
+  assert.deepEqual(rules.map((e) => [e.source, e.detail]), [
+    ["catapult", "1 catapult row(s) appeared in two files; counted once"],
+    ["wellness", "1 wellness row(s) appeared in two files; counted once"],
+  ]);
+});
+
+test("a day whose only VALD rows are not CMJ still gets a card, as in Python", () => {
+  const v = { name: "vald.csv", text: VALD_HEAD + "J. Ortega,V010,2026-09-21,07:41,SJ,1,30.0,0.400\n" };
+  const w = { name: "w.csv", text: WELL_HEAD + "LC01,2026-09-20,3,3,3,3,3\n" };
+  assert.deepEqual(buildDays([ROSTER, v, w], null).index.dates, ["2026-09-20", "2026-09-21"]);
+});
+
+test("errors name the file and the row", () => {
+  const badRoster = { name: "roster.csv", text: ROSTER.text + "LC02,K. Ruiz,P,V020,Kevin Ruiz\n" };
+  assert.throws(() => buildDays([badRoster], null), /^Error: roster\.csv: row 3: Unknown position 'P' for LC02$/);
+  const w = { name: "w.csv", text: WELL_HEAD + "LC01,2026-09-20,3,3,3,3,3\nLC01,2026-09-21,9,3,3,3,3\n" };
+  assert.throws(() => buildDays([ROSTER, w], null), /^Error: w\.csv: row 3: Wellness items must be 1 to 5$/);
+  const v = { name: "v.csv", text: VALD_HEAD + "J. Ortega,V010,20-09-2026,07:41,CMJ,1,33.9,0.448\n" };
+  assert.throws(() => buildDays([ROSTER, v], null), /^Error: v\.csv: row 2: invalid date/);
+  const c = { name: "c.csv", text: CAT_HEAD + "Jorge Ortega,Game,1,2026-09-20T18:00:00,,,100,,\n" };
+  assert.throws(() => buildDays([ROSTER, c], null), /^Error: c\.csv: row 2: start_time/);
+});
+
+test("rows where every cell is blank are skipped (Excel leftovers)", () => {
+  const w = { name: "w.csv", text: WELL_HEAD + "LC01,2026-09-20,3,3,3,3,3\n,,,,,,\n , ,,,,,\n" };
+  const v = { name: "v.csv", text: VALD_HEAD + ",,,,,,,\n" };
+  const c = { name: "c.csv", text: CAT_HEAD + ",,,,,,,,\n" };
+  const r = { name: "roster.csv", text: ROSTER.text + ",,,,\n" };
+  assert.deepEqual(buildDays([r, w, v, c], null).index.dates, ["2026-09-20"]);
+});
+
+test("more than one schedule file is a problem, like the roster", () => {
+  const s1 = { name: "s1.csv", text: "date,opponent,home_away\n" };
+  const s2 = { name: "s2.csv", text: "date,opponent,home_away\n" };
+  assert.deepEqual(sortFiles([ROSTER, s1, s2]).problems, ["Drop only one schedule file"]);
+});

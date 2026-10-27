@@ -16,7 +16,7 @@
 
 import { addDays } from "./dates.mjs";
 import { noiseThreshold } from "./engine.mjs";
-import { fmean, median, pyRound, stdev } from "./pymath.mjs";
+import { cmpTuple, fmean, median, pyRound, stdev } from "./pymath.mjs";
 
 export const BASELINE_DAYS = 28;
 export const MIN_PAIRS = 10;
@@ -26,9 +26,6 @@ export const LEAGUE_REFERENCE = {
   jump_height_cm: { value: 42.0, unit: "cm", label: "illustrative, not a published MLB or MiLB norm" },
 };
 
-const byDayThenValue = (a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0);
-const entries = (m) => (m instanceof Map ? [...m.entries()] : Object.entries(m));
-const lookup = (m, k) => (m instanceof Map ? m.get(k) : m[k]);
 
 export function typicalError(readings, metric, today) {
   const start = addDays(today, -BASELINE_DAYS);
@@ -41,18 +38,18 @@ export function typicalError(readings, metric, today) {
   }
   const diffs = [];
   for (const points of byAthlete.values()) {
-    const values = [...points].sort(byDayThenValue).map(([, v]) => v);
+    const values = [...points].sort(cmpTuple).map(([, v]) => v);
     for (let i = 1; i < values.length; i++) diffs.push(values[i] - values[i - 1]);
   }
   if (diffs.length < MIN_PAIRS) return null;
   return pyRound(stdev(diffs) / 2 ** 0.5, 4);
 }
 
-// zById, posById: Map or plain object. Groups keep first-seen order of zById.
+// zById, posById: Maps. Groups keep first-seen order of zById.
 export function positionMedians(zById, posById) {
   const groups = new Map();
-  for (const [id, z] of entries(zById)) {
-    const pos = lookup(posById, id);
+  for (const [id, z] of zById) {
+    const pos = posById.get(id);
     if (!groups.has(pos)) groups.set(pos, []);
     groups.get(pos).push(z);
   }

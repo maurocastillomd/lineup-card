@@ -41,7 +41,12 @@ Python output is the spec. These details decide whether JS matches it to the las
 **Known, documented differences (offline only, never hit by the fictional data):**
 1. A Catapult period that starts just after midnight UTC belongs to the local day in the browser. In Python it belongs to the folder it was pulled into.
 2. A Catapult `start_time` with no time zone is an error in the browser. Python treats it as the computer's local time.
-3. The same row in two different files (two overlapping exports) is kept once in the browser and logged as `duplicate_row`. Python never sees overlaps, because each folder holds one export.
+3. The same row in two different files (two overlapping exports) is kept once in the browser and logged once per source per day as `duplicate_row`, with a count. Python never sees overlaps, because each folder holds one export. "The same row" means the same identity and values, not the same text: VALD `ExternalId`, day, trial, jump height and RSI-mod; Catapult player name (case and spacing ignored, as in the roster match), day, period number, period name, player load, throws and pitches; wellness athlete, day and score. A VALD `Name` spelled two ways still counts once.
+4. Files are read in name order (plain character order, like Python's `sorted()`), never in the order they were dropped. So "last wellness form wins" and "first Catapult period wins" give the same card however the files were picked.
+5. A row where every cell is blank (Excel often leaves these under the data) is skipped in the browser. Python fails on it.
+6. Errors name the file and the spreadsheet row (`w.csv: row 3: ...`, header is row 1). Python's messages do not.
+7. `pyFloat` refuses `nan`, `inf` and digits with underscores (`1_000`). Python's `float()` accepts them; a sports export never contains them.
+8. More than one schedule file is refused, like more than one roster.
 
 ---
 

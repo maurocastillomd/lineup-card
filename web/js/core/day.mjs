@@ -9,7 +9,7 @@ import {
   noiseThreshold, zScore,
 } from "./engine.mjs";
 import { LEAGUE_REFERENCE, MDC95_FACTOR, positionMedians, teamShift, testSensitivity, typicalError } from "./frames.mjs";
-import { pyRound } from "./pymath.mjs";
+import { cmpTuple, pyRound } from "./pymath.mjs";
 
 export const CLUB = "Fictional Triple-A Club";
 export const TREND_DAYS = 14;
@@ -62,13 +62,12 @@ export function domainJson(d, today, te) {
   };
 }
 
-const byDayThenValue = (a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0);
 
 // Daily RSI-mod z vs the baseline that applied on each day.
 export function trend(readings, lcId, today) {
   const spec = METRICS.neuromuscular;
   const series = readings.filter((r) => r.athlete_id === lcId && r.metric === spec.column)
-    .map((r) => [r.day, r.value]).sort(byDayThenValue);
+    .map((r) => [r.day, r.value]).sort(cmpTuple);
   const out = [];
   for (let offset = TREND_DAYS - 1; offset >= 0; offset--) {
     const day = addDays(today, -offset);

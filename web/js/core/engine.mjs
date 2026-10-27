@@ -35,7 +35,7 @@
 // numbers match to the last digit. Days are ISO strings, compared with < and <=.
 
 import { addDays } from "./dates.mjs";
-import { fmean, pyFixed, pyG, pyRound, stdev } from "./pymath.mjs";
+import { cmpTuple, fmean, pyFixed, pyG, pyRound, stdev } from "./pymath.mjs";
 
 export const BASELINE_DAYS = 28;
 export const MIN_BASELINE_SESSIONS = 10;
@@ -107,7 +107,6 @@ export function countConsecutiveDeclines(values) {
 export const noiseThreshold = (te) => NOISE_GATE_MULTIPLIER * te;
 
 // sorted() on (day, value) tuples
-const byDayThenValue = (a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0);
 
 // A DomainAssessment with the pydantic model's fields, in its field order.
 function domainAssessment(f) {
@@ -123,7 +122,7 @@ export const assessable = (d) => d.fresh && d.decline_z !== null;
 
 // Assess one response domain from its raw [day, value] series.
 export function assessDomain(spec, points, today, te = null) {
-  const pts = points.filter(([d]) => d <= today).map(([d, v]) => [d, v]).sort(byDayThenValue);
+  const pts = points.filter(([d]) => d <= today).map(([d, v]) => [d, v]).sort(cmpTuple);
   if (new Set(pts.map(([d]) => d)).size !== pts.length) {
     throw new Error("Multiple values for one metric-day need explicit aggregation");
   }
@@ -205,7 +204,7 @@ export function metricSeries(readings, metric, today) {
       byDay.set(r.day, r.value);
     }
   }
-  return [...byDay.entries()].sort(byDayThenValue);
+  return [...byDay.entries()].sort(cmpTuple);
 }
 
 const intOrNone = (v) => (v === null ? null : pyRound(v, 0));

@@ -1,7 +1,7 @@
 // Cleaning rules, ported from src/lineup_card/clean.py. Every decision goes in
 // the CleanLog so the coach sees it on the review screen.
 
-import { fmean, median, pyFixed } from "./pymath.mjs";
+import { cmpTuple, fmean, median, pyFixed } from "./pymath.mjs";
 
 const OUTLIER_FRACTION = 0.10;
 const MIN_TRIALS = 2;
@@ -17,7 +17,7 @@ export class CleanLog {
 
 // Same checks as the pydantic Reading: text is stripped, then length-checked
 // (code points, like Python); the metric must be known; the value finite and not negative.
-function text(label, s, max) {
+function checkedText(label, s, max) {
   const t = String(s).trim();
   const n = [...t].length;
   if (n < 1 || n > max) throw new Error(`Reading ${label} must be 1 to ${max} characters`);
@@ -27,16 +27,14 @@ function text(label, s, max) {
 export function makeReading(cw, lc_id, day, metric, value, source) {
   const p = cw.player(lc_id);
   const r = {
-    athlete_id: text("athlete_id", lc_id, 200), name: text("name", p.name, 200), pos: text("pos", p.pos, 100),
-    day, metric: String(metric).trim(), value, source: text("source", source, 200),
+    athlete_id: checkedText("athlete_id", lc_id, 200), name: checkedText("name", p.name, 200), pos: checkedText("pos", p.pos, 100),
+    day, metric: String(metric).trim(), value, source: checkedText("source", source, 200),
   };
   if (!METRIC_NAMES.has(r.metric)) throw new Error("Unknown metric; map export columns to an engine metric");
   if (!Number.isFinite(value)) throw new Error("Reading values must be finite");
   if (value < 0) throw new Error("This metric cannot be negative");
   return r;
 }
-
-const tupleCmp = (a, b) => { for (let i = 0; i < a.length; i++) { if (a[i] < b[i]) return -1; if (a[i] > b[i]) return 1; } return 0; };
 
 export function cleanCmj(trials, cw, log) {
   const groups = new Map();
@@ -48,7 +46,7 @@ export function cleanCmj(trials, cw, log) {
     groups.get(k).group.push(t);
   }
   const out = [];
-  for (const { id, day, group } of [...groups.values()].sort((a, b) => tupleCmp([a.id, a.day], [b.id, b.day]))) {
+  for (const { id, day, group } of [...groups.values()].sort((a, b) => cmpTuple([a.id, a.day], [b.id, b.day]))) {
     const rsi = group.map((t) => t.rsi_mod).filter((v) => v !== null);
     if (!rsi.length) continue;
     const m = median(rsi);
@@ -83,7 +81,7 @@ export function cleanCatapult(periods, cw, log) {
       sums.get(k).value += value;
     }
   }
-  return [...sums.values()].sort((a, b) => tupleCmp([a.id, a.day, a.metric], [b.id, b.day, b.metric]))
+  return [...sums.values()].sort((a, b) => cmpTuple([a.id, a.day, a.metric], [b.id, b.day, b.metric]))
     .map((s) => makeReading(cw, s.id, s.day, s.metric, s.value, "catapult"));
 }
 

@@ -43,6 +43,21 @@ const text = (row, col) => {
   if (row[col] == null) throw new Error(`a row has no value for column '${col}'`);
   return row[col].trim();
 };
+// Excel often leaves rows of empty cells under the data. They are skipped (Python
+// would fail on them). Every other row error names its spreadsheet row: the header
+// is row 1, so data row i is row i + 2.
+const blank = (r) => Object.values(r).every((c) => c == null || !c.trim());
+function eachRow(rows, fn) {
+  const out = [];
+  rows.forEach((r, i) => {
+    if (blank(r)) return;
+    let v;
+    try { v = fn(r); } catch (e) { throw new Error(`row ${i + 2}: ${e.message}`); }
+    if (v !== undefined) out.push(v);
+  });
+  return out;
+}
+
 const num = (cell) => { const s = (cell ?? "").trim(); return s ? pyFloat(s) : null; };
 
 // ---- vald.py ----
@@ -51,10 +66,19 @@ export function readVald({ headers, rows }) {
   if (missing.length) throw new Error("VALD export is missing columns: " + missing.join(", "));
   const jump = findColumn(headers, "Jump Height (Imp-Mom)", "cm");
   const rsi = findColumn(headers, "RSI-modified", "m/s");
-  return rows.filter((r) => text(r, "Test Type").toUpperCase() === "CMJ").map((r) => ({
+  return eachRow(rows, (r) => (text(r, "Test Type").toUpperCase() !== "CMJ" ? undefined : {
     name: text(r, "Name"), external_id: text(r, "ExternalId"), day: isoDate(text(r, "Date")),
     trial: pyInt(text(r, "Trial")), jump_height_cm: num(text(r, jump)), rsi_mod: num(text(r, rsi)),
   }));
+}
+
+// Every date that has a VALD row of any test type. Python's build_site counts a
+// folder with any data row as a day, so an SJ-only day is still a card.
+export function valdRowDates({ headers, rows }) {
+  if (!headers.includes("Date")) return [];
+  return eachRow(rows, (r) => {
+    try { return isoDate(text(r, "Date")); } catch { return undefined; }   // bad dates fail in readVald when it matters
+  });
 }
 
 // ---- catapult.py ----
@@ -67,7 +91,7 @@ export function readCatapult({ headers, rows }) {
     if (v !== null && !Number.isFinite(v)) throw new Error(`cannot convert '${cell}' to a whole number`);
     return v === null ? null : Math.trunc(v);
   };
-  return rows.map((r) => ({
+  return eachRow(rows, (r) => ({
     player_name: text(r, "player_name"), period_name: text(r, "period_name"),
     period_number: pyInt(text(r, "period_number")), day: localDayChicago(text(r, "start_time")),
     player_load: num(r.player_load), throw_count: int(r.throw_count), pitch_count: int(r.pitch_count),
@@ -79,7 +103,7 @@ const ITEMS = ["sleep_quality", "soreness", "fatigue", "stress", "mood"];
 export function readWellness({ headers, rows }) {
   const missing = missingCols(headers, ["athlete_id", "date", ...ITEMS]);
   if (missing.length) throw new Error("Wellness file is missing columns: " + missing.join(", "));
-  return rows.map((r) => {
+  return eachRow(rows, (r) => {
     const cells = ITEMS.map((i) => text(r, i));
     let score = null;
     if (cells.every(Boolean)) {
@@ -93,7 +117,8 @@ export function readWellness({ headers, rows }) {
 
 // ---- crosswalk.py ----
 export const POSITIONS = ["SP", "RP", "C", "IF", "OF"];
-const key = (text) => text.toLowerCase().split(/\s+/).filter(Boolean).join(" ");
+// Catapult names match whatever the case and spacing.
+export const nameKey = (s) => s.toLowerCase().split(/\s+/).filter(Boolean).join(" ");
 
 export function readCrosswalk({ headers, rows }) {
   // Python raises a bare KeyError here; the JS says which column is missing.
@@ -102,21 +127,21 @@ export function readCrosswalk({ headers, rows }) {
   const players = new Map();
   const vald = new Map();
   const catapult = new Map();
-  for (const r of rows) {
+  eachRow(rows, (r) => {
     const id = text(r, "lc_id");
     const pos = text(r, "pos");
     if (!POSITIONS.includes(pos)) throw new Error(`Unknown position '${r.pos}' for ${id}`);
     if (players.has(id)) throw new Error(`duplicate Lineup Card ID ${id}`);
     players.set(id, { lc_id: id, name: text(r, "name"), pos });
-    for (const [table, raw] of [[vald, text(r, "vald_external_id")], [catapult, key(text(r, "catapult_name"))]]) {
+    for (const [table, raw] of [[vald, text(r, "vald_external_id")], [catapult, nameKey(text(r, "catapult_name"))]]) {
       if (table.has(raw)) throw new Error(`duplicate source identity '${raw}'`);
       table.set(raw, id);
     }
-  }
+  });
   return {
     players,
     fromVald: (externalId) => vald.get(externalId.trim()) ?? null,
-    fromCatapult: (name) => catapult.get(key(name)) ?? null,
+    fromCatapult: (name) => catapult.get(nameKey(name)) ?? null,
     player: (id) => players.get(id),
   };
 }
@@ -126,7 +151,7 @@ export function readCrosswalk({ headers, rows }) {
 export function readSchedule({ rows }) {
   const days = new Map();
   for (const r of rows) {
-    if (r.date == null || days.has(r.date)) continue;
+    if (r.date == null || days.has(r.date) || blank(r)) continue;
     days.set(r.date, { opponent: r.opponent ?? "", home_away: r.home_away ?? "", note: r.note ?? "" });
   }
   return days;

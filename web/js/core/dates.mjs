@@ -21,8 +21,10 @@ const CHICAGO = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Chicago", 
 // The club's local date for a UTC timestamp, so a 7 p.m. game is not tomorrow.
 export function localDayChicago(stamp) {
   const s = String(stamp).trim();
-  if (!/(Z|[+-]\d{2}:?\d{2})$/.test(s)) throw new Error(`start_time '${stamp}' needs a time zone (Z or +00:00)`);
-  const t = Date.parse(s);
+  // Python (fromisoformat after Z -> +00:00) takes Z, +HH, +HHMM and +HH:MM.
+  const m = /(Z|([+-]\d{2}):?(\d{2})?)$/.exec(s);
+  if (!m) throw new Error(`start_time '${stamp}' needs a time zone (Z or +00:00)`);
+  const t = Date.parse(m[1] === "Z" ? s : `${s.slice(0, m.index)}${m[2]}:${m[3] ?? "00"}`);   // Date.parse wants +HH:MM
   if (Number.isNaN(t)) throw new Error(`invalid start_time '${stamp}'`);
   return CHICAGO.format(new Date(t));
 }
