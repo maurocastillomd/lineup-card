@@ -121,3 +121,105 @@ test("makeReading enforces the pydantic checks", () => {
   assert.throws(() => makeReading(cw, "LC01", "2026-09-20", "rsi_mod", -1, "x"), /negative/);
   assert.equal(makeReading(cw, "LC01", "2026-09-20", " rsi_mod ", 0.4, " vald ").source, "vald");
 });
+
+// ---- Task 5: engine and frames ----
+import { assessAthlete, assessDomain, assessSquad, loadContext, METRICS, noiseThreshold } from "../../web/js/core/engine.mjs";
+import { teamShift, testSensitivity, typicalError } from "../../web/js/core/frames.mjs";
+import { addDays } from "../../web/js/core/dates.mjs";
+
+const series = (vals, end = "2026-09-20") => vals.map((v, i) => [addDays(end, i - vals.length + 1), v]);
+const steady = [0.45, 0.46, 0.44, 0.45, 0.47, 0.45, 0.44, 0.46, 0.45, 0.46, 0.45, 0.44];
+
+test("assessDomain flags a large drop as review", () => {
+  const d = assessDomain(METRICS.neuromuscular, series([...steady, 0.38]), "2026-09-20");
+  assert.equal(d.status, "review");
+  assert.match(d.reasons[0], /RSI-mod \d\.\d SD below his 28-day normal; test noise not yet estimated/);
+  // full object, values from the Python engine on the same input
+  assert.deepEqual(d, {
+    domain: "neuromuscular", status: "review", fresh: true, observed_on: "2026-09-20", today: 0.38,
+    base: { mean: 0.45166666666666666, sd: 0.00937436866561092, n: 12, swc: 0.001874873733122184 },
+    pct: -15.9, decline_z: -7.644959273851665, consecutive_declines: 3, te: null, beyond_noise: null,
+    reasons: ["RSI-mod 7.6 SD below his 28-day normal; test noise not yet estimated"],
+  });
+});
+
+test("the 1.5 x TE gate turns a small drop into no change", () => {
+  const d = assessDomain(METRICS.neuromuscular, series([...steady, 0.43]), "2026-09-20", 0.05);
+  assert.equal(d.status, "cleared");
+  assert.equal(d.reasons[0], "RSI-mod drop inside test noise (TE 0.05 m/s)");
+  assert.equal(d.decline_z, -2.311266757210969);
+  assert.equal(d.pct, -4.8);
+  assert.equal(noiseThreshold(0.02), 0.03);
+});
+
+test("fewer than 10 readings is baseline-building", () => {
+  const d = assessDomain(METRICS.neuromuscular, series(steady.slice(0, 5)), "2026-09-20");
+  assert.equal(d.status, "insufficient_data");
+  assert.deepEqual(d.reasons, ["baseline-building"]);
+  assert.equal(d.today, 0.47);
+});
+
+test("team shift only on a drop beyond the gate", () => {
+  assert.equal(teamShift([-0.05, -0.06, -0.04], [-10, -12, -9], 0.02).beyond_noise, true);
+  assert.equal(teamShift([0.05, 0.06, 0.04], [10, 12, 9], 0.02).beyond_noise, false);
+  assert.equal(teamShift([], [], 0.02), null);
+});
+
+test("typicalError needs 10 pairs; testSensitivity rates SWC/TE", () => {
+  assert.equal(typicalError([], "rsi_mod", "2026-09-20"), null);
+  assert.equal(testSensitivity([0.4, 0.5], 0.01).rating, "good");
+  assert.equal(testSensitivity([0.4], 0.01), null);
+  assert.deepEqual(testSensitivity([0.4, 0.5], 0.01), {
+    n: 2, grand_mean: 0.45, between_sd: 0.0707, te: 0.01, cv_pct: 2.2, swc: 0.0141,
+    swc_te: 1.41, mdc95: 0.0277, gate: 0.015, rating: "good",
+  });
+});
+
+// A small squad; expected values from running the Python engine on the same rows.
+const D0 = "2026-09-01";
+const twoDomains = (athlete_id, name, pos, rsi, well) => rsi.flatMap((r, i) => [
+  { athlete_id, name, pos, day: addDays(D0, i), metric: "rsi_mod", value: r, source: "synthetic" },
+  { athlete_id, name, pos, day: addDays(D0, i), metric: "wellness_score", value: well[i], source: "synthetic" },
+]);
+const rep = (pair, n) => Array.from({ length: n }, () => pair).flat();
+const SQ_TODAY = addDays(D0, 20);
+const squadRows = () => [
+  ...twoDomains("LC01", "J. Doe", "RP", [...rep([0.55, 0.57], 10), 0.546], [...rep([20, 22], 10), 19]),
+  ...twoDomains("LC02", "A. Ruiz", "C", [...rep([0.55, 0.57], 10), 0.56], [...rep([20, 22], 10), 21]),
+  ...twoDomains("LC03", "B. Lee", "SP", [...rep([0.55, 0.57], 10), 0.53], [...rep([20, 22], 10), 21]),
+  ...twoDomains("LC04", "C. Kim", "OF", rep([0.55, 0.57], 3), rep([20, 22], 3)),
+  { athlete_id: "LC01", name: "J. Doe", pos: "RP", day: SQ_TODAY, metric: "throw_count", value: 12.5, source: "synthetic" },
+  { athlete_id: "LC01", name: "J. Doe", pos: "RP", day: SQ_TODAY, metric: "player_load", value: 301.7, source: "synthetic" },
+];
+const SQ_TE = { rsi_mod: 0.005, wellness_score: 0.5 };
+
+test("assessAthlete: two Watch domains beyond noise converge to Check in", () => {
+  const a = assessAthlete(squadRows().filter((r) => r.athlete_id === "LC01"), SQ_TODAY, SQ_TE);
+  assert.equal(a.status, "review");
+  assert.deepEqual(a.domains.map((d) => [d.status, d.decline_z]), [["monitor", -1.9493588689617927], ["monitor", -1.3645512082732516]]);
+  assert.deepEqual(a.drivers, ["perceptual", "neuromuscular"]);
+  assert.deepEqual(a.reasons, [
+    "2 response domains at or below z -1.2; convergence review rule",
+    "Wellness 1.9 SD below his 28-day normal and beyond test noise",
+    "RSI-mod 1.4 SD below his 28-day normal and beyond test noise",
+  ]);
+  // 12.5 throws rounds half to even, like Python's int(round())
+  assert.deepEqual(a.load, { player_load_today: 301.7, throws_today: 12, pitches_today: null, throws_7d: 12 });
+  assert.deepEqual(Object.keys(a), ["athlete_id", "name", "pos", "status", "domains", "drivers", "load", "reasons"]);
+});
+
+test("assessSquad sorts worst first, as Python does", () => {
+  const out = assessSquad(squadRows(), SQ_TODAY, SQ_TE);
+  assert.deepEqual(out.map((a) => [a.athlete_id, a.status]),
+    [["LC03", "review"], ["LC01", "review"], ["LC04", "insufficient_data"], ["LC02", "cleared"]]);
+  assert.deepEqual(out[3].domains.map((d) => d.decline_z), [0.0, 1.0821115497893228e-14]);
+  assert.deepEqual(out[2].reasons, ["Incomplete response-domain coverage; check missing or stale data"]);
+  assert.equal(typicalError(squadRows(), "rsi_mod", SQ_TODAY), 0.0142);
+  assert.deepEqual(loadContext([], D0), { player_load_today: null, throws_today: null, pitches_today: null, throws_7d: null });
+});
+
+test("assessAthlete refuses two identities for one athlete", () => {
+  const rows = squadRows().filter((r) => r.athlete_id === "LC02");
+  rows[0] = { ...rows[0], name: "Someone Else" };
+  assert.throws(() => assessAthlete(rows, SQ_TODAY), /Conflicting athlete identities/);
+});
