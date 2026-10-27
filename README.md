@@ -241,6 +241,7 @@ JPEG previews of the two PDFs are in `docs/club-edition/`.
 6. Errors name the file and the spreadsheet row.
 7. `nan`, `inf` and numbers with underscores are refused.
 8. More than one schedule file is refused, like more than one roster.
+9. Catapult times are read as US Central time (America/Chicago) for every club, the same as Python. There is no setting. For a club in another time zone, a session near midnight can land on the wrong day.
 
 Full wording: `docs/superpowers/plans/2026-10-27-club-edition-offline.md`.
 
