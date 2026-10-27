@@ -6,8 +6,13 @@ browser from loading or sending anything over the network.
 
 The bundler is ours and handles only our own code style:
   import { a, b as c } from "./x.js";        (one or more lines, relative paths)
-  export function / async function / const / let / class NAME
-Anything else stops the build with a message.
+  export function / async function / const / class NAME
+Anything else stops the build with a message. In particular:
+  - "export let" is refused: the bundle copies each export once, at load,
+    so a later reassignment would not be seen by importers.
+  - "export const a = 1, b = 2" (several names in one export) is refused.
+    The check reads only the export's first line, so a second name after a
+    multi-line value is not caught; write one name per export.
 
 Run: .venv/bin/python scripts/build_offline.py
 """
@@ -62,12 +67,49 @@ def license_text() -> str:
 
 
 IMPORT = re.compile(r'^import\s*\{([^}]*)\}\s*from\s*"(\.\.?/[^"]+)";?[ \t]*$', re.M)
-EXPORT_DECL = re.compile(r'^export\s+(async\s+function|function|const|let|class)\s+([A-Za-z_$][\w$]*)', re.M)
+EXPORT_DECL = re.compile(r'^export\s+(async\s+function|function|const|class)\s+([A-Za-z_$][\w$]*)', re.M)
+EXPORT_LET = re.compile(r'^export\s+let\b', re.M)
+EXPORT_CONST_LINE = re.compile(r'^export\s+const\s+[A-Za-z_$][\w$]*\s*=(.*)$', re.M)
 LEFTOVER = re.compile(r'^\s*(import|export)\b', re.M)
 
 
 def fail(msg: str) -> None:
     raise SystemExit(f"build_offline: {msg}")
+
+
+def second_binding(rest: str) -> bool:
+    """True when the rest of an export's first line has a top-level ", name =" (a second binding)."""
+    depth, quote, i = 0, "", 0
+    while i < len(rest):
+        c = rest[i]
+        if quote:
+            if c == "\\":
+                i += 1
+            elif c == quote:
+                quote = ""
+        elif c in "'\"`":
+            quote = c
+        elif c in "([{":
+            depth += 1
+        elif c in ")]}":
+            depth -= 1
+        elif c == "," and depth == 0 and re.match(r",\s*[A-Za-z_$][\w$]*\s*=(?!=|>)", rest[i:]):
+            return True
+        elif c == "/" and rest[i:i + 2] == "//":
+            return False
+        i += 1
+    return False
+
+
+def strip_exports(key: str, body: str) -> tuple[str, list[str]]:
+    """Turn 'export function/const/class NAME' into plain declarations; return the names."""
+    if EXPORT_LET.search(body):
+        fail(f"{key}: 'export let' is not supported (importers would not see later changes). Use export const.")
+    for m in EXPORT_CONST_LINE.finditer(body):
+        if second_binding(m.group(1)):
+            fail(f"{key}: one name per export, please: {m.group(0).strip()!r}")
+    names = [n for _, n in EXPORT_DECL.findall(body)]
+    return EXPORT_DECL.sub(lambda m: f"{m.group(1)} {m.group(2)}", body), names
 
 
 def module_path(base: Path, spec: str) -> Path:
@@ -114,8 +156,7 @@ def bundle(entry: Path) -> str:
             return f'const {{ {", ".join(names)} }} = __m["{dep}"];'
 
         body = IMPORT.sub(imp, src)
-        names = [n for _, n in EXPORT_DECL.findall(body)]
-        body = EXPORT_DECL.sub(lambda m: f"{m.group(1)} {m.group(2)}", body)
+        body, names = strip_exports(key, body)
         left = LEFTOVER.search(body)
         if left:
             line = body[left.start():].strip().splitlines()[0]
@@ -136,7 +177,7 @@ def css(path: Path) -> str:
         return f'url("data:font/woff2;base64,{data}")'
 
     text = re.sub(r'url\("(\.\./fonts/[^"]+\.woff2)"\)', font, text)
-    other = re.search(r'url\(\s*(?!["\']?(?:data:|#))', text)
+    other = re.search(r'url\(\s*(?!["\']?(?:data:|#))', text, re.I)
     if other:
         fail(f"{path.name}: url() that would load a file: {text[other.start():other.start() + 60]!r}")
     return text

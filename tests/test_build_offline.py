@@ -30,6 +30,8 @@ def test_nothing_is_loaded_from_anywhere():
     html = re.sub(r'<script id="vendor-html-to-image">.*?</script>', "", html, flags=re.S)   # third-party source text
     assert not re.search(r'<(script|link|img|iframe)[^>]+(src|href)=', html), "external tag"
     assert not re.search(r'url\(\s*(?!["\']?(?:data:|#))', html), "url() that is not data: or #id"
+    styles = "".join(re.findall(r"<style[^>]*>(.*?)</style>", html, re.S))
+    assert not re.search(r'url\(\s*(?!["\']?(?:data:|#))', styles, re.I), "CSS url() in any case"
     assert not re.search(r'^\s*(import|export)\s', html, re.M), "unbundled module syntax"
     assert "fonts.googleapis" not in html and "jsdelivr" not in html
 
