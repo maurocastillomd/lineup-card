@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lineup Card</title>
+  <!-- No CSP here: it would block js/offline.js on the dev server. The offline build adds it. -->
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <!-- Each screen turns on only its own sheet (offline.js), so the screens look exactly like the hosted pages. -->
+  <link rel="stylesheet" href="css/card.css" id="css-card">
+  <link rel="stylesheet" href="css/review.css" id="css-review">
+  <link rel="stylesheet" href="css/offline.css">
+</head>
+<body>
+<div id="app"></div>
+
+<!-- Filled from the <body> of these pages (scripts removed): by the build, or in dev by offline.js. -->
+<template id="tpl-review" data-from="index.html"></template>
+<template id="tpl-card" data-from="card.html"></template>
+
+<template id="tpl-load">
+  <main class="wrap load">
+    <h1>Lineup Card</h1>
+    <p class="lede">Runs on this computer. Nothing is uploaded.</p>
+
+    <div class="who-row">
+      <label>Club name <input id="club" required autocomplete="organization" placeholder="e.g. your club"></label>
+      <label>Your name <input id="reviewer" required autocomplete="name" placeholder="Shown on the card as the reviewer"></label>
+    </div>
+
+    <div id="drop" class="drop" role="button" tabindex="0" aria-describedby="drop-text">
+      <input type="file" id="files" multiple accept=".csv,text/csv" hidden>
+      <p id="drop-text">Drop the VALD, Catapult and wellness exports and roster.csv here, or click to choose</p>
+    </div>
+
+    <ul id="found" class="found" aria-label="Files found"></ul>
+    <p id="problems" class="problems" role="alert"></p>
+
+    <div class="load-actions">
+      <button id="go" class="primary" type="button">Build today's review</button>
+      <button id="sample" type="button">Try it with the fictional sample</button>
+      <button id="clear" type="button">Clear the file list</button>
+    </div>
+    <p><button id="forget" class="small" type="button">Forget saved reviews on this computer</button></p>
+
+    <footer class="load-foot">
+      <p>Built by Mauro Castillo as a portfolio example. Not a club product. A coaching aid, not a diagnosis or injury predictor. No AI inside.</p>
+    </footer>
+  </main>
+</template>
+
+<script type="module" src="js/offline.js"></script>
+</body>
+</html>
