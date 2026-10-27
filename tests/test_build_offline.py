@@ -53,3 +53,14 @@ def test_templates_are_filled_so_the_dev_fetch_never_runs():
         assert body and body.group(1).strip(), tpl
         assert "<script" not in body.group(1)
     assert "data-from=" not in html
+
+
+def test_licenses_travel_inside_the_file():
+    html = build()
+    block = re.search(r'<script type="text/plain" id="licenses">(.*?)</script>', html, re.S)
+    assert block, "licenses block missing"
+    text = block.group(1)
+    assert "</script" not in text.lower()
+    for need in ("html-to-image", "SIL OPEN FONT LICENSE", "Copyright (c) 2026 Ryan", "Permission is hereby granted"):
+        assert need in text, need
+    assert text.count("Permission is hereby granted") >= 2, "both MIT texts"

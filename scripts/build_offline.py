@@ -28,6 +28,32 @@ ENTRY = "js/offline.js"
 CSP = ("default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
        "font-src data:; img-src data: blob:; connect-src data:; base-uri 'none'; form-action 'none'")
 
+# Third-party licenses travel with the file: a short notice plus each full text,
+# inlined as a non-executed <script type="text/plain" id="licenses"> block.
+# package_club_edition.py copies the same files into dist/club-edition/licenses/.
+LICENSE_FILES = (  # (name in the package, source)
+    ("LICENSE-html-to-image.txt", WEB / "vendor" / "LICENSE-html-to-image.txt"),
+    ("OFL.txt", WEB / "fonts" / "OFL.txt"),
+    ("LICENSE-anatomy-kit.txt", WEB / "figures" / "board" / "vendor" / "LICENSE"),
+)
+NOTICE = """Lineup Card, Club Edition: third-party notices
+
+- html-to-image 1.11.11 (MIT License, Copyright (c) 2017-2023 W.Y.): used by "Save as image".
+- Fraunces, Hanken Grotesk and IBM Plex Mono fonts (SIL Open Font License 1.1): the fonts.
+- Anatomy isometric drawing kit, iso-kit and lathe (MIT License, Copyright (c) 2026 Ryan):
+  used at build time to draw the availability board. Only the drawing is in this file.
+
+The full license texts follow.
+"""
+
+
+def license_text() -> str:
+    parts = [NOTICE]
+    for name, path in LICENSE_FILES:
+        parts.append(f"\n===== {name} =====\n\n{path.read_text(encoding='utf-8').strip()}\n")
+    return "".join(parts)
+
+
 IMPORT = re.compile(r'^import\s*\{([^}]*)\}\s*from\s*"(\.\.?/[^"]+)";?[ \t]*$', re.M)
 EXPORT_DECL = re.compile(r'^export\s+(async\s+function|function|const|let|class)\s+([A-Za-z_$][\w$]*)', re.M)
 LEFTOVER = re.compile(r'^\s*(import|export)\b', re.M)
@@ -153,7 +179,9 @@ def main() -> None:
     lib = safe_inline("html-to-image.js", (WEB / "vendor" / "html-to-image.js").read_text(encoding="utf-8"))
     board = safe_inline("board.svg", (WEB / "figures" / "board" / "board.svg").read_text(encoding="utf-8"))
     app = safe_inline("app bundle", bundle(WEB / ENTRY))
-    scripts = (f'<script type="image/svg+xml" id="board-svg">{board}</script>\n'
+    notices = safe_inline("license texts", license_text())
+    scripts = (f'<script type="text/plain" id="licenses">\n{notices}</script>\n'
+               f'<script type="image/svg+xml" id="board-svg">{board}</script>\n'
                f'<script id="vendor-html-to-image">\n{lib}\n</script>\n'
                f'<script type="module">\n{app}\n</script>')
     page = replace_once(page, '<script type="module" src="js/offline.js"></script>', scripts)

@@ -225,6 +225,7 @@ It rebuilds `dist/lineup-card.html` (with `scripts/build_offline.py`), then make
 - `sample-data/`: the fictional `roster.csv`, `schedule.csv` and one folder per day of VALD, Catapult and wellness exports.
 - `HOW-TO-USE.pdf`: one page, five steps with pictures (source `docs/club-edition/how-to-use.html`).
 - `IT-FACT-SHEET.pdf`: one page of facts IT can check: the policy, where data lives, how to delete it, third-party licenses (source `docs/club-edition/it-fact-sheet.html`).
+- `licenses/`: a third-party notice and the full license texts (html-to-image MIT, fonts OFL 1.1, anatomy kit MIT). The same texts are inlined in `lineup-card.html` as a `<script type="text/plain" id="licenses">` block.
 - `COPILOT-CHATGPT-PROMPTS.md`: optional prompts for the club's approved Copilot or ChatGPT, used only on the approved card text. The AI never decides who is flagged.
 
 JPEG previews of the two PDFs are in `docs/club-edition/`.

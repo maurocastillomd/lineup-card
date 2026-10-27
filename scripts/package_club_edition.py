@@ -6,6 +6,7 @@ It holds:
   HOW-TO-USE.pdf              one Letter page, printed from docs/club-edition/how-to-use.html
   IT-FACT-SHEET.pdf           one Letter page, printed from docs/club-edition/it-fact-sheet.html
   COPILOT-CHATGPT-PROMPTS.md  the optional prompt guide
+  licenses/                   third-party notices and full license texts
 
 Only fictional data goes in. Nothing is sent anywhere.
 
@@ -21,6 +22,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "scripts"))
+from build_offline import LICENSE_FILES, NOTICE  # noqa: E402
 DIST = ROOT / "dist"
 PKG = DIST / "club-edition"
 DOCS = ROOT / "docs" / "club-edition"
@@ -74,6 +77,12 @@ def main() -> None:
         dest.mkdir()
         for f in sorted(day.glob("*.csv")):
             shutil.copy2(f, dest / f.name)
+
+    licenses = PKG / "licenses"
+    licenses.mkdir()
+    for name, src in LICENSE_FILES:
+        shutil.copy2(src, licenses / name)
+    (licenses / "THIRD-PARTY-NOTICES.txt").write_text(NOTICE, encoding="utf-8")
 
     shutil.copy2(DOCS / "COPILOT-CHATGPT-PROMPTS.md", PKG / "COPILOT-CHATGPT-PROMPTS.md")
     print_pdf(DOCS / "how-to-use.html", PKG / "HOW-TO-USE.pdf")
