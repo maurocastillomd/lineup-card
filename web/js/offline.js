@@ -7,6 +7,7 @@ import { buildDays, sortFiles } from "./core/run.mjs";
 import { init as initCard } from "./card.js";
 import { init as initReview } from "./review.js";
 import { clearReviews } from "./store.js";
+import { filesFromEntries, filesFromPicker } from "./folders.js";
 import { SAMPLE, SAMPLE_CLUB, SAMPLE_EXAMPLE } from "./sample-data.js";
 
 const app = document.getElementById("app");
@@ -140,7 +141,23 @@ function showLoad() {
   });
   $("drop").addEventListener("dragover", (e) => { e.preventDefault(); $("drop").classList.add("over"); });
   $("drop").addEventListener("dragleave", () => $("drop").classList.remove("over"));
-  $("drop").addEventListener("drop", (e) => { e.preventDefault(); $("drop").classList.remove("over"); take(e.dataTransfer.files); });
+  $("drop").addEventListener("drop", async (e) => {
+    e.preventDefault();
+    $("drop").classList.remove("over");
+    // Read the entries now: the browser empties the drop's item list once this handler returns.
+    const plain = Array.from(e.dataTransfer.files);
+    const entries = Array.from(e.dataTransfer.items ?? [], (i) => (i.kind === "file" ? i.webkitGetAsEntry?.() : null));
+    // Plain files go the plain way. Chrome refuses entry reads on a page opened from disk,
+    // so a folder is tried through its entries and, if refused, the user is sent to the folder button.
+    if (!entries.some((en) => en?.isDirectory)) return take(plain);
+    try {
+      take(await filesFromEntries(entries.filter(Boolean)));
+    } catch {
+      say(['This browser cannot read a dropped folder here. Click "Choose a folder" instead, or drop the files themselves.']);
+    }
+  });
+  $("folder").addEventListener("change", (e) => { take(filesFromPicker(e.target.files)); e.target.value = ""; });
+  $("choose-folder").addEventListener("click", () => $("folder").click());
   $("clear").addEventListener("click", () => { files = []; readProblems = []; list(); });
   const start = (theFiles, club) => {
     const reviewer = $("reviewer").value.trim();

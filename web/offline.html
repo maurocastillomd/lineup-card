@@ -33,6 +33,11 @@
       <input type="file" id="files" multiple accept=".csv,text/csv" hidden>
       <p id="drop-text">Drop the VALD, Catapult and wellness exports and roster.csv here, or click to choose</p>
     </div>
+    <p class="pick-folder">
+      <input type="file" id="folder" webkitdirectory multiple hidden>
+      <button id="choose-folder" type="button">Choose a folder</button>
+      <span>The last 4 weeks or more of daily exports, plus roster.csv.</span>
+    </p>
 
     <ul id="found" class="found" aria-label="Files found"></ul>
     <p id="problems" class="problems" role="alert"></p>

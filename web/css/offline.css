@@ -26,6 +26,9 @@
 .load .drop:hover { border-color: var(--accent); }
 .load .drop.over { border-color: var(--accent); background: var(--accent-wash); color: var(--ink); }
 
+.load .pick-folder { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 10px 0 0; font-size: 14px; color: var(--ink-dim); }
+.load .pick-folder button { min-height: 44px; padding: 8px 16px; }
+
 .load .found { list-style: none; padding: 0; margin: 12px 0 0; font-size: 14px; }
 .load .found:empty { display: none; }
 .load .found li { padding: 6px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
