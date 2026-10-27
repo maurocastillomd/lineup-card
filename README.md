@@ -208,6 +208,41 @@ The whole pull stops after 15 minutes (set `LINEUP_PULL_BUDGET_S` in seconds to 
 - The CSV column names are modeled on public examples of VALD ForceDecks and Catapult OpenField exports. Check them against your own club's exports if you load files by hand.
 - Catapult times are in UTC. The session date is the club's local date (America/Chicago), so a 7 p.m. game stays on its own day.
 
+## Club Edition (offline)
+
+The Club Edition is one HTML file, `lineup-card.html`, that staff open from disk in Chrome. Edge uses the same engine but has not been checked yet. They drop in VALD, Catapult and wellness CSV exports plus `roster.csv`, review the flags, approve, and print the card. No install, no Python, no internet and no AI inside: a Content-Security-Policy in the file makes the browser refuse every network request.
+
+**Build the share package.**
+
+```bash
+.venv/bin/python scripts/package_club_edition.py
+```
+
+It rebuilds `dist/lineup-card.html` (with `scripts/build_offline.py`), then makes `dist/club-edition/` fresh. The script stops if either PDF is longer than one page.
+
+**What is in the package.**
+- `lineup-card.html`: the app, about 1.3 MB, with the fictional sample inside.
+- `sample-data/`: the fictional `roster.csv`, `schedule.csv` and one folder per day of VALD, Catapult and wellness exports.
+- `HOW-TO-USE.pdf`: one page, five steps with pictures (source `docs/club-edition/how-to-use.html`).
+- `IT-FACT-SHEET.pdf`: one page of facts IT can check: the policy, where data lives, how to delete it, third-party licenses (source `docs/club-edition/it-fact-sheet.html`).
+- `COPILOT-CHATGPT-PROMPTS.md`: optional prompts for the club's approved Copilot or ChatGPT, used only on the approved card text. The AI never decides who is flagged.
+
+JPEG previews of the two PDFs are in `docs/club-edition/`.
+
+**Documented differences from the Python edition.** None of them is hit by the fictional data, and the parity test checks every fictional day.
+1. A Catapult period that starts just after midnight UTC belongs to the club's local day. In Python it belongs to the folder it was pulled into.
+2. A Catapult `start_time` with no time zone is an error. Python reads it as the computer's local time.
+3. The same row in two overlapping exports is kept once and logged as `duplicate_row` with a count.
+4. Files are read in name order, never in the order they were dropped.
+5. A row where every cell is blank is skipped. Python fails on it.
+6. Errors name the file and the spreadsheet row.
+7. `nan`, `inf` and numbers with underscores are refused.
+8. More than one schedule file is refused, like more than one roster.
+
+Full wording: `docs/superpowers/plans/2026-10-27-club-edition-offline.md`.
+
+Not tested inside any club's network or with a club's real exports yet.
+
 ## Built on Readiness
 
 The status engine is copied from Readiness commit `09435aa` and extended with the noise gate, the context frames and the team-shift grouping.
