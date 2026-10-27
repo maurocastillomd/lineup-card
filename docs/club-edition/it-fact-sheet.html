@@ -53,8 +53,8 @@
     <h2>Network</h2>
     <div>
       <p>The file carries this Content-Security-Policy in its first lines:</p>
-      <code class="csp">default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; font-src data:; img-src data: blob:; connect-src data:; base-uri 'none'; form-action 'none'</code>
-      <p>It allows no web address at all. Fonts and pictures may come only from <code>data:</code> and <code>blob:</code>, which means content already inside the file or made in memory. The browser itself refuses any other request, and no form can be sent anywhere.</p>
+      <code class="csp">default-src 'none'; script-src [sha256 hashes of its two scripts]; style-src 'unsafe-inline'; font-src data:; img-src data: blob:; connect-src data:; base-uri 'none'; form-action 'none'</code>
+      <p>It allows no web address at all. Only the two scripts whose exact text matches a hash can run. Fonts and pictures may come only from <code>data:</code> and <code>blob:</code>, which means content already inside the file or made in memory. The policy blocks the page from loading or sending data over the network, and no form can be sent anywhere. It does not stop a user clicking a link.</p>
       <p><span class="check">How to check:</span> open the file, press F12, open the Network tab and reload. Only the file itself and <code>data:</code> or <code>blob:</code> items are listed. Use the app, and the list stays the same. To see the policy, right-click the page and choose View page source.</p>
     </div>
   </section>

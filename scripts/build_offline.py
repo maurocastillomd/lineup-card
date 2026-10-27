@@ -15,6 +15,7 @@ Run: .venv/bin/python scripts/build_offline.py
 from __future__ import annotations
 
 import base64
+import hashlib
 import re
 import subprocess
 import sys
@@ -25,8 +26,14 @@ WEB = ROOT / "web"
 OUT = ROOT / "dist" / "lineup-card.html"
 ENTRY = "js/offline.js"
 
-CSP = ("default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
+# Scripts run only if their exact text matches a sha256 hash in the policy (the image
+# library and the app). Styles keep 'unsafe-inline': the pages set inline style attributes.
+CSP = ("default-src 'none'; script-src {hashes}; style-src 'unsafe-inline'; "
        "font-src data:; img-src data: blob:; connect-src data:; base-uri 'none'; form-action 'none'")
+
+
+def sha256_source(text: str) -> str:
+    return "'sha256-" + base64.b64encode(hashlib.sha256(text.encode("utf-8")).digest()).decode() + "'"
 
 # Third-party licenses travel with the file: a short notice plus each full text,
 # inlined as a non-executed <script type="text/plain" id="licenses"> block.
@@ -172,19 +179,22 @@ def main() -> None:
         fail(f"expected 5 stylesheet links in offline.html, found {n}")
     page = re.sub(r"[ \t]*<!-- No CSP here:.*?-->\n", "", page)
 
-    # 3. The policy goes first in <head>, before anything it governs.
-    page = replace_once(page, "<head>", f'<head>\n<meta http-equiv="Content-Security-Policy" content="{CSP}">')
-
-    # 4. Scripts: the board figure (inert data), the image library, then the app.
+    # 3. Scripts: the licenses and the board figure (inert data), the image library, then the app.
     lib = safe_inline("html-to-image.js", (WEB / "vendor" / "html-to-image.js").read_text(encoding="utf-8"))
     board = safe_inline("board.svg", (WEB / "figures" / "board" / "board.svg").read_text(encoding="utf-8"))
     app = safe_inline("app bundle", bundle(WEB / ENTRY))
     notices = safe_inline("license texts", license_text())
+    lib_body, app_body = f"\n{lib}\n", f"\n{app}\n"
     scripts = (f'<script type="text/plain" id="licenses">\n{notices}</script>\n'
                f'<script type="image/svg+xml" id="board-svg">{board}</script>\n'
-               f'<script id="vendor-html-to-image">\n{lib}\n</script>\n'
-               f'<script type="module">\n{app}\n</script>')
+               f'<script id="vendor-html-to-image">{lib_body}</script>\n'
+               f'<script type="module">{app_body}</script>')
     page = replace_once(page, '<script type="module" src="js/offline.js"></script>', scripts)
+
+    # 4. The policy goes first in <head>, before anything it governs. Only the two
+    #    executed scripts are hashed; the text/plain and image/svg+xml blocks never run.
+    policy = CSP.format(hashes=" ".join(sha256_source(b) for b in (lib_body, app_body)))
+    page = replace_once(page, "<head>", f'<head>\n<meta http-equiv="Content-Security-Policy" content="{policy}">')
 
     OUT.parent.mkdir(exist_ok=True)
     OUT.write_text(page, encoding="utf-8")

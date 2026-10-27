@@ -1,3 +1,5 @@
+import base64
+import hashlib
 import re
 import subprocess
 import sys
@@ -64,3 +66,17 @@ def test_licenses_travel_inside_the_file():
     for need in ("html-to-image", "SIL OPEN FONT LICENSE", "Copyright (c) 2026 Ryan", "Permission is hereby granted"):
         assert need in text, need
     assert text.count("Permission is hereby granted") >= 2, "both MIT texts"
+
+
+def test_scripts_are_allowed_by_hash_not_unsafe_inline():
+    html = build()
+    policy = re.search(r'<meta http-equiv="Content-Security-Policy" content="([^"]+)"', html).group(1)
+    script_src = re.search(r"script-src ([^;]+)", policy).group(1).split()
+    assert "'unsafe-inline'" not in script_src
+    assert "'unsafe-eval'" not in policy
+    # Executed scripts: no type, or type="module". text/plain and image/svg+xml blocks are data.
+    bodies = [m.group(2) for m in re.finditer(r"<script(\s[^>]*)?>(.*?)</script>", html, re.S)
+              if not re.search(r'type="(?!module")', m.group(1) or "")]
+    assert len(bodies) == 2, len(bodies)
+    want = sorted(f"'sha256-{base64.b64encode(hashlib.sha256(b.encode()).digest()).decode()}'" for b in bodies)
+    assert sorted(script_src) == want

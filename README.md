@@ -210,7 +210,9 @@ The whole pull stops after 15 minutes (set `LINEUP_PULL_BUDGET_S` in seconds to 
 
 ## Club Edition (offline)
 
-The Club Edition is one HTML file, `lineup-card.html`, that staff open from disk in Chrome. Edge uses the same engine but has not been checked yet. They drop in VALD, Catapult and wellness CSV exports plus `roster.csv` (single files, or a whole folder with "Choose a folder"; the last 4 weeks or more of daily exports, since a player needs at least 10 readings in the 28 days before a day to be flagged), review the flags, approve, and print the card with the "Print / PDF" button (Ctrl+P works too). No install, no Python, no internet and no AI inside: a Content-Security-Policy in the file makes the browser refuse every network request.
+The Club Edition is one HTML file, `lineup-card.html`, that staff open from disk in Chrome. Edge uses the same engine but has not been checked yet. They drop in VALD, Catapult and wellness CSV exports plus `roster.csv` (single files, or a whole folder with "Choose a folder"; the last 4 weeks or more of daily exports, since a player needs at least 10 readings in the 28 days before a day to be flagged), review the flags, approve, and print the card with the "Print / PDF" button (Ctrl+P works too). No install, no Python, no internet and no AI inside. A Content-Security-Policy in the file blocks the page from loading or sending data over the network. It does not stop a user clicking a link.
+
+The policy, as built: `default-src 'none'; script-src` followed by the sha256 hashes of its two scripts (the image library and the app); `style-src 'unsafe-inline'; font-src data:; img-src data: blob:; connect-src data:; base-uri 'none'; form-action 'none'`. No `'unsafe-inline'` for scripts: the build hashes each executed script, and the inline data blocks (`type="text/plain"`, `type="image/svg+xml"`) never run. Styles keep `'unsafe-inline'` because the pages set inline style attributes.
 
 **Build the share package.**
 
