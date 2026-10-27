@@ -1419,7 +1419,7 @@ Create `scripts/write_sample_module.py`. It writes `web/js/sample-data.js` as `e
 - [ ] **Step 2: Write `web/offline.html`**
 
 The page has:
-- `<head>`: `theme.css`, `card.css`, `offline.css`. No CSP here: it would block `js/offline.js` on the dev server. The build adds it (Task 10).
+- `<head>`: `fonts.css`, `theme.css`, `card.css`, `offline.css` (fonts load by link, not @import, so saved images embed them). No CSP here: it would block `js/offline.js` on the dev server. The build adds it (Task 10).
 - `<div id="app"></div>`.
 - `<template id="tpl-review" data-from="index.html"></template>` and `<template id="tpl-card" data-from="card.html"></template>`, both empty. The build fills them with the `<body>` of those pages minus their scripts, so the markup is never copied by hand. In dev, `offline.js` fills empty templates by fetching the page (see Step 3).
 - `<template id="tpl-load">`: the load screen:
@@ -1740,7 +1740,7 @@ def css(path: Path) -> str:
 def main() -> None:
     subprocess.run([sys.executable, str(ROOT / "scripts" / "write_sample_module.py")], check=True)
     page = (WEB / "offline.html").read_text(encoding="utf-8")
-    styles = "\n".join(css(WEB / "css" / n) for n in ("theme.css", "card.css", "offline.css"))
+    styles = "\n".join(css(WEB / "css" / n) for n in ("fonts.css", "theme.css", "card.css", "offline.css"))
     page = re.sub(r'\s*<link rel="stylesheet" href="[^"]+">', "", page)
     page = page.replace("</head>", f"<style>\n{styles}\n</style>\n</head>")
     lib = (WEB / "vendor" / "html-to-image.js").read_text(encoding="utf-8")
