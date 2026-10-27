@@ -249,7 +249,12 @@ export async function init(src) {
     }
   });
 
-  // The club's own record of who approved what, as a file.
+  // The club's own record of who approved what, as a file. The bundled example is not
+  // anyone's record, so it cannot be exported.
+  if (example) {
+    $("export").disabled = true;
+    $("export").title = "Example review: approve your own review to export it";
+  }
   $("export").addEventListener("click", () => {
     const name = `lineup-card-review-${date}.json`;
     const blob = new Blob([JSON.stringify({ date, club: day.club, review }, null, 2)], { type: "application/json" });
