@@ -193,6 +193,7 @@ export async function init(src) {
   await drawBoard();
 
   // ---- share bar ----
+  const say = (text) => { $("share-msg").textContent = text; };
 
   let copyTimer;
   $("copy").addEventListener("click", async () => {
