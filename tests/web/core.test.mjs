@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { parseCsv } from "../../web/js/core/csv.mjs";
+import { CleanLog, cleanCatapult, cleanCmj, cleanWellness, makeReading } from "../../web/js/core/clean.mjs";
 import { classify, readCatapult, readCrosswalk, readSchedule, readVald, readWellness } from "../../web/js/core/read.mjs";
 
 const VALD = "﻿Name,ExternalId,Date,Time,Test Type,Trial,Jump Height (Imp-Mom) [cm],RSI-modified [m/s]\r\n" +
@@ -68,4 +69,55 @@ test("readSchedule keeps the first row for a repeated date", () => {
   const s = readSchedule(parseCsv("date,opponent,home_away,note\n2026-09-20,Cubs,home,a\n2026-09-20,Mets,away,b\n2026-09-21,Reds,away\n"));
   assert.deepEqual(s.get("2026-09-20"), { opponent: "Cubs", home_away: "home", note: "a" });
   assert.equal(s.get("2026-09-21").note, "");
+});
+
+const cw = readCrosswalk(parseCsv("lc_id,name,pos,vald_external_id,catapult_name\nLC01,J. Ortega,RP,V010,Jorge Ortega\n"));
+const trial = (t, rsi, jump = 30) => ({ name: "J. Ortega", external_id: "V010", day: "2026-09-20", trial: t, jump_height_cm: jump, rsi_mod: rsi });
+
+test("cleanCmj drops a trial >10% from the median and means the rest", () => {
+  const log = new CleanLog();
+  const out = cleanCmj([trial(1, 0.45), trial(2, 0.46), trial(3, 0.30)], cw, log);
+  assert.deepEqual(out.map((r) => [r.metric, r.value]), [["rsi_mod", (0.45 + 0.46) / 2], ["jump_height_cm", 30]]);
+  assert.equal(log.entries[0].rule, "trial_outlier");
+  assert.match(log.entries[0].detail, /RSI-mod trial 0\.300 more than 10%/);
+});
+
+test("cleanCmj holds out an unknown athlete and logs too few trials", () => {
+  const log = new CleanLog();
+  assert.deepEqual(cleanCmj([{ ...trial(1, 0.4), external_id: "V999" }], cw, log), []);
+  assert.deepEqual(log.held_out, [{ source: "vald", raw: "V999", reason: "not in crosswalk" }]);
+  cleanCmj([trial(1, 0.45)], cw, log);
+  assert.equal(log.entries.at(-1).rule, "too_few_trials");
+});
+
+test("cleanCatapult sums periods, skips totals, counts a duplicate once", () => {
+  const p = (n, name, load) => ({ player_name: "Jorge Ortega", period_name: name, period_number: n, day: "2026-09-20", player_load: load, throw_count: 10, pitch_count: null });
+  const log = new CleanLog();
+  const out = cleanCatapult([p(1, "Warm-up", 60), p(2, "Game", 300), p(2, "Game", 300), p(9, "Session Total", 999)], cw, log);
+  assert.deepEqual(out.map((r) => [r.metric, r.value]), [["player_load", 360], ["throw_count", 20]]);
+  assert.equal(log.entries[0].rule, "duplicate_period");
+});
+
+test("cleanWellness keeps the last form and logs incomplete ones", () => {
+  const log = new CleanLog();
+  const out = cleanWellness([{ athlete_id: "LC01", day: "2026-09-20", score: 15 }, { athlete_id: "LC01", day: "2026-09-20", score: 18 }], cw, log);
+  assert.deepEqual(out.map((r) => r.value), [18]);
+  assert.equal(log.entries[0].rule, "duplicate_form");
+});
+
+test("cleanWellness keeps a re-assigned key in its first position; unknown ids held once", () => {
+  const cw2 = readCrosswalk(parseCsv("lc_id,name,pos,vald_external_id,catapult_name\nLC01,A,RP,V1,A\nLC02,B,SP,V2,B\n"));
+  const log = new CleanLog();
+  const w = (id, score) => ({ athlete_id: id, day: "2026-09-20", score });
+  const out = cleanWellness([w("LC02", 10), w("LC01", 11), w("LC02", 12), w("ZZ", 9), w("ZZ", 8), w("LC01", null)], cw2, log);
+  assert.deepEqual(out.map((r) => [r.athlete_id, r.value]), [["LC02", 12]]);
+  assert.deepEqual(log.entries.map((e) => e.rule), ["duplicate_form", "duplicate_form", "incomplete_form"]);
+  assert.deepEqual(log.held_out, [{ source: "wellness", raw: "ZZ", reason: "not in crosswalk" }]);
+});
+
+test("makeReading enforces the pydantic checks", () => {
+  assert.throws(() => makeReading(cw, "LC01", "2026-09-20", "bogus", 1, "x"), /Unknown metric/);
+  assert.throws(() => makeReading(cw, "LC01", "2026-09-20", "rsi_mod", NaN, "x"), /finite/);
+  assert.throws(() => makeReading(cw, "LC01", "2026-09-20", "rsi_mod", -1, "x"), /negative/);
+  assert.equal(makeReading(cw, "LC01", "2026-09-20", " rsi_mod ", 0.4, " vald ").source, "vald");
 });
