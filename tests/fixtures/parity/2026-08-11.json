@@ -1,0 +1,2720 @@
+{
+ "date": "2026-08-11",
+ "synthetic": true,
+ "club": "Fictional Triple-A Club",
+ "schedule": {
+  "opponent": "Fictional Visitors",
+  "home_away": "home",
+  "note": ""
+ },
+ "te": {
+  "wellness_score": null,
+  "rsi_mod": null
+ },
+ "noise_gate": {
+  "wellness_score": null,
+  "rsi_mod": null
+ },
+ "signal": {
+  "wellness_score": null,
+  "rsi_mod": null
+ },
+ "team_shift": null,
+ "league_reference": {
+  "rsi_mod": {
+   "value": 0.52,
+   "unit": "m/s",
+   "label": "illustrative, not a published MLB or MiLB norm"
+  },
+  "jump_height_cm": {
+   "value": 42.0,
+   "unit": "cm",
+   "label": "illustrative, not a published MLB or MiLB norm"
+  }
+ },
+ "players": [
+  {
+   "id": "LC01",
+   "name": "J. Ortega",
+   "pos": "RP",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.57,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 22.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 43.3,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC03",
+   "name": "T. Brandt",
+   "pos": "OF",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.53,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 22.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 41.2,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC04",
+   "name": "M. Daley",
+   "pos": "C",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.57,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 17.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 42.6,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC05",
+   "name": "A. Whitcomb",
+   "pos": "SP",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.45,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 21.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 39.6,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC06",
+   "name": "R. Okafor",
+   "pos": "SP",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.45,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 21.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 43.1,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC07",
+   "name": "D. Lindqvist",
+   "pos": "SP",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.53,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 14.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 37.0,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC08",
+   "name": "S. Marrero",
+   "pos": "SP",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.53,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 24.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 38.5,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC09",
+   "name": "P. Haddad",
+   "pos": "SP",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.53,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 16.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 47.1,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC10",
+   "name": "L. Fenwick",
+   "pos": "RP",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.47,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 19.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 37.3,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC11",
+   "name": "E. Castellano",
+   "pos": "RP",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.43,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 19.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 41.8,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC12",
+   "name": "B. Yamada",
+   "pos": "RP",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.56,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 21.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 39.0,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC13",
+   "name": "C. Duvall",
+   "pos": "RP",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.5,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 22.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 49.3,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC14",
+   "name": "G. Pruitt",
+   "pos": "RP",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.52,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 15.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 47.7,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC15",
+   "name": "H. Soto-Reyes",
+   "pos": "RP",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.5,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 21.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 47.1,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC16",
+   "name": "N. Ambrose",
+   "pos": "RP",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.5,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 18.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 41.3,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC17",
+   "name": "O. Kessler",
+   "pos": "C",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.53,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 16.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 44.2,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC18",
+   "name": "V. Ibarra",
+   "pos": "C",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.56,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 20.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 47.7,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC19",
+   "name": "W. Thorne",
+   "pos": "IF",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.48,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 14.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 40.3,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC20",
+   "name": "F. Quintero",
+   "pos": "IF",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.53,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 20.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 39.1,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC21",
+   "name": "J. Mabry",
+   "pos": "IF",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.58,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 17.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 39.4,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC22",
+   "name": "I. Novak",
+   "pos": "IF",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.47,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 17.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 36.3,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC23",
+   "name": "Z. Pellegrino",
+   "pos": "IF",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.49,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 18.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 41.9,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC24",
+   "name": "A. Boateng",
+   "pos": "IF",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.45,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 19.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 40.0,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC25",
+   "name": "M. Serrano",
+   "pos": "OF",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.57,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 17.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 39.0,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC26",
+   "name": "T. Gallagher",
+   "pos": "OF",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.46,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 19.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 39.5,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC27",
+   "name": "D. Achebe",
+   "pos": "OF",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.48,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 22.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 41.9,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  },
+  {
+   "id": "LC28",
+   "name": "R. Vance",
+   "pos": "OF",
+   "status": "not_enough_data",
+   "word": "Not enough data",
+   "magnitude": "",
+   "reasons": [
+    "Incomplete response-domain coverage; check missing or stale data"
+   ],
+   "rsi": {
+    "today": 0.61,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "wellness": {
+    "today": 20.0,
+    "mean": null,
+    "sd": null,
+    "z": null,
+    "pct": null,
+    "beyond_noise": null,
+    "observed_on": "2026-08-11",
+    "days_old": 0
+   },
+   "jump_height_cm": 40.7,
+   "position_median_z": null,
+   "position_n": 0,
+   "load": {
+    "player_load_today": null,
+    "throws_today": null,
+    "pitches_today": null,
+    "throws_7d": null
+   },
+   "beyond_team": null,
+   "trend": [
+    {
+     "date": "2026-07-29",
+     "z": null
+    },
+    {
+     "date": "2026-07-30",
+     "z": null
+    },
+    {
+     "date": "2026-07-31",
+     "z": null
+    },
+    {
+     "date": "2026-08-01",
+     "z": null
+    },
+    {
+     "date": "2026-08-02",
+     "z": null
+    },
+    {
+     "date": "2026-08-03",
+     "z": null
+    },
+    {
+     "date": "2026-08-04",
+     "z": null
+    },
+    {
+     "date": "2026-08-05",
+     "z": null
+    },
+    {
+     "date": "2026-08-06",
+     "z": null
+    },
+    {
+     "date": "2026-08-07",
+     "z": null
+    },
+    {
+     "date": "2026-08-08",
+     "z": null
+    },
+    {
+     "date": "2026-08-09",
+     "z": null
+    },
+    {
+     "date": "2026-08-10",
+     "z": null
+    },
+    {
+     "date": "2026-08-11",
+     "z": null
+    }
+   ]
+  }
+ ],
+ "held_out": [],
+ "cleaning_log": [
+  {
+   "lc_id": "LC25",
+   "day": "2026-08-11",
+   "source": "vald",
+   "rule": "trial_outlier",
+   "detail": "RSI-mod trial 0.427 more than 10% from the set median; dropped"
+  }
+ ]
+}
