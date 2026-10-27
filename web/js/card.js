@@ -188,7 +188,7 @@ $("copy").addEventListener("click", async () => {
   copyTimer = setTimeout(() => { btn.textContent = "Copy for group text"; }, 2000);
 });
 
-const LIB = "https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js";
+const LIB = "vendor/html-to-image.js";   // shipped in the repo; no outside host
 function loadLib() {
   if (window.htmlToImage) return Promise.resolve(window.htmlToImage);
   return new Promise((resolve, reject) => {
