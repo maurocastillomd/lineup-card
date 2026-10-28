@@ -9,7 +9,7 @@ PKG = ROOT / "dist" / "club-edition"
 def test_package_has_everything_and_no_real_data():
     subprocess.run([sys.executable, str(ROOT / "scripts" / "package_club_edition.py")], check=True, cwd=ROOT)
     names = {p.relative_to(PKG).as_posix() for p in PKG.rglob("*") if p.is_file()}
-    for need in ("lineup-card.html", "HOW-TO-USE.pdf", "IT-FACT-SHEET.pdf", "COPILOT-CHATGPT-PROMPTS.md",
+    for need in ("SAMPLE-LINEUP-CARD-2026-09-20.pdf", "SAMPLE-LINEUP-CARD-2026-09-20.jpg", "lineup-card.html", "HOW-TO-USE.pdf", "IT-FACT-SHEET.pdf", "COPILOT-CHATGPT-PROMPTS.md",
                  "sample-data/roster.csv", "sample-data/schedule.csv",
                  "HOW-TO-USE.jpg", "IT-FACT-SHEET.jpg",
                  "licenses/OFL.txt", "licenses/LICENSE-html-to-image.txt", "licenses/THIRD-PARTY-NOTICES.txt"):
@@ -19,3 +19,9 @@ def test_package_has_everything_and_no_real_data():
     assert "licenses/LICENSE-anatomy-kit.txt" not in names     # no anatomy-kit drawing ships any more
     for doc in ("COPILOT-CHATGPT-PROMPTS.md",):
         assert "—" not in (PKG / doc).read_text(), "no em dashes"
+
+
+def test_sample_card_pdf_is_the_finished_card():
+    pdf = (PKG / "SAMPLE-LINEUP-CARD-2026-09-20.pdf").read_bytes()
+    assert len(__import__("re").findall(rb"/Type\s*/Page(?![s\w])", pdf)) == 1
+    assert len(pdf) > 100_000          # a rendered card with fonts, not a blank start screen

@@ -220,9 +220,10 @@ The policy, as built: `default-src 'none'; script-src` followed by the sha256 ha
 .venv/bin/python scripts/package_club_edition.py
 ```
 
-It rebuilds `dist/lineup-card.html` (with `scripts/build_offline.py`), then makes `dist/club-edition/` fresh. The script stops if either PDF is longer than one page.
+It rebuilds `dist/lineup-card.html` (with `scripts/build_offline.py`), then makes `dist/club-edition/` fresh. The script stops if any PDF is longer than one page.
 
 **What is in the package.**
+- `SAMPLE-LINEUP-CARD-2026-09-20.pdf` (and a `.jpg` preview): the finished card for the fictional Sep 20, printed by the script from the app itself. It shows the end result before anyone opens anything.
 - `lineup-card.html`: the app, about 750 KB, with the fictional sample inside.
 - `sample-data/`: the fictional `roster.csv`, `schedule.csv` and one folder per day of VALD, Catapult and wellness exports.
 - `HOW-TO-USE.pdf`: one page. It leads with "What you get" (a picture of the sample card and the four status words), then five steps with pictures (source `docs/club-edition/how-to-use.html`, pictures in `docs/club-edition/shots/`).

@@ -1,6 +1,8 @@
 """Build the Club Edition share package: dist/club-edition/.
 
 It holds:
+  SAMPLE-LINEUP-CARD-2026-09-20.pdf   what staff receive each morning: the fictional sample
+                              card, printed from the offline app itself (one Letter page)
   lineup-card.html            the offline app (built fresh by build_offline.py)
   sample-data/                the fictional roster, schedule and daily exports
   HOW-TO-USE.pdf              one Letter page, printed from docs/club-edition/how-to-use.html
@@ -65,6 +67,25 @@ def print_pdf(html: Path, out: Path) -> None:
         fail(f"{out.name} has {pages} pages; it must fit on one Letter page")
 
 
+SAMPLE_PDF = "SAMPLE-LINEUP-CARD-2026-09-20.pdf"
+
+
+def print_sample_card(app: Path, out: Path) -> None:
+    """Open the offline app's sample (#autosample) and print the finished card, so the
+    package leads with the end result. A throwaway browser profile keeps saved reviews out."""
+    with tempfile.TemporaryDirectory() as profile:
+        subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
+                        "--virtual-time-budget=8000", f"--user-data-dir={profile}",
+                        f"--print-to-pdf={out}", app.resolve().as_uri() + "#autosample"],
+                       check=True, capture_output=True, timeout=120)
+    if not out.is_file():
+        fail(f"Chrome did not write {out.name}")
+    if pdf_pages(out) != 1:
+        fail(f"{out.name} must be one Letter page")
+    if out.stat().st_size < 100_000:
+        fail(f"{out.name} looks empty; the sample card did not render")
+
+
 def preview(pdf: Path, name: str) -> None:
     """Page 1 of the PDF as a 1313 x 1700 JPEG, into docs/club-edition/ and the package."""
     if not shutil.which("qlmanage") or not shutil.which("sips"):
@@ -85,6 +106,7 @@ def main() -> None:
     fresh_folder()
 
     shutil.copy2(DIST / "lineup-card.html", PKG / "lineup-card.html")
+    print_sample_card(PKG / "lineup-card.html", PKG / SAMPLE_PDF)
 
     sample = PKG / "sample-data"
     sample.mkdir()
@@ -107,6 +129,7 @@ def main() -> None:
     print_pdf(DOCS / "it-fact-sheet.html", PKG / "IT-FACT-SHEET.pdf")
     preview(PKG / "HOW-TO-USE.pdf", "how-to-use")
     preview(PKG / "IT-FACT-SHEET.pdf", "it-fact-sheet")
+    preview(PKG / SAMPLE_PDF, "sample-lineup-card")
 
     print(f"{PKG.relative_to(ROOT)}/")
     for p in sorted(PKG.iterdir()):
