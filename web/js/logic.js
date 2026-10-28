@@ -87,6 +87,11 @@ export function rosterJump(p) {
   return isStale(p) ? `${size}, ${daysAgo(p.rsi.days_old)}` : size;
 }
 
+// Roster order inside each position: the biggest jump change first, whether down or up,
+// then players with no jump to compare (no reading today, or no history yet), by name.
+const changeSize = (p) => (p.rsi?.pct == null ? -1 : Math.abs(p.rsi.pct));
+export const byJumpChange = (a, b) => changeSize(b) - changeSize(a) || a.name.localeCompare(b.name);
+
 export const rosterForm = (p) => (p.wellness?.z != null && p.wellness.z <= -1.2 ? "low" : "");
 
 // Jump today in plain words: percent of his own usual.

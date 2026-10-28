@@ -449,3 +449,12 @@ test("rosterForm: the morning form column says low only when the form is clearly
   assert.equal(rosterForm({ wellness: { z: null } }), "");
   assert.equal(rosterForm({}), "");
 });
+
+import { byJumpChange } from "../../web/js/logic.js";
+
+test("roster order: biggest jump change first, up or down, then no jump by name", () => {
+  const p = (name, pct) => ({ name, rsi: pct === undefined ? { today: null } : { pct } });
+  const order = [p("Cole", 3.2), p("Ames", undefined), p("Diaz", -12.4), p("Bell", 8.9), p("Ford", -0.4), p("Eads", undefined)]
+    .sort(byJumpChange).map((x) => x.name);
+  assert.deepEqual(order, ["Diaz", "Bell", "Cole", "Ford", "Ames", "Eads"]);
+});

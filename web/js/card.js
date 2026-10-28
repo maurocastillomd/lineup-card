@@ -1,6 +1,6 @@
 import {
   ACTION, applyDecisions, disclaimer, groupCheckins, headline, plainChange, plainSummary, printLayout, reasonLines,
-  rosterForm, rosterJump, rosterLabel, shortDate, sourcesNote, topLine, trendSvg,
+  byJumpChange, rosterForm, rosterJump, rosterLabel, shortDate, sourcesNote, topLine, trendSvg,
 } from "./logic.js";
 import { hasSavedReview, loadReview } from "./store.js";
 
@@ -125,11 +125,11 @@ export async function init(src) {
       <span class="all-change">${esc(plainChange(p))}</span><span class="in-lineup">${
       lineupKnown && inLineup.has(p.id) ? "in lineup" : ""}</span></li>`;
   $("all").innerHTML = GROUPS.map(([pos, label]) => {
-    const rows = players.filter((p) => p.pos === pos);
+    const rows = players.filter((p) => p.pos === pos).sort(byJumpChange);
     return rows.length ? `<div class="all-group"><h3>${label}</h3><ul>${rows.map(row).join("")}</ul></div>` : "";
   }).join("");
   // ---- the printed roster: two balanced tables of short columns, grouped by position ----
-  const groupsByPos = GROUPS.map(([pos, name]) => [name, players.filter((p) => p.pos === pos)]).filter(([, r]) => r.length);
+  const groupsByPos = GROUPS.map(([pos, name]) => [name, players.filter((p) => p.pos === pos).sort(byJumpChange)]).filter(([, r]) => r.length);
   const size = (gs) => gs.reduce((n, [, r]) => n + r.length + 1, 0);
   let split = 1;
   for (let i = 1; i < groupsByPos.length; i++) {
