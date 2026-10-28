@@ -61,15 +61,15 @@ Two different "SWC" numbers appear in this project. The table's SWC is Hopkins' 
 - League: one reference value per metric, labelled "illustrative, not a published MLB or MiLB norm". No public Minor League force plate norm exists.
 - Workload: Catapult PlayerLoad, plus throws and pitches over the last 7 days for pitchers. Workload runs through yesterday, so a game later today is not counted.
 
-**Team-shift days.** Sometimes the whole roster jumps lower, for example after an early-morning travel arrival. When the team's median jump change is beyond the same 1.5 x TE gate, the card leads with one line, such as "Whole team jumping 10% below normal" (the fictional 2026-09-15 travel day). Below it come the flagged players "Not explained by the team drop": players whose jump fell more than the team's by more than the noise gate, or whose flag did not come from the jump. Last comes a names-only "Down with the team" line. This is grouping only. No status changes on a team-shift day. The team line uses the jump (RSI-mod) only.
+**Team-shift days.** Sometimes the whole roster jumps lower, for example after an early-morning travel arrival. When the team's median jump change is beyond the same 1.5 x TE gate, the card's headline says so, such as "The whole team is jumping 10% below its usual today" (the fictional 2026-09-15 travel day), and the line under it counts the players whose jump fell more than the team's by more than the noise gate. Boxes go only to the flagged players "Not explained by the team drop": those players, plus anyone whose flag did not come from the jump. Last comes a names-only "Down with the team" line. This is grouping only. No status changes on a team-shift day. The team line uses the jump (RSI-mod) only.
 
-**Two kinds of wording.** The review screen is for the analyst and shows z-scores and both gate results. The card is for the coaching staff and uses plain words: today's jump as a percent of his own normal. On the card, the shaded zone is his usual ups and downs, which is the noise gate shown in percent.
+**Two kinds of wording.** The review screen is for the analyst and shows z-scores and both gate results. The card is for the coaching staff and uses plain words: today's jump as a percent of his own usual. It is a morning brief: one headline ("2 players to talk to before they train"), one box per flagged player with short reasons, an action line and a two-week jump picture, then everyone else behind one "Show all 28 players" button, then two sentences on how to read it. In the jump picture the shaded band is z from -1 to +1, labelled "his usual range"; today's dot is hollow when the reading is not from today. Analyst words (z, TE, SWC, MDC95) stay on the review screen, inside "For analysts: how noisy each test is".
 
-**Print.** The roster prints in two columns on one US Letter page. The "Show full roster" toggle is web only. In print, a summary line names any flagged player who is not in today's lineup.
+**Print.** The card prints on one US Letter page: the boxes three across, then the full roster in small type in three columns (the "Show all" button is web only). A flagged player who is not in today's lineup says so in his box.
 
 **Example review.** `web/examples/review-2026-09-20.json` is a sample review for 2026-09-20. When no saved review exists in the browser, the card uses it and says "example review".
 
-**Availability board.** The card ends with an isometric board with one peg per player, drawn with the anatomy kit in `web/figures/board/`. The kit is vendored under its MIT license, kept as is.
+**Availability board.** An isometric board with one peg per player, drawn with the anatomy kit in `web/figures/board/`, is kept in the repo as a figure. Since the 2026-10-28 redesign the card no longer shows it and the offline file no longer carries it. The kit is vendored under its MIT license, kept as is.
 
 ## Run it
 
@@ -175,7 +175,7 @@ Status: **built to the vendors' published documents, tested against mocked respo
 {"name": "Your Club Name", "synthetic": false}
 ```
 
-With `"synthetic": false` the card and review page drop the "Fictional roster" label (they always say "Not a fitness-to-play decision."), hide the illustrative league line and leave out the availability board, which is drawn for the fictional roster. Without this file the card keeps the fictional demo labels.
+With `"synthetic": false` the card and review page drop the "Fictional roster" label (they always say "Not a fitness-to-play decision."), and leave out the availability board figure, which is drawn for the fictional roster. Without this file the card keeps the fictional demo labels.
 
 **Pull one day by hand.**
 
@@ -212,7 +212,7 @@ The whole pull stops after 15 minutes (set `LINEUP_PULL_BUDGET_S` in seconds to 
 
 The Club Edition is one HTML file, `lineup-card.html`, that staff open from disk in a web browser. Checked in Google Chrome. Microsoft Edge uses the same engine but has not been checked yet. They drop in VALD, Catapult and wellness CSV exports plus `roster.csv` (single files, or a whole folder with "Choose a folder"; the last 4 weeks or more of daily exports, since a player needs at least 10 readings in the 28 days before a day to be flagged), review the flags, approve, and print the card with the "Print / PDF" button (Ctrl+P works too). No install, no Python, no internet and no AI inside. A Content-Security-Policy in the file blocks the page from loading or sending data over the network. It does not stop a user clicking a link.
 
-The policy, as built: `default-src 'none'; script-src` followed by the sha256 hashes of its two scripts (the image library and the app); `style-src 'unsafe-inline'; font-src data:; img-src data: blob:; connect-src data:; base-uri 'none'; form-action 'none'`. No `'unsafe-inline'` for scripts: the build hashes each executed script, and the inline data blocks (`type="text/plain"`, `type="image/svg+xml"`) never run. Styles keep `'unsafe-inline'` because the pages set inline style attributes.
+The policy, as built: `default-src 'none'; script-src` followed by the sha256 hashes of its two scripts (the image library and the app); `style-src 'unsafe-inline'; font-src data:; img-src data: blob:; connect-src data:; base-uri 'none'; form-action 'none'`. No `'unsafe-inline'` for scripts: the build hashes each executed script, and the inline license block (`type="text/plain"`) never runs. Styles keep `'unsafe-inline'` because the pages set inline style attributes.
 
 **Build the share package.**
 
@@ -223,7 +223,7 @@ The policy, as built: `default-src 'none'; script-src` followed by the sha256 ha
 It rebuilds `dist/lineup-card.html` (with `scripts/build_offline.py`), then makes `dist/club-edition/` fresh. The script stops if either PDF is longer than one page.
 
 **What is in the package.**
-- `lineup-card.html`: the app, about 1.3 MB, with the fictional sample inside.
+- `lineup-card.html`: the app, about 0.7 MB, with the fictional sample inside.
 - `sample-data/`: the fictional `roster.csv`, `schedule.csv` and one folder per day of VALD, Catapult and wellness exports.
 - `HOW-TO-USE.pdf`: one page, five steps with pictures (source `docs/club-edition/how-to-use.html`).
 - `IT-FACT-SHEET.pdf`: one page of facts IT can check: the policy, where data lives, how to delete it, third-party licenses (source `docs/club-edition/it-fact-sheet.html`).

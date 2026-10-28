@@ -24,6 +24,13 @@
     <h1>Lineup Card</h1>
     <p class="lede">Runs on this computer. Nothing is uploaded.</p>
 
+    <ol class="steps" aria-label="How it works">
+      <li><span class="step-n" aria-hidden="true">1</span>Drop this morning's exports</li>
+      <li><span class="step-n" aria-hidden="true">2</span>Each player is checked against his own last 4 weeks</li>
+      <li><span class="step-n" aria-hidden="true">3</span>You get a one-page card: who to talk to and why</li>
+    </ol>
+    <p class="sample-row"><button id="sample" class="primary" type="button">See a sample card</button></p>
+
     <div class="who-row">
       <label>Club name <input id="club" required autocomplete="organization" placeholder="e.g. your club"></label>
       <label>Your name <input id="reviewer" required autocomplete="name" placeholder="Shown on the card as the reviewer"></label>
@@ -44,7 +51,6 @@
 
     <div class="load-actions">
       <button id="go" class="primary" type="button">Build today's review</button>
-      <button id="sample" type="button">Try it with the fictional sample</button>
       <button id="clear" type="button">Clear the file list</button>
     </div>
     <p><button id="forget" class="small" type="button">Forget saved reviews on this computer</button></p>

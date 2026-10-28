@@ -49,17 +49,6 @@ function show(id) {
   window.scrollTo(0, 0);
 }
 
-async function boardSvg() {
-  const inlined = document.getElementById("board-svg");       // the build inlines the board
-  if (inlined) return inlined.textContent;
-  try {                                                        // dev server only; blocked offline
-    const r = await fetch("figures/board/board.svg");
-    return r.ok ? r.text() : null;
-  } catch {
-    return null;
-  }
-}
-
 function source(reviewer) {
   return {
     scope: built.club,
@@ -67,7 +56,6 @@ function source(reviewer) {
     getIndex: async () => built.index,
     getDay: async (date) => built.days[date],
     getExample: async (date) => (built.synthetic && SAMPLE_EXAMPLE.date === date ? structuredClone(SAMPLE_EXAMPLE.review) : null),
-    getBoard: async () => (built.synthetic ? boardSvg() : null),
     go: (screen, date) => route(screen, date, reviewer),
   };
 }
@@ -159,8 +147,10 @@ function showLoad() {
   $("folder").addEventListener("change", (e) => { take(filesFromPicker(e.target.files)); e.target.value = ""; });
   $("choose-folder").addEventListener("click", () => $("folder").click());
   $("clear").addEventListener("click", () => { files = []; readProblems = []; list(); });
-  const start = (theFiles, club) => {
-    const reviewer = $("reviewer").value.trim();
+  // The sample opens straight on the finished card (with its example review); real files open
+  // the review first, because a person must approve before staff see a card.
+  const start = (theFiles, club, { sample = false } = {}) => {
+    const reviewer = $("reviewer").value.trim() || (sample ? "Sample reviewer" : "");
     if (!club.name || !reviewer) return say(["Type the club name and your name first."]);
     const blocking = theFiles === files ? readProblems.filter((p) => p.blocks).map((p) => p.text) : [];
     if (blocking.length) return say([...blocking, "Save these again as CSV UTF-8, then Clear the file list and drop them all again."]);
@@ -170,10 +160,10 @@ function showLoad() {
       return say(String(e.message).split("\n"));
     }
     if (!built.index.dates.length) return say(["No day in these files has any data rows."]);
-    route("review", built.index.latest, reviewer);
+    route(sample ? "card" : "review", built.index.latest, reviewer);
   };
   $("go").addEventListener("click", () => start(files, { name: $("club").value.trim(), synthetic: false }));
-  $("sample").addEventListener("click", () => { $("club").value ||= SAMPLE_CLUB.name; start(SAMPLE, SAMPLE_CLUB); });
+  $("sample").addEventListener("click", () => start(SAMPLE, SAMPLE_CLUB, { sample: true }));
   $("forget").addEventListener("click", () => {
     const club = $("club").value.trim();
     if (!club) return say(["Type the club name whose saved reviews you want to forget."]);

@@ -5,6 +5,14 @@
 .load h1 { font-size: 34px; margin: 8px 0 2px; }
 .load .lede { margin: 0 0 20px; color: var(--ink-dim); }
 
+.load .steps { list-style: none; padding: 0; margin: 0 0 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.load .steps li { display: flex; gap: 10px; align-items: start; background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius-sm); padding: 12px 14px; font-size: 15px; line-height: 1.35; }
+.load .step-n { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--accent-wash); color: var(--accent); font: 600 14px var(--sans); }
+.load .sample-row { margin: 0 0 28px; }
+.load .sample-row button { min-height: 44px; padding: 8px 20px; }
+
 .load .who-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
 .load label { display: flex; flex-direction: column; gap: 4px; font-weight: 500; font-size: 14px; }
 .load input:not([type="file"]) {
@@ -51,6 +59,8 @@
 
 @media (max-width: 640px) {
   .load .who-row { grid-template-columns: 1fr; }
+  .load .steps { grid-template-columns: 1fr; }
+  .load .sample-row button { width: 100%; }
   .load .load-actions button { flex: 1 1 100%; }
 }
 @media (prefers-reduced-motion: reduce) { .load .drop { transition: none; } }

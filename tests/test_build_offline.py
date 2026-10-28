@@ -36,10 +36,11 @@ def test_nothing_is_loaded_from_anywhere():
     assert "fonts.googleapis" not in html and "jsdelivr" not in html
 
 
-def test_contains_the_app_the_sample_and_the_board():
+def test_contains_the_app_and_the_sample_but_not_the_board():
     html = build()
-    for marker in ('id="tpl-load"', 'id="tpl-review"', 'id="tpl-card"', 'id="board-svg"', "Fictional Triple-A Club", "buildDays"):
+    for marker in ('id="tpl-load"', 'id="tpl-review"', 'id="tpl-card"', "Fictional Triple-A Club", "buildDays", "trendSvg"):
         assert marker in html, marker
+    assert 'id="board-svg"' not in html
     assert len(html.encode("utf-8")) < 3_000_000
 
 
@@ -76,7 +77,7 @@ def test_scripts_are_allowed_by_hash_not_unsafe_inline():
     script_src = re.search(r"script-src ([^;]+)", policy).group(1).split()
     assert "'unsafe-inline'" not in script_src
     assert "'unsafe-eval'" not in policy
-    # Executed scripts: no type, or type="module". text/plain and image/svg+xml blocks are data.
+    # Executed scripts: no type, or type="module". the text/plain block is data.
     bodies = [m.group(2) for m in re.finditer(r"<script(\s[^>]*)?>(.*?)</script>", html, re.S)
               if not re.search(r'type="(?!module")', m.group(1) or "")]
     assert len(bodies) == 2, len(bodies)

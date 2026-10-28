@@ -1,7 +1,7 @@
 """Bundle the offline edition into one file: dist/lineup-card.html.
 
-Every script, stylesheet, font, the board figure, html-to-image and the
-fictional sample go inside the file. A Content-Security-Policy stops the
+Every script, stylesheet, font, html-to-image and the fictional sample go
+inside the file. A Content-Security-Policy stops the
 browser from loading or sending anything over the network.
 
 The bundler is ours and handles only our own code style:
@@ -53,7 +53,7 @@ NOTICE = """Lineup Card, Club Edition: third-party notices
 - html-to-image 1.11.11 (MIT License, Copyright (c) 2017-2023 W.Y.): used by "Save as image".
 - Fraunces, Hanken Grotesk and IBM Plex Mono fonts (SIL Open Font License 1.1): the fonts.
 - Anatomy isometric drawing kit, iso-kit and lathe (MIT License, Copyright (c) 2026 Ryan):
-  used at build time to draw the availability board. Only the drawing is in this file.
+  used at build time to draw figures for this project. No drawing from it is in this file.
 
 The full license texts follow.
 """
@@ -220,20 +220,18 @@ def main() -> None:
         fail(f"expected 5 stylesheet links in offline.html, found {n}")
     page = re.sub(r"[ \t]*<!-- No CSP here:.*?-->\n", "", page)
 
-    # 3. Scripts: the licenses and the board figure (inert data), the image library, then the app.
+    # 3. Scripts: the licenses (inert data), the image library, then the app.
     lib = safe_inline("html-to-image.js", (WEB / "vendor" / "html-to-image.js").read_text(encoding="utf-8"))
-    board = safe_inline("board.svg", (WEB / "figures" / "board" / "board.svg").read_text(encoding="utf-8"))
     app = safe_inline("app bundle", bundle(WEB / ENTRY))
     notices = safe_inline("license texts", license_text())
     lib_body, app_body = f"\n{lib}\n", f"\n{app}\n"
     scripts = (f'<script type="text/plain" id="licenses">\n{notices}</script>\n'
-               f'<script type="image/svg+xml" id="board-svg">{board}</script>\n'
                f'<script id="vendor-html-to-image">{lib_body}</script>\n'
                f'<script type="module">{app_body}</script>')
     page = replace_once(page, '<script type="module" src="js/offline.js"></script>', scripts)
 
     # 4. The policy goes first in <head>, before anything it governs. Only the two
-    #    executed scripts are hashed; the text/plain and image/svg+xml blocks never run.
+    #    executed scripts are hashed; the text/plain block never runs.
     policy = CSP.format(hashes=" ".join(sha256_source(b) for b in (lib_body, app_body)))
     page = replace_once(page, "<head>", f'<head>\n<meta http-equiv="Content-Security-Policy" content="{policy}">')
 
