@@ -60,6 +60,7 @@
 .away { display: inline-block; font-size: 13px; color: var(--ink-dim); border: 1px solid var(--line); border-radius: 999px; padding: 1px 10px; margin: 10px 0 0; }
 .action { font-size: 16px; font-weight: 600; margin: 12px 0 0; }
 .box-trend { margin: 0; align-self: end; }
+.box-trend figcaption { font-size: 12px; font-weight: 500; color: var(--ink-faint); margin: 0 0 2px; }
 .trend { display: block; width: 100%; max-width: 400px; height: auto; overflow: visible; }
 @container (min-width: 600px) {
   .box-body { grid-template-columns: 1fr minmax(280px, 1fr); grid-template-rows: auto; align-items: center; }
@@ -154,6 +155,7 @@
   .away { font-size: 8px; padding: 0 6px; margin-top: 3px; }
   .action { font-size: 9.5px; margin-top: 3px; }
   .trend { max-width: 2.3in; max-height: .62in; }
+  .box-trend figcaption { font-size: 7.5px; margin: 0; }
   .with-team { font-size: 9px; margin-top: 5px; }
   .everyone { margin-top: 8px; }
   .all, .all[hidden] { display: block !important; columns: 3; column-gap: 16px; margin-top: 0; }

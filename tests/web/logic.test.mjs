@@ -138,7 +138,7 @@ test("plainSummary on a normal day: date line, headline, sub line, each flagged 
     "Lineup Card · Sun Sep 20 · Away at Lakeside Fictionals",
     "2 players to talk to before they train",
     "1 looks like his usual self. No history yet: K. Ruiz.",
-    "Check in: J. Ortega (RP). Jumping 17% below his usual. Felt worse than usual on this morning's form. " +
+    "Check in: J. Ortega (RP). Jumping 17% below his usual. Felt much worse than usual on this morning's form. " +
       "196 throws and pitches in the last 7 days. Not in today's lineup.",
     "Watch: C. Duvall (RP). Jumping 11% below his usual. 185 throws and pitches in the last 7 days. Not in today's lineup.",
     "Fictional roster. Not a fitness-to-play decision.",
@@ -151,9 +151,9 @@ test("plainSummary on a team-drop day leads with the team and names the rest in 
   assert.equal(text, [
     "Lineup Card · Sun Sep 20 · Away at Lakeside Fictionals",
     "The whole team is jumping 10% below its usual today",
-    "Nobody dropped more than the team. No history yet: K. Ruiz.",
+    "1 player to talk to anyway. 1 more is down with the team. No history yet: K. Ruiz.",
     "Not explained by the team drop:",
-    "Check in: J. Ortega (RP). Jumping 17% below his usual. Felt worse than usual on this morning's form. " +
+    "Check in: J. Ortega (RP). Jumping 17% below his usual. Felt much worse than usual on this morning's form. " +
       "196 throws and pitches in the last 7 days.",
     "Down with the team: C. Duvall.",
     "Fictional roster. Not a fitness-to-play decision.",
@@ -262,33 +262,60 @@ test("headline with two flags counts Check in and Watch, roster-wide", () => {
   assert.equal(h.sub, "25 look like their usual selves. No history yet: P. Player27.");
 });
 
-test("headline on a team-drop day with one player beyond the team", () => {
-  const players = roster(["check_in", "check_in", "watch", "check_in", "no_change"]);
+test("headline on a team-drop day counts the boxes and the players down with the team", () => {
+  const players = roster(["check_in", "check_in", "watch", "check_in", "no_change", "not_enough_data"]);
   players[0].beyond_team = true;
   players[1].beyond_team = false;
   players[2].beyond_team = false;
-  players[3].beyond_team = null;    // flagged for wellness: not a jump drop
+  players[3].beyond_team = null;    // flagged for wellness: not explained by the team drop either
+  players[5].name = "K. Ruiz";
   const h = headline({ team_shift: { beyond_noise: true, median_pct: -10.2, n: 27 } }, players);
   assert.equal(h.title, "The whole team is jumping 10% below its usual today");
-  assert.equal(h.sub, "1 player dropped more than the team.");
+  assert.equal(h.sub, "2 players to talk to anyway. 2 more are down with the team. No history yet: K. Ruiz.");
 });
 
-test("headline on a team-drop day with nobody beyond the team", () => {
-  const players = roster(["check_in", "watch"]).map((p) => ({ ...p, beyond_team: false }));
-  const h = headline({ team_shift: { beyond_noise: true, median_pct: -8.6, n: 27 } }, players);
+test("headline on a team-drop day: singular forms, and nobody beyond the drop", () => {
+  const shift = { team_shift: { beyond_noise: true, median_pct: -8.6, n: 27 } };
+  const one = roster(["check_in", "watch"]);
+  one[1].beyond_team = false;
+  assert.equal(headline(shift, one).sub, "1 player to talk to anyway. 1 more is down with the team.");
+  const none = roster(["check_in", "watch"]).map((p) => ({ ...p, beyond_team: false }));
+  const h = headline(shift, none);
   assert.equal(h.title, "The whole team is jumping 9% below its usual today");
-  assert.equal(h.sub, "Nobody dropped more than the team.");
-  const two = roster(["check_in", "check_in"]).map((p) => ({ ...p, beyond_team: true }));
-  assert.equal(headline({ team_shift: { beyond_noise: true, median_pct: -12 } }, two).sub, "2 players dropped more than the team.");
+  assert.equal(h.sub, "Nobody stands out beyond the team drop.");
+  const all = roster(["check_in", "check_in"]).map((p) => ({ ...p, beyond_team: true }));
+  assert.equal(headline({ team_shift: { beyond_noise: true, median_pct: -12 } }, all).sub, "2 players to talk to anyway.");
 });
 
-test("reasonLines: jump today, wellness and pitcher load", () => {
-  const p = { pos: "RP", rsi: { pct: -16.9, today: 0.44, days_old: 0 }, wellness: { z: -2.34 }, load: { throws_7d: 215 } };
+test("reasonLines: jump-driven flag leads with the jump; wellness wording by size", () => {
+  const p = { pos: "RP", magnitude: "▼ large", rsi: { pct: -16.9, today: 0.44, days_old: 0 }, wellness: { z: -1.5 },
+    load: { throws_7d: 215 } };
   assert.deepEqual(reasonLines(p), [
     "Jumping 17% below his usual",
     "Felt worse than usual on this morning's form",
     "215 throws and pitches in the last 7 days",
   ]);
+  assert.equal(reasonLines({ ...p, wellness: { z: -2.0 } })[1], "Felt much worse than usual on this morning's form");
+});
+
+test("reasonLines: wellness-driven flag leads with wellness, then the jump", () => {
+  const p = { pos: "RP", magnitude: "▼ large (wellness)", rsi: { pct: -16.9, today: 0.44, days_old: 0 },
+    wellness: { z: -2.34 }, load: { throws_7d: 215 } };
+  assert.deepEqual(reasonLines(p), [
+    "Felt much worse than usual on this morning's form",
+    "Jumping 17% below his usual",
+    "215 throws and pitches in the last 7 days",
+  ]);
+});
+
+test("reasonLines: wellness-driven flag with a normal jump says the jump looks normal", () => {
+  const p = { pos: "OF", magnitude: "▼ moderate (wellness)", rsi: { pct: 0.4, today: 0.5, days_old: 0 },
+    wellness: { z: -1.7 }, load: { throws_7d: 300 } };
+  assert.deepEqual(reasonLines(p), ["Felt worse than usual on this morning's form", "Jump looks normal"]);
+  // A jump-driven flag never says this; a stale reading keeps its age.
+  assert.deepEqual(reasonLines({ ...p, magnitude: "▼ large" }), ["Jumping right at his usual", "Felt worse than usual on this morning's form"]);
+  assert.deepEqual(reasonLines({ ...p, rsi: { ...p.rsi, days_old: 2 } }),
+    ["Felt worse than usual on this morning's form", "Last jump 2 days ago: right at his usual"]);
 });
 
 test("reasonLines: a stale jump says how old it is", () => {

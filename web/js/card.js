@@ -97,7 +97,7 @@ export async function init(src) {
           ${away}
           <p class="action">${esc(ACTION[p.status] ?? "")}</p>
         </div>
-        <figure class="box-trend">${trendSvg(p)}</figure>
+        <figure class="box-trend"><figcaption>Jump, last 2 weeks</figcaption>${trendSvg(p)}</figure>
       </div></article>`;
   };
   $("boxes").innerHTML = groups.more.map(box).join("");

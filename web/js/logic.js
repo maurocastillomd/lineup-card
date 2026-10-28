@@ -74,17 +74,23 @@ export function plainChange(p) {
 
 const PITCHERS = new Set(["SP", "RP"]);
 
-// The reasons in a flagged player's box, one short sentence each.
+// The reasons in a flagged player's box, one short sentence each. What drove the flag comes
+// first: a wellness-driven flag (magnitude "... (wellness)") leads with the morning form.
 export function reasonLines(p) {
-  const lines = [];
+  const fromWellness = Boolean(p.magnitude?.includes("(wellness)"));
   const pct = p.rsi?.pct;
-  if (pct == null) lines.push(p.rsi?.today == null ? "No jump today" : "Not enough jump history yet");
-  else if (isStale(p)) lines.push(`Last jump ${daysAgo(p.rsi.days_old)}: ${pctWords(pct)}`);
-  else lines.push(`Jumping ${pctWords(pct)}`);
-  if (p.wellness?.z != null && p.wellness.z <= -1.2) lines.push("Felt worse than usual on this morning's form");
+  let jump;
+  if (pct == null) jump = p.rsi?.today == null ? "No jump today" : "Not enough jump history yet";
+  else if (isStale(p)) jump = `Last jump ${daysAgo(p.rsi.days_old)}: ${pctWords(pct)}`;
+  else if (fromWellness && Math.abs(pct) < 1) jump = "Jump looks normal";
+  else jump = `Jumping ${pctWords(pct)}`;
+  const z = p.wellness?.z;
+  const form = z == null || z > -1.2 ? null
+    : `Felt ${z <= -2.0 ? "much " : ""}worse than usual on this morning's form`;
+  const lines = fromWellness ? [form, jump] : [jump, form];
   if (PITCHERS.has(p.pos) && p.load?.throws_7d != null) lines.push(`${p.load.throws_7d} throws and pitches in the last 7 days`);
   if (p.reviewNote) lines.push(p.reviewNote);
-  return lines;
+  return lines.filter(Boolean);
 }
 
 const escXml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -167,10 +173,14 @@ export function headline(day, players) {
   const missing = players.filter((p) => p.status === "not_enough_data").map((p) => p.name);
   const history = missing.length ? ` No history yet: ${missing.join(", ")}.` : "";
   if (shift?.beyond_noise) {
-    const beyond = flagged.filter((p) => p.beyond_team === true).length;
+    // n = the boxes shown (not explained by the drop), m = the flagged players down with the team.
+    const { more, withTeam } = groupCheckins(players, shift);
+    const n = more.length, m = withTeam.length;
+    const talk = n === 0 ? "Nobody stands out beyond the team drop."
+      : `${plural(n, "player", "players")} to talk to anyway.${m ? ` ${m} more ${m === 1 ? "is" : "are"} down with the team.` : ""}`;
     return {
       title: `The whole team is jumping ${Math.abs(Math.round(shift.median_pct))}% ${shift.median_pct < 0 ? "below" : "above"} its usual today`,
-      sub: `${beyond ? `${plural(beyond, "player", "players")} dropped more than the team.` : "Nobody dropped more than the team."}${history}`,
+      sub: `${talk}${history}`,
     };
   }
   const title = flagged.length === 0 ? "No one stands out today"
