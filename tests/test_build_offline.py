@@ -66,9 +66,10 @@ def test_licenses_travel_inside_the_file():
     assert block, "licenses block missing"
     text = block.group(1)
     assert "</script" not in text.lower()
-    for need in ("html-to-image", "SIL OPEN FONT LICENSE", "Copyright (c) 2026 Ryan", "Permission is hereby granted"):
+    for need in ("html-to-image", "SIL OPEN FONT LICENSE", "Permission is hereby granted"):
         assert need in text, need
-    assert text.count("Permission is hereby granted") >= 2, "both MIT texts"
+    # The anatomy kit drew only the availability board, which the file no longer carries.
+    assert "Copyright (c) 2026 Ryan" not in text
 
 
 def test_scripts_are_allowed_by_hash_not_unsafe_inline():

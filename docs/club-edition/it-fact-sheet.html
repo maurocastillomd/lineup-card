@@ -40,7 +40,7 @@
   <section>
     <h2>What it is</h2>
     <div>
-      <p>One HTML file, <b>lineup-card.html</b>, about 1.3 MB. Staff open it from disk in a web browser. It reads CSV exports from VALD ForceDecks, Catapult OpenField and a wellness form, then shows a review screen and a one-page card.</p>
+      <p>One HTML file, <b>lineup-card.html</b>, about 750 KB. Staff open it from disk in a web browser. The start screen has a "See a sample card" button that shows a finished card made from the fictional sample. With real files, it reads CSV exports from VALD ForceDecks, Catapult OpenField and a wellness form, shows a review screen where a person approves each flag, then shows a one-page card.</p>
       <ul>
         <li>No install, no admin rights, no account, no server. No macros and no program files.</li>
         <li>All code, styles, fonts and pictures are inside the file, plus a fictional sample roster for practice.</li>
@@ -65,7 +65,7 @@
       <ul>
         <li><b>Dropped CSV files</b> are read into browser memory only. They are not saved, and they are gone when the tab closes.</li>
         <li><b>Saved reviews</b> go in that browser's local storage, under keys that start <code>lineupcard:review:</code> plus the club name (URL-encoded) and date. A review holds the reviewer's name, today's player IDs, each flag decision with its note, and the approval time.</li>
-        <li><b>To delete them:</b> click "Forget saved reviews on this computer" on the start screen, or clear the browser's site data. In Chrome, files opened from disk share one local storage area.</li>
+        <li><b>To delete them:</b> click "Forget saved reviews on this computer" on the start screen, or clear the browser's site data. In Chrome, files opened from disk share one local storage area, so another HTML file opened from disk in the same browser profile could read saved reviews. For a shared laptop, run the file in its own browser profile.</li>
         <li><b>Files it can make, only when a user clicks:</b> "Export review" saves a JSON file, "Save as image" saves a PNG, and "Copy for group text" puts text on the clipboard. "Print / PDF" (or Ctrl+P) opens the browser's own print window.</li>
         <li>Nothing is uploaded. There is no tracking and no analytics.</li>
       </ul>
@@ -88,7 +88,6 @@
         <tr><th>Piece</th><th>Use</th><th>License</th></tr>
         <tr><td>html-to-image 1.11.11</td><td>"Save as image"</td><td>MIT</td></tr>
         <tr><td>Fraunces, Hanken Grotesk, IBM Plex Mono</td><td>Fonts</td><td>SIL Open Font License 1.1</td></tr>
-        <tr><td>Anatomy isometric drawing kit (iso-kit, lathe; Copyright 2026 Ryan). Used at build time; only the drawing it made is in the file.</td><td>Availability board picture</td><td>MIT</td></tr>
       </table>
     </div>
   </section>

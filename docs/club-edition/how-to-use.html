@@ -9,27 +9,33 @@
   <style>
     @page { size: Letter; margin: 0.4in 0.45in; }
     html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    body { font-size: 10.5px; line-height: 1.4; background: #fff; }
+    body { font-size: 10px; line-height: 1.35; background: #fff; }
     .page { max-width: 7.6in; margin: 0 auto; padding: 0; }
     header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px;
       border-bottom: 1px solid var(--line); padding-bottom: 8px; }
     h1 { font-size: 24px; margin: 0; }
+    h2 { font-size: 16px; margin: 0 0 4px; }
     .lede { margin: 2px 0 0; color: var(--ink-dim); font-size: 11.5px; }
     .fiction { white-space: nowrap; }
-    .steps { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; margin-top: 10px; }
-    .step { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 8px 10px; }
-    .step h2 { font-size: 13.5px; margin: 0 0 2px; display: flex; gap: 8px; align-items: baseline; }
+    .get { display: grid; grid-template-columns: 1fr 1.12fr; gap: 16px; align-items: start; margin-top: 10px; }
+    .get p { margin: 0 0 6px; }
+    .get .shot { display: block; width: 100%; border: 1px solid var(--line); border-radius: 8px; }
+    .how-h { margin-top: 6px; }
+    .steps { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; }
+    .step { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 6px 10px; }
+    .step h3 { font-size: 12.5px; margin: 0 0 2px; display: flex; gap: 8px; align-items: baseline; }
     .n { font-family: var(--mono); font-size: 11px; color: var(--on-accent); background: var(--accent);
       border-radius: 999px; width: 18px; height: 18px; display: inline-grid; place-items: center; flex: none; }
-    .step p { margin: 0 0 6px; }
-    .step img { display: block; width: 100%; height: 128px; object-fit: contain; object-position: center top;
+    .step p { margin: 0 0 5px; }
+    .step img { display: block; width: 100%; height: 56px; object-fit: cover; object-position: left top;
       border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
-    .step.wide { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1.25fr; gap: 12px; align-items: start; }
-    .step.wide img { height: 96px; }
-    .lower { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; }
-    h3 { font-size: 13px; margin: 0 0 4px; }
-    .words { list-style: none; padding: 0; margin: 0; }
-    .words li { display: grid; grid-template-columns: 112px 1fr; gap: 6px; padding: 3px 0; border-top: 1px solid var(--line); }
+    .step img.fit { object-fit: contain; object-position: left center; }
+    .step.wide { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 0.9fr; gap: 12px; align-items: center; }
+    .step.wide img { height: 40px; object-fit: contain; object-position: right center; }
+    .lower { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+    h4 { font-family: var(--display); font-weight: 500; font-size: 13px; margin: 0 0 3px; }
+    .words { list-style: none; padding: 0; margin: 6px 0 0; }
+    .words li { display: grid; grid-template-columns: 100px 1fr; gap: 6px; padding: 2px 0; border-top: 1px solid var(--line); }
     .status { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; }
     .glyph { position: relative; display: inline-block; width: 12px; height: 12px; flex: none; }
     .glyph::before, .glyph::after { content: ""; position: absolute; box-sizing: border-box; }
@@ -42,7 +48,7 @@
     ul.plain { margin: 0; padding-left: 14px; }
     ul.plain li { margin: 0 0 2px; }
     code { font-family: var(--mono); font-size: 9.5px; }
-    footer { margin-top: 10px; padding-top: 6px; border-top: 1px solid var(--line); color: var(--ink-dim); font-size: 9.5px; }
+    footer { margin-top: 6px; padding-top: 5px; border-top: 1px solid var(--line); color: var(--ink-dim); font-size: 9.5px; }
     footer p { margin: 0 0 2px; }
   </style>
 </head>
@@ -51,64 +57,73 @@
   <header>
     <div>
       <h1>Lineup Card: how to use it</h1>
-      <p class="lede">One file that opens in your web browser. No install, no account, no internet needed. Checked in Google Chrome. Microsoft Edge uses the same engine but has not been checked yet.</p>
+      <p class="lede">One file that opens in your web browser. No install, no account, no internet needed. Checked in Google Chrome; Microsoft Edge not checked yet.</p>
     </div>
     <span class="fiction">Pictures use the fictional sample</span>
   </header>
 
+  <section class="get">
+    <div>
+      <h2>What you get</h2>
+      <p>A one-page morning brief for staff. The headline says how many players to talk to before they train.</p>
+      <p>Each of those players gets a box: the reasons in plain words, what to do, and his jump over the last 2 weeks. Everyone else is behind one button. The whole roster prints on the same page.</p>
+      <p>Each player is compared with his own last 4 weeks, not with the team. A flag is a reason to talk, not a decision to sit him. Coaches and medical staff decide who plays.</p>
+      <ul class="words">
+        <li><span class="status"><span class="glyph g-check_in"></span>Check in</span><span>Talk with him before he trains.</span></li>
+        <li><span class="status"><span class="glyph g-watch"></span>Watch</span><span>Keep an eye on him today.</span></li>
+        <li><span class="status"><span class="glyph g-no_change"></span>No change</span><span>Within his usual ups and downs.</span></li>
+        <li><span class="status"><span class="glyph g-not_enough_data"></span>Not enough data</span><span>No fresh reading or no history yet.</span></li>
+      </ul>
+    </div>
+    <img class="shot" src="shots/card.png" alt="The sample Lineup Card: the headline 2 players to talk to before they train, and one box each for J. Ortega and C. Duvall">
+  </section>
+
+  <h2 class="how-h">How to make one</h2>
   <section class="steps">
     <div class="step">
-      <h2><span class="n">1</span> Open the file</h2>
-      <p>Double-click <b>lineup-card.html</b>. It opens in your web browser. To practice first, click "Try it with the fictional sample".</p>
-      <img src="shots/step-1.png" alt="The start screen of Lineup Card">
+      <h3><span class="n">1</span> Open the file and see the sample</h3>
+      <p>Double-click <b>lineup-card.html</b>. It opens in your web browser. Click "See a sample card" to see a finished card. On it, "See how it was checked" opens the review behind it.</p>
+      <img class="fit" src="shots/step-1.png" alt="The start screen: three steps and the See a sample card button">
     </div>
     <div class="step">
-      <h2><span class="n">2</span> Type club and name, then drop the files</h2>
-      <p>Drop the VALD, Catapult and wellness exports and <b>roster.csv</b> on the box. To load a whole folder at once, click "Choose a folder". Each file found is listed with its type.</p>
-      <img src="shots/step-2.png" alt="Club and name typed, with the dropped files listed">
+      <h3><span class="n">2</span> Type club and name, then add the files</h3>
+      <p>Drop the VALD, Catapult and wellness exports and <b>roster.csv</b> on the box, or click "Choose a folder" to load them all at once. Each file found is listed. Click "Build today's review".</p>
+      <img src="shots/step-2.png" alt="Club and name typed, with the files found listed">
     </div>
     <div class="step">
-      <h2><span class="n">3</span> Mark today's lineup</h2>
-      <p>Click "Build today's review". Paste the lineup and probable pitchers, one per line. Names, last names or IDs work. Click "Use this list".</p>
-      <img src="shots/step-3.png" alt="The Today's players box with seven names">
+      <h3><span class="n">3</span> Mark today's players</h3>
+      <p>Paste the lineup and probable pitchers, one per line. Names, last names or IDs work. Click "Use this list".</p>
+      <img src="shots/step-3.png" alt="The Today's players box with the lineup pasted">
     </div>
     <div class="step">
-      <h2><span class="n">4</span> Decide each flag and approve</h2>
-      <p>For each flag, click Confirm, or pick a new status and click Change, or click Remove flag. Change and Remove need a note. Then click "Approve and build the Lineup Card".</p>
+      <h3><span class="n">4</span> Decide each flag and approve</h3>
+      <p>Under "Flags to decide", click Confirm, or pick a new status and click Change, or click Remove flag. Change and Remove need a note. Then click "Approve and build the Lineup Card".</p>
       <img src="shots/step-4.png" alt="Two flags with Confirm, Change and Remove flag buttons">
     </div>
     <div class="step wide">
       <div>
-        <h2><span class="n">5</span> Print, save the image, or copy for group text</h2>
-        <p>To print or make a PDF, click "Print / PDF" (or press Ctrl+P, Cmd+P on a Mac). The card fits on one Letter page. "Save as image" saves a picture. "Copy for group text" copies a short text summary. "Export review" saves your decisions as a file for your records.</p>
+        <h3><span class="n">5</span> Print, save the image, or copy for group text</h3>
+        <p>"Print / PDF" (or Ctrl+P, Cmd+P on a Mac) prints the card on one Letter page. "Save as image" saves a picture. "Copy for group text" copies a short text version. "Export review" saves your decisions as a file.</p>
       </div>
-      <img src="shots/step-5.png" alt="The top of the Lineup Card with the four status counts and the share buttons">
+      <img src="shots/step-5.png" alt="The card's share buttons">
     </div>
   </section>
 
   <section class="lower">
     <div>
-      <h3>What the words mean</h3>
-      <ul class="words">
-        <li><span class="status"><span class="glyph g-check_in"></span>Check in</span><span>Talk with him before he trains. The clearest change from his own normal.</span></li>
-        <li><span class="status"><span class="glyph g-watch"></span>Watch</span><span>Keep an eye on him today. A smaller change worth a look.</span></li>
-        <li><span class="status"><span class="glyph g-no_change"></span>No change</span><span>Nothing beyond his normal ups and downs.</span></li>
-        <li><span class="status"><span class="glyph g-not_enough_data"></span>Not enough data</span><span>No fresh reading, or not enough history yet.</span></li>
+      <h4>What it needs</h4>
+      <ul class="plain">
+        <li>VALD ForceDecks jump (CMJ), Catapult OpenField and morning wellness exports, saved as CSV.</li>
+        <li><b>roster.csv</b> (<code>lc_id, name, pos, vald_external_id, catapult_name</code>) links each player across the files. Anyone not in it is held out and listed, never guessed.</li>
+        <li>Column names like the files in <b>sample-data</b>. In Excel, save as "CSV UTF-8".</li>
+        <li>The last 4 weeks or more of daily exports. A player needs 10 readings in the 28 days before a day, and one from the last 4 days. Until then he shows Not enough data.</li>
+        <li>Catapult times are read as US Central time. Optional: <b>schedule.csv</b> (<code>date, opponent, home_away, note</code>).</li>
       </ul>
-      <p style="margin:6px 0 0">A flag needs a drop that is big against his own last 28 days and bigger than normal test-to-test noise. Coaches and medical staff decide who plays.</p>
     </div>
     <div>
-      <h3>What it needs</h3>
-      <ul class="plain">
-        <li>VALD ForceDecks jump exports (CMJ), Catapult OpenField exports, and the morning wellness form, saved as CSV.</li>
-        <li><b>roster.csv</b> with <code>lc_id, name, pos, vald_external_id, catapult_name</code>. It links each player across the files. Anyone not in it is held out and listed, never guessed.</li>
-        <li>Column names like the files in <b>sample-data</b>. In Excel, save as "CSV UTF-8".</li>
-        <li>The last 4 weeks or more of daily exports. A player needs at least 10 readings in the 28 days before a day, and one from the last 4 days, to be flagged. Until then he shows Not enough data.</li>
-        <li>Catapult times are read as US Central time, for every club.</li>
-        <li>Optional: <b>schedule.csv</b> (<code>date, opponent, home_away, note</code>).</li>
-      </ul>
-      <h3 style="margin-top:8px">Where your data goes</h3>
-      <p style="margin:0">Dropped files stay in browser memory and are gone when you close the tab. Saved reviews stay in this browser, under the club name. "Forget saved reviews on this computer" deletes them.</p>
+      <h4>Where your data goes</h4>
+      <p style="margin:0 0 6px">Dropped files stay in browser memory and are gone when you close the tab. Saved reviews stay in this browser, under the club name. "Forget saved reviews on this computer" deletes them.</p>
+      <p style="margin:0"><b>For analysts:</b> the numbers behind each flag are on the review screen, under "For analysts: how noisy each test is". The card uses plain words only.</p>
     </div>
   </section>
 

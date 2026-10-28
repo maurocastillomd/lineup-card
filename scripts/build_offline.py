@@ -46,14 +46,11 @@ def sha256_source(text: str) -> str:
 LICENSE_FILES = (  # (name in the package, source)
     ("LICENSE-html-to-image.txt", WEB / "vendor" / "LICENSE-html-to-image.txt"),
     ("OFL.txt", WEB / "fonts" / "OFL.txt"),
-    ("LICENSE-anatomy-kit.txt", WEB / "figures" / "board" / "vendor" / "LICENSE"),
 )
 NOTICE = """Lineup Card, Club Edition: third-party notices
 
 - html-to-image 1.11.11 (MIT License, Copyright (c) 2017-2023 W.Y.): used by "Save as image".
 - Fraunces, Hanken Grotesk and IBM Plex Mono fonts (SIL Open Font License 1.1): the fonts.
-- Anatomy isometric drawing kit, iso-kit and lathe (MIT License, Copyright (c) 2026 Ryan):
-  used at build time to draw figures for this project. No drawing from it is in this file.
 
 The full license texts follow.
 """

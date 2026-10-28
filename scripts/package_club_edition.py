@@ -5,6 +5,8 @@ It holds:
   sample-data/                the fictional roster, schedule and daily exports
   HOW-TO-USE.pdf              one Letter page, printed from docs/club-edition/how-to-use.html
   IT-FACT-SHEET.pdf           one Letter page, printed from docs/club-edition/it-fact-sheet.html
+  HOW-TO-USE.jpg, IT-FACT-SHEET.jpg   picture previews of the two PDFs (docs/club-edition/*.jpg;
+                              regenerate them from the PDFs after changing a handout, then run this again)
   COPILOT-CHATGPT-PROMPTS.md  the optional prompt guide
   licenses/                   third-party notices and full license texts
 
@@ -87,6 +89,8 @@ def main() -> None:
     shutil.copy2(DOCS / "COPILOT-CHATGPT-PROMPTS.md", PKG / "COPILOT-CHATGPT-PROMPTS.md")
     print_pdf(DOCS / "how-to-use.html", PKG / "HOW-TO-USE.pdf")
     print_pdf(DOCS / "it-fact-sheet.html", PKG / "IT-FACT-SHEET.pdf")
+    shutil.copy2(DOCS / "how-to-use.jpg", PKG / "HOW-TO-USE.jpg")
+    shutil.copy2(DOCS / "it-fact-sheet.jpg", PKG / "IT-FACT-SHEET.jpg")
 
     print(f"{PKG.relative_to(ROOT)}/")
     for p in sorted(PKG.iterdir()):

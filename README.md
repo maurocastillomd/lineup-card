@@ -210,7 +210,7 @@ The whole pull stops after 15 minutes (set `LINEUP_PULL_BUDGET_S` in seconds to 
 
 ## Club Edition (offline)
 
-The Club Edition is one HTML file, `lineup-card.html`, that staff open from disk in a web browser. Checked in Google Chrome. Microsoft Edge uses the same engine but has not been checked yet. They drop in VALD, Catapult and wellness CSV exports plus `roster.csv` (single files, or a whole folder with "Choose a folder"; the last 4 weeks or more of daily exports, since a player needs at least 10 readings in the 28 days before a day to be flagged), review the flags, approve, and print the card with the "Print / PDF" button (Ctrl+P works too). No install, no Python, no internet and no AI inside. A Content-Security-Policy in the file blocks the page from loading or sending data over the network. It does not stop a user clicking a link.
+The Club Edition is one HTML file, `lineup-card.html`, that staff open from disk in a web browser. Checked in Google Chrome. Microsoft Edge uses the same engine but has not been checked yet. The start screen shows three steps and a "See a sample card" button, which opens the finished card for the fictional 2026-09-20 with its example review; "See how it was checked" on that card opens the review behind it. For real use, staff drop in VALD, Catapult and wellness CSV exports plus `roster.csv` (single files, or a whole folder with "Choose a folder"; the last 4 weeks or more of daily exports, since a player needs at least 10 readings in the 28 days before a day to be flagged), review the flags, approve, and print the card with the "Print / PDF" button (Ctrl+P works too). No install, no Python, no internet and no AI inside. A Content-Security-Policy in the file blocks the page from loading or sending data over the network. It does not stop a user clicking a link.
 
 The policy, as built: `default-src 'none'; script-src` followed by the sha256 hashes of its two scripts (the image library and the app); `style-src 'unsafe-inline'; font-src data:; img-src data: blob:; connect-src data:; base-uri 'none'; form-action 'none'`. No `'unsafe-inline'` for scripts: the build hashes each executed script, and the inline license block (`type="text/plain"`) never runs. Styles keep `'unsafe-inline'` because the pages set inline style attributes.
 
@@ -223,14 +223,14 @@ The policy, as built: `default-src 'none'; script-src` followed by the sha256 ha
 It rebuilds `dist/lineup-card.html` (with `scripts/build_offline.py`), then makes `dist/club-edition/` fresh. The script stops if either PDF is longer than one page.
 
 **What is in the package.**
-- `lineup-card.html`: the app, about 0.7 MB, with the fictional sample inside.
+- `lineup-card.html`: the app, about 750 KB, with the fictional sample inside.
 - `sample-data/`: the fictional `roster.csv`, `schedule.csv` and one folder per day of VALD, Catapult and wellness exports.
-- `HOW-TO-USE.pdf`: one page, five steps with pictures (source `docs/club-edition/how-to-use.html`).
+- `HOW-TO-USE.pdf`: one page. It leads with "What you get" (a picture of the sample card and the four status words), then five steps with pictures (source `docs/club-edition/how-to-use.html`, pictures in `docs/club-edition/shots/`).
 - `IT-FACT-SHEET.pdf`: one page of facts IT can check: the policy, where data lives, how to delete it, third-party licenses (source `docs/club-edition/it-fact-sheet.html`).
-- `licenses/`: a third-party notice and the full license texts (html-to-image MIT, fonts OFL 1.1, anatomy kit MIT). The same texts are inlined in `lineup-card.html` as a `<script type="text/plain" id="licenses">` block.
+- `licenses/`: a third-party notice and the full license texts (html-to-image MIT, fonts OFL 1.1). The same texts are inlined in `lineup-card.html` as a `<script type="text/plain" id="licenses">` block.
 - `COPILOT-CHATGPT-PROMPTS.md`: optional prompts for the club's approved Copilot or ChatGPT, used only on the approved card text. The AI never decides who is flagged.
 
-JPEG previews of the two PDFs are in `docs/club-edition/`.
+- `HOW-TO-USE.jpg`, `IT-FACT-SHEET.jpg`: picture previews of the two PDFs, copied from `docs/club-edition/`. After changing a handout, run the package script, make the previews from the new PDFs (`qlmanage -t -s 1700`, then `sips -z 1700 1313`), and run the package script again.
 
 **Documented differences from the Python edition.** None of them is hit by the fictional data, and the parity test checks every fictional day.
 1. A Catapult period that starts just after midnight UTC belongs to the club's local day. In Python it belongs to the folder it was pulled into.
