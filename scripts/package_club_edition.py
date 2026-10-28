@@ -5,8 +5,8 @@ It holds:
   sample-data/                the fictional roster, schedule and daily exports
   HOW-TO-USE.pdf              one Letter page, printed from docs/club-edition/how-to-use.html
   IT-FACT-SHEET.pdf           one Letter page, printed from docs/club-edition/it-fact-sheet.html
-  HOW-TO-USE.jpg, IT-FACT-SHEET.jpg   picture previews of the two PDFs (docs/club-edition/*.jpg;
-                              regenerate them from the PDFs after changing a handout, then run this again)
+  HOW-TO-USE.jpg, IT-FACT-SHEET.jpg   picture previews of the two PDFs, made from them each run
+                              (macOS qlmanage + sips, 1313 x 1700) and also saved in docs/club-edition/
   COPILOT-CHATGPT-PROMPTS.md  the optional prompt guide
   licenses/                   third-party notices and full license texts
 
@@ -21,6 +21,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -64,6 +65,21 @@ def print_pdf(html: Path, out: Path) -> None:
         fail(f"{out.name} has {pages} pages; it must fit on one Letter page")
 
 
+def preview(pdf: Path, name: str) -> None:
+    """Page 1 of the PDF as a 1313 x 1700 JPEG, into docs/club-edition/ and the package."""
+    if not shutil.which("qlmanage") or not shutil.which("sips"):
+        fail("making the JPEG previews needs macOS qlmanage and sips")
+    with tempfile.TemporaryDirectory() as tmp:
+        subprocess.run(["qlmanage", "-t", "-s", "1700", "-o", tmp, str(pdf)], check=True, capture_output=True, timeout=120)
+        png = Path(tmp) / f"{pdf.name}.png"
+        if not png.is_file():
+            fail(f"qlmanage did not render {pdf.name}")
+        out = DOCS / f"{name}.jpg"
+        subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "85", "-z", "1700", "1313", str(png),
+                        "--out", str(out)], check=True, capture_output=True, timeout=120)
+    shutil.copy2(out, PKG / f"{pdf.stem}.jpg")
+
+
 def main() -> None:
     subprocess.run([sys.executable, str(ROOT / "scripts" / "build_offline.py")], check=True, cwd=ROOT)
     fresh_folder()
@@ -89,8 +105,8 @@ def main() -> None:
     shutil.copy2(DOCS / "COPILOT-CHATGPT-PROMPTS.md", PKG / "COPILOT-CHATGPT-PROMPTS.md")
     print_pdf(DOCS / "how-to-use.html", PKG / "HOW-TO-USE.pdf")
     print_pdf(DOCS / "it-fact-sheet.html", PKG / "IT-FACT-SHEET.pdf")
-    shutil.copy2(DOCS / "how-to-use.jpg", PKG / "HOW-TO-USE.jpg")
-    shutil.copy2(DOCS / "it-fact-sheet.jpg", PKG / "IT-FACT-SHEET.jpg")
+    preview(PKG / "HOW-TO-USE.pdf", "how-to-use")
+    preview(PKG / "IT-FACT-SHEET.pdf", "it-fact-sheet")
 
     print(f"{PKG.relative_to(ROOT)}/")
     for p in sorted(PKG.iterdir()):

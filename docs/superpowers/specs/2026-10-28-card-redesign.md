@@ -91,6 +91,33 @@ existing test-noise table and the all-players numbers.
 - IT sheet: update only where it describes the screens.
 - Rebuild dist/club-edition with the package script.
 
+## 4b. Print and PDF (added 2026-10-28, after review)
+
+The card's real delivery is a PDF sent through Slack, Teams and email and opened on
+phones and laptops, so the printed page is the primary product.
+
+- One US Letter page, always full: top line, headline, sub line (spans the page),
+  flagged players, the whole roster, then "How to read this" pinned to the bottom.
+- The roster prints as two tables grouped by position: Player, Status, Jump vs usual,
+  Form, Lineup. Type is 9 to 10pt, never under 9pt; spare room becomes row spacing.
+- By number of flagged players (`printLayout` in logic.js, tested):
+  0 to 4 boxes two across with the two-week picture and every reason;
+  5 or 6 three across, no picture, first two reasons;
+  7 or more a one-line list (status, name, the reason that drove the flag) with one
+  legend line for the actions; 12 or more also take the roster to 9pt.
+  A reviewer's note always prints. The roster carries every player's jump and form.
+- Team-drop days (Mauro, 2026-10-28): a flagged player with beyond_team === false
+  shows "Down with team" with a neutral grey mark in the roster, on paper and on
+  screen (`rosterLabel`). His status, export and review stay Check in or Watch. On
+  paper the separate "Down with the team: names" line is left out, because the
+  roster already marks each of them and the sub line counts them.
+- The print button reads "Save PDF" (id stays `print`, title "Opens the print window.
+  Choose Save as PDF."). Around printing, the page title becomes
+  "Lineup Card <club> <YYYY-MM-DD>" so Save as PDF uses it as the file name, then
+  goes back.
+- Checked by exporting the PDFs for 09-20, 09-15, 09-06, 09-10, 09-13 and stress
+  cases of 9 and 15 boxes, each viewed at phone (1170 px) and laptop (1600 px) width.
+
 ## 5. Tests
 
 - logic.test.mjs: `headline` for no flags, 1 flag, 2 flags, team-drop with
