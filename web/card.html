@@ -11,11 +11,10 @@
 <body>
 <main class="card wrap" id="card">
   <header class="card-head">
-    <div>
-      <span class="fiction" id="disclaimer">Not a fitness-to-play decision.</span>
-      <h1>Lineup Card</h1>
-      <p id="meta" class="meta"></p>
+    <div class="head-info">
+      <p id="topline" class="topline">Lineup Card</p>
       <p id="reviewed" class="reviewed"></p>
+      <span class="fiction" id="disclaimer">Not a fitness-to-play decision.</span>
     </div>
     <div class="head-actions noprint">
       <a href="index.html" data-go="review">Back to review</a>
@@ -28,48 +27,31 @@
       <p id="share-msg" class="share-msg" role="status" aria-live="polite"></p>
     </div>
   </header>
+  <p id="sample-banner" class="banner noprint" hidden>Sample: this is what staff get each morning. <a href="index.html" data-go="review">See how it was checked</a></p>
   <p id="unreviewed" class="banner" hidden>Not reviewed yet. <a href="index.html" data-go="review">Review first</a>.</p>
-  <p id="stale" class="stale-note" role="status" hidden></p>
 
-  <section class="glance" aria-labelledby="glance-h">
-    <h2 id="glance-h" class="sr-only">Today at a glance</h2>
-    <div id="tiles" class="tiles"></div>
-    <p id="shift-lead" class="shift-lead" hidden></p>
+  <section class="brief" aria-labelledby="headline">
+    <h1 id="headline" class="headline"></h1>
+    <p id="subline" class="subline"></p>
+    <p id="schedule-note" class="schedule-note" hidden></p>
+    <p id="stale" class="stale-note" role="status" hidden></p>
   </section>
 
-  <section class="checkins">
-    <h2>Check in today</h2>
+  <section class="flags" aria-label="Players to talk to">
     <p id="more-label" class="group-label" hidden>Not explained by the team drop</p>
-    <div id="checkin" class="action-cards"></div>
+    <div id="boxes" class="boxes"></div>
     <p id="with-team" class="with-team"></p>
   </section>
 
-  <section class="roster">
-    <h2>Today's players</h2>
-    <p class="how">Each dot is his jump today, compared with his own normal (centre line). The shaded area is his usual ups and downs. A dot left of the shading means he is jumping lower than usual. A hollow dot is from an earlier day.</p>
-    <div class="band-head" aria-hidden="true"><span></span><span class="scale"><span>20% lower</span><span>his normal</span><span>20% higher</span></span><span></span></div>
-    <div id="today"></div>
-    <p id="hidden-summary" class="hidden-summary"></p>
-    <button id="toggle" class="noprint" type="button" aria-expanded="false">Show full roster</button>
-    <div id="rest" hidden></div>
-  </section>
-
-  <section class="lower">
-    <div>
-      <h2>Jump over two weeks</h2>
-      <p class="how">For flagged players. Shaded band = his usual ups and downs. Last dot = today.</p>
-      <div id="trends"></div>
-    </div>
-    <div>
-      <h2>Availability board</h2>
-      <div id="board"></div>
-      <p class="how board-key">One peg per player. Two bars = Check in. One bar = Watch. Ring = No change. Dashed ring = Not enough data.</p>
-    </div>
+  <section class="everyone" aria-label="Everyone else">
+    <button id="toggle" class="noprint" type="button" aria-expanded="false" aria-controls="all">Show all players</button>
+    <div id="all" class="all" hidden></div>
   </section>
 
   <footer class="card-foot">
-    <p><strong>How a flag works:</strong> a player is flagged only when his drop is big compared with his own last 28 days and bigger than normal test-to-test noise. Team and league notes are context only. Coaches and medical staff decide who plays.</p>
-    <p><strong>Jump</strong> = reactive strength from the force-plate jump (RSI-mod). <strong>Sources:</strong> VALD ForceDecks, Catapult (load, throws, pitches), morning wellness form. <span id="fiction-foot" hidden>Fictional roster and data.</span> <span id="league"></span></p>
+    <h2>How to read this</h2>
+    <p>Each player is compared with his own last 4 weeks, not with the team. A flag means his drop is bigger than his normal day-to-day ups and downs. It is a reason to talk, not a decision to sit him.</p>
+    <p class="sources"><strong>Jump</strong> = reactive strength from the force-plate jump (RSI-mod). <strong>Sources:</strong> VALD ForceDecks, Catapult (load, throws, pitches), morning wellness form. <span id="fiction-foot" hidden>Fictional roster and data.</span> Coaches and medical staff decide who plays.</p>
   </footer>
 </main>
 <script type="module">

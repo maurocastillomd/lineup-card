@@ -1,15 +1,12 @@
 import {
-  applyDecisions, countByStatus, disclaimer, groupCheckins, hiddenSummary, isStale, jumpPosition, metaLine, plainChange,
-  plainReason, plainSummary, shortDate, sourcesNote, WORDS,
+  ACTION, applyDecisions, disclaimer, groupCheckins, headline, plainChange, plainSummary, reasonLines,
+  shortDate, sourcesNote, topLine, trendSvg,
 } from "./logic.js";
 import { hasSavedReview, loadReview } from "./store.js";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const GROUPS = [["SP", "Starters"], ["RP", "Relievers"], ["C", "Catchers"], ["IF", "Infield"], ["OF", "Outfield"]];
-const STATUSES = ["check_in", "watch", "no_change", "not_enough_data"];
-const MEANING = { check_in: "Talk with him before he trains.", watch: "Keep an eye on him today." };
-const FLAG = new Set(["check_in", "watch"]);
 
 // One status mark, used everywhere: glyph + word, never colour alone.
 const glyph = (s) => `<span class="glyph g-${esc(s)}" aria-hidden="true"></span>`;
@@ -64,132 +61,68 @@ export async function init(src) {
   }));
   const players = applyDecisions(day.players, review.decisions);
   const todayIds = review.todayIds.length ? review.todayIds : players.map((p) => p.id);
+  const inLineup = new Set(todayIds);
+  const lineupKnown = review.todayIds.length > 0;
 
-  // Labels: "Fictional roster" only on the demo; a line when a source did not update this morning.
+  // ---- top line, review state, labels ----
   const synthetic = day.synthetic === true;
   $("disclaimer").textContent = disclaimer(day);
   $("fiction-foot").hidden = !synthetic;
-  $("stale").textContent = sourcesNote(day);
-  $("stale").hidden = !sourcesNote(day);
-
-  const sched = day.schedule;
-  $("meta").textContent = metaLine(day, date);
+  $("topline").innerHTML = esc(topLine(day, date)).replace(/^Lineup Card/, "<strong>Lineup Card</strong>");
   $("reviewed").textContent = review.approvedAt
     ? `Reviewed by ${review.reviewer}${example ? " (example review)" : ""}.` : "";
   $("unreviewed").hidden = Boolean(review.approvedAt);
+  $("sample-banner").hidden = !(example && review.approvedAt);
 
-  // ---- today at a glance ----
-  const counts = countByStatus(players);
-  $("tiles").innerHTML = STATUSES.map((s) => `<div class="tile tile-${s}${counts[s] && FLAG.has(s) ? " tile-on" : ""}">
-    <span class="tile-n">${counts[s]}</span>${glyph(s)}<span class="tile-word">${WORDS[s]}</span></div>`).join("");
-
-  // ---- check-in action cards ----
+  // ---- the headline ----
+  const h = headline(day, players);
+  $("headline").textContent = h.title;
+  $("subline").textContent = h.sub;
   const shift = day.team_shift;
+  const note = shift?.beyond_noise && day.schedule?.note ? `${day.schedule.note.replace(/\.$/, "")}.` : "";
+  $("schedule-note").textContent = note;
+  $("schedule-note").hidden = !note;
+  $("stale").textContent = sourcesNote(day);
+  $("stale").hidden = !sourcesNote(day);
+
+  // ---- one box per flagged player ----
   const groups = groupCheckins(players, shift);
-  const flagged = [...groups.more, ...groups.withTeam];
-  const shiftText = shift
-    ? `Whole team jumping ${Math.abs(Math.round(shift.median_pct))}% ${shift.median_pct < 0 ? "below" : "above"} normal (${shift.n} players tested).${sched.note ? ` ${sched.note}.` : ""}`
-    : "";
-  const actionCard = (p) => `<article class="action action-${esc(p.status)}">
-    <div class="action-top"><h3>${esc(p.name)}</h3><span class="pos">${esc(p.pos)}</span>${status(p)}</div>
-    <p class="reason">${esc(plainReason(p))}</p>
-    <p class="meaning">${esc(MEANING[p.status] ?? "")}</p>
-    ${p.reviewNote ? `<p class="note">${esc(p.reviewNote)}</p>` : ""}</article>`;
+  const box = (p) => {
+    const away = lineupKnown && !inLineup.has(p.id) ? `<p class="away">Not in today's lineup</p>` : "";
+    return `<article class="box box-${esc(p.status)}">
+      <div class="box-top"><h2>${esc(p.name)} <span class="pos">${esc(p.pos)}</span></h2>${status(p)}</div>
+      <div class="box-body">
+        <div class="box-text">
+          <ul class="reasons">${reasonLines(p).map((r) => `<li>${esc(r)}</li>`).join("")}</ul>
+          ${away}
+          <p class="action">${esc(ACTION[p.status] ?? "")}</p>
+        </div>
+        <figure class="box-trend">${trendSvg(p)}</figure>
+      </div></article>`;
+  };
+  $("boxes").innerHTML = groups.more.map(box).join("");
+  $("boxes").classList.toggle("many", groups.more.length > 9);
+  $("more-label").hidden = !(groups.lead && groups.more.length);
+  $("with-team").textContent = groups.withTeam.length
+    ? `Down with the team: ${groups.withTeam.map((p) => p.name).join(", ")}.` : "";
 
-  if (groups.lead) {
-    // Team-shift day: the team line leads, then who dropped more than the team, then a names-only line.
-    $("shift-lead").textContent = shiftText;
-    $("shift-lead").hidden = false;
-    $("more-label").hidden = false;
-    $("checkin").innerHTML = groups.more.length ? groups.more.map(actionCard).join("")
-      : `<p class="nobody">Nobody is down more than the team.</p>`;
-    $("with-team").textContent = groups.withTeam.length
-      ? `Down with the team (${groups.withTeam.length}): ${groups.withTeam.map((p) => p.name).join(", ")}.`
-      : "";
-  } else {
-    $("checkin").innerHTML = flagged.length ? flagged.map(actionCard).join("")
-      : `<p class="nobody">Nobody needs a check-in today.</p>`;
-  }
-
-  // The league figure is illustrative, so it is shown on the fictional demo only.
-  const league = day.league_reference.rsi_mod;
-  $("league").textContent = synthetic
-    ? `For context only: a typical jump score at this level is about ${league.value} ${league.unit} (${league.label}).` : "";
-
-  // ---- roster rows ----
-  const gatePct = (p) => (day.noise_gate.rsi_mod && p.rsi.mean ? day.noise_gate.rsi_mod / p.rsi.mean * 100 : null);
-
-  function row(p) {
-    const pct = p.rsi.pct;
-    const gate = gatePct(p);
-    const zone = gate == null ? "" :
-      `<span class="zone" style="left:${jumpPosition(-gate)}%;width:${jumpPosition(gate) - jumpPosition(-gate)}%"></span>`;
-    const stale = isStale(p) ? " dot-stale" : "";
-    const dot = pct == null ? "" : `<span class="dot dot-${esc(p.status)}${stale}" style="left:${jumpPosition(pct)}%"></span>`;
-    return `<div class="band-row row-${esc(p.status)}"><div class="who">${esc(p.name)} <span class="pos">${esc(p.pos)}</span></div>
-      <div class="track">${zone}<span class="normal"></span>${dot}</div>
-      <div class="row-status">${status(p)}<small>${esc(plainChange(p))}</small>${
-        p.reviewNote ? `<small class="note">${esc(p.reviewNote)}</small>` : ""}</div></div>`;
-  }
-
-  function grouped(list) {
-    return GROUPS.map(([pos, label]) => {
-      const rows = list.filter((p) => p.pos === pos);
-      return rows.length ? `<p class="group-label">${label}</p>${rows.map(row).join("")}` : "";
-    }).join("");
-  }
-
-  $("today").innerHTML = grouped(players.filter((p) => todayIds.includes(p.id)));
-  $("rest").innerHTML = grouped(players.filter((p) => !todayIds.includes(p.id)));
-  const summary = hiddenSummary(players, todayIds);
-  $("hidden-summary").textContent = summary.hiddenCount ? summary.text : "";
-  $("toggle").hidden = !summary.hiddenCount;
+  // ---- everyone, behind one button; in print the list always shows ----
+  const row = (p) => `<li class="all-row">
+      <span class="all-name">${esc(p.name)}</span>${status(p)}
+      <span class="all-change">${esc(plainChange(p))}</span>${
+      lineupKnown && inLineup.has(p.id) ? `<span class="in-lineup">in lineup</span>` : ""}</li>`;
+  $("all").innerHTML = GROUPS.map(([pos, label]) => {
+    const rows = players.filter((p) => p.pos === pos);
+    return rows.length ? `<div class="all-group"><h3>${label}</h3><ul>${rows.map(row).join("")}</ul></div>` : "";
+  }).join("");
+  const showLabel = `Show all ${players.length} players`;
+  $("toggle").textContent = showLabel;
   $("toggle").addEventListener("click", () => {
-    const open = $("rest").hidden;
-    $("rest").hidden = !open;
-    $("toggle").textContent = open ? "Hide full roster" : "Show full roster";
+    const open = $("all").hidden;
+    $("all").hidden = !open;
+    $("toggle").textContent = open ? "Hide the list" : showLabel;
     $("toggle").setAttribute("aria-expanded", String(open));
   });
-
-  // ---- two-week trend, in percent of his normal on the same scale as the rows ----
-  const W = 140, H = 36, PAD = 3;
-  const yOf = (pct) => H / 2 - Math.max(-20, Math.min(20, pct)) / 20 * (H / 2 - PAD);
-  function spark(p) {
-    if (!p.rsi.mean || !p.rsi.sd) return "";
-    const n = p.trend.length;
-    const xOf = (i) => PAD + i * (W - 2 * PAD) / Math.max(1, n - 1);
-    const pts = p.trend.map((t, i) => (t.z == null ? null : [xOf(i), yOf(t.z * p.rsi.sd / p.rsi.mean * 100)]));
-    const path = pts.filter(Boolean).map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
-    const gate = gatePct(p) ?? 0;
-    const last = pts[n - 1];
-    // The last point is an HTML dot over the stretched SVG, so it stays round at any width.
-    const lastDot = last ? `<span class="spark-last spark-${esc(p.status)}" style="left:${(last[0] / W * 100).toFixed(1)}%;top:${(last[1] / H * 100).toFixed(1)}%"></span>` : "";
-    return `<div class="spark"><span class="who">${esc(p.name)} <span class="pos">${esc(p.pos)}</span></span>
-      <div><div class="spark-plot"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="${esc(p.name)}: jump each day for the last two weeks">
-        <rect class="spark-band" x="0" y="${yOf(gate).toFixed(1)}" width="${W}" height="${(yOf(-gate) - yOf(gate)).toFixed(1)}"/>
-        <line class="spark-normal" x1="0" x2="${W}" y1="${H / 2}" y2="${H / 2}"/>
-        <path class="spark-line" d="${path}"/></svg>${lastDot}</div>
-      <div class="spark-axis" aria-hidden="true"><span>2 weeks ago</span><span>today</span></div></div></div>`;
-  }
-  $("trends").innerHTML = flagged.slice(0, 5).map(spark).join("") || `<p class="nobody">No flagged players today.</p>`;
-
-  // ---- availability board (drawn for the fictional roster, so demo only) ----
-  async function drawBoard() {
-    if (!synthetic) {
-      $("board").textContent = "Board available in the demo only.";
-      document.querySelector(".board-key").hidden = true;
-      return;
-    }
-    try {
-      const svg = await src.getBoard();
-      if (!svg) throw new Error("no board");
-      $("board").innerHTML = svg;
-      for (const p of players) $("board").querySelector(`.peg[data-id="${CSS.escape(p.id)}"]`)?.setAttribute("data-status", p.status);
-    } catch {
-      $("board").textContent = "Board figure not built yet.";
-    }
-  }
-  await drawBoard();
 
   // ---- share bar ----
   const say = (text) => { $("share-msg").textContent = text; };
@@ -212,8 +145,10 @@ export async function init(src) {
       const lib = await loadLib();
       const keep = (node) => !(node.classList && (node.classList.contains("noprint") || node.classList.contains("banner")));
       // Capture the card at its own size; without this its centring margin is copied
-      // into the image and pushes the right side out of frame.
+      // into the image and pushes the right side out of frame. While capturing, the buttons
+      // and banners are taken out of the layout so they leave no gaps in the image.
       const card = $("card");
+      card.classList.add("capturing");
       const width = Math.ceil(Math.max(card.scrollWidth, card.getBoundingClientRect().width));
       const height = Math.ceil(Math.max(card.scrollHeight, card.getBoundingClientRect().height));
       const blob = await lib.toBlob(card, {
@@ -245,6 +180,7 @@ export async function init(src) {
     } catch {
       say("Could not make the image here. Use Print / PDF.");
     } finally {
+      $("card").classList.remove("capturing");
       btn.disabled = false;
     }
   });

@@ -26,15 +26,6 @@ export function parseLineup(text, players) {
   return { ids, unmatched };
 }
 
-export function hiddenSummary(players, todayIds) {
-  const hidden = players.filter((p) => !todayIds.includes(p.id));
-  const flagged = hidden.filter((p) => FLAGGED.has(p.status));
-  const names = flagged.map((p) => `${p.name} (${p.pos})`).join(", ");
-  const text = `${hidden.length} others not listed today. ` +
-    (flagged.length ? `${flagged.length} flagged: ${names}.` : "None flagged.");
-  return { hiddenCount: hidden.length, flagged, text };
-}
-
 export function applyDecisions(players, decisions) {
   return players.map((p) => {
     const d = decisions[p.id];
@@ -45,9 +36,6 @@ export function applyDecisions(players, decisions) {
     return { ...p, status: d.status, word: WORDS[d.status], reviewNote: `Changed to ${WORDS[d.status]}: ${d.note}` };
   });
 }
-
-// z of 0 sits at 50%; each SD moves 15%; clamp to 2..98
-export const bandPosition = (z) => Math.max(2, Math.min(98, 50 + z * 15));
 
 // Check-in list order: Check in before Watch, then lowest RSI-mod z first; no z goes last.
 const zKey = (p) => p.rsi?.z ?? Number.MAX_VALUE;
@@ -66,36 +54,79 @@ export function groupCheckins(players, teamShift) {
   };
 }
 
-// Jump today in plain words: percent of his own normal.
+// Jump today in plain words: percent of his own usual.
 export const isStale = (p) => p.rsi?.pct != null && p.rsi.days_old > 0;
+
+const pctWords = (pct) => (Math.abs(pct) < 1 ? "right at his usual"
+  : `${Math.round(Math.abs(pct))}% ${pct < 0 ? "below" : "above"} his usual`);
+const daysAgo = (n) => `${n} day${n === 1 ? "" : "s"} ago`;
+const upperFirst = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export function plainChange(p) {
   const pct = p.rsi.pct;
   let text;
-  if (pct == null) text = p.rsi.today == null ? "No jump today" : "Still learning his normal";
-  else if (Math.abs(pct) < 1) text = "Right at his normal";
-  else text = `${Math.round(Math.abs(pct))}% ${pct < 0 ? "below" : "above"} his normal`;
-  if (isStale(p)) {
-    // The reading is not from today: say how old it is, in the same sentence.
-    const n = p.rsi.days_old;
-    text = `Jump ${n} day${n === 1 ? "" : "s"} ago: ${text.replace(/^Right at/, "right at")}`;
-  }
+  if (pct == null) text = p.rsi.today == null ? "No jump today" : "Still learning his usual";
+  else text = upperFirst(pctWords(pct));
+  // The reading is not from today: say how old it is, in the same sentence.
+  if (isStale(p)) text = `Jump ${daysAgo(p.rsi.days_old)}: ${pctWords(pct)}`;
   return p.magnitude?.includes("(wellness)") ? `${text} · wellness low` : text;
 }
 
-// -20% sits at the left edge, his normal in the middle, +20% at the right edge.
-export const jumpPosition = (pct) => Math.max(2, Math.min(98, 50 + pct * 2.4));
+const PITCHERS = new Set(["SP", "RP"]);
 
-// One line for the coach: jump, wellness, and arm workload for pitchers.
-export function plainReason(p) {
-  const parts = [];
-  if (p.rsi.pct != null) {
-    const text = plainChange({ ...p, magnitude: "" });
-    parts.push(isStale(p) ? text : `Jump ${text.replace(/^Right at/, "right at")}`);
+// The reasons in a flagged player's box, one short sentence each.
+export function reasonLines(p) {
+  const lines = [];
+  const pct = p.rsi?.pct;
+  if (pct == null) lines.push(p.rsi?.today == null ? "No jump today" : "Not enough jump history yet");
+  else if (isStale(p)) lines.push(`Last jump ${daysAgo(p.rsi.days_old)}: ${pctWords(pct)}`);
+  else lines.push(`Jumping ${pctWords(pct)}`);
+  if (p.wellness?.z != null && p.wellness.z <= -1.2) lines.push("Felt worse than usual on this morning's form");
+  if (PITCHERS.has(p.pos) && p.load?.throws_7d != null) lines.push(`${p.load.throws_7d} throws and pitches in the last 7 days`);
+  if (p.reviewNote) lines.push(p.reviewNote);
+  return lines;
+}
+
+const escXml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+// Two-week jump picture for a flagged player's box. Each point is that day's jump as z
+// against his own baseline; the band is z -1..+1, "his usual range". Colours come from CSS classes.
+export function trendSvg(p) {
+  const W = 336, H = 84, X0 = 4, X1 = 232, Y0 = 6, Y1 = 62, ZMAX = 4;
+  const trend = p.trend ?? [];
+  const n = Math.max(trend.length, 2);
+  const xOf = (i) => X0 + i * (X1 - X0) / (n - 1);
+  const yOf = (z) => Y0 + (ZMAX - Math.max(-ZMAX, Math.min(ZMAX, z))) / (2 * ZMAX) * (Y1 - Y0);
+  const f = (v) => v.toFixed(1);
+  const pts = trend.map((t, i) => (t.z == null ? null : { x: xOf(i), y: yOf(t.z), z: t.z, i })).filter(Boolean);
+  const last = pts.at(-1);
+  const bandTop = yOf(1), bandBot = yOf(-1), mid = (bandTop + bandBot) / 2;
+
+  let words;
+  if (!last) words = "no jumps yet";
+  else {
+    const where = last.z < -1 ? "below his usual range" : last.z > 1 ? "above his usual range" : "inside his usual range";
+    const when = isStale(p) ? `last jump ${daysAgo(p.rsi.days_old)}` : last.i === trend.length - 1 ? "today" : "last jump";
+    const change = p.rsi?.pct != null ? `${isStale(p) ? ":" : ""} ${pctWords(p.rsi.pct)}` : "";
+    words = `${when}${change}, ${where}`;
   }
-  if (p.wellness?.z != null && p.wellness.z <= -1.2) parts.push("wellness low");
-  if (["SP", "RP"].includes(p.pos) && p.load?.throws_7d != null) parts.push(`${p.load.throws_7d} throws + pitches in 7 days`);
-  return parts.join(" · ");
+  const label = `${p.name}, jump over the last two weeks: ${words}.`;
+
+  const parts = [
+    `<rect class="tr-band" x="${X0}" y="${f(bandTop)}" width="${X1 - X0}" height="${f(bandBot - bandTop)}" rx="2"/>`,
+    `<text class="tr-label" x="${X1 + 12}" y="${f(mid + 3)}">his usual range</text>`,
+  ];
+  if (pts.length > 1) {
+    parts.push(`<path class="tr-line" d="${pts.map((q, i) => `${i ? "L" : "M"}${f(q.x)},${f(q.y)}`).join(" ")}"/>`);
+  }
+  for (const q of pts.slice(0, -1)) parts.push(`<circle class="tr-pt" cx="${f(q.x)}" cy="${f(q.y)}" r="1.8"/>`);
+  if (last) {
+    const hollow = isStale(p) || last.i !== trend.length - 1;
+    parts.push(`<circle class="tr-dot tr-${escXml(p.status)}${hollow ? " tr-hollow" : ""}" cx="${f(last.x)}" cy="${f(last.y)}" r="4.5"/>`);
+  }
+  parts.push(`<text class="tr-axis" x="${X0}" y="${H - 4}">2 weeks ago</text>`);
+  parts.push(`<text class="tr-axis" x="${X1}" y="${H - 4}" text-anchor="end">today</text>`);
+  return `<svg class="trend" viewBox="0 0 ${W} ${H}" role="img" aria-label="${escXml(label)}" xmlns="http://www.w3.org/2000/svg">${parts.join("")}</svg>`;
 }
 
 // Analyst line for the review screen: the size of the change in every unit that matters.
@@ -119,19 +150,34 @@ export function shortDate(iso) {
   return `${DAYS[d.getUTCDay()]} ${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`;
 }
 
-// "Whole team jumping 10% below normal." plus the schedule note, if any.
-export function teamLine(day) {
-  const s = day.team_shift;
-  if (!s?.beyond_noise) return "";
-  const note = day.schedule?.note ? ` ${day.schedule.note.replace(/\.$/, "")}.` : "";
-  return `Whole team jumping ${Math.abs(Math.round(s.median_pct))}% ${s.median_pct < 0 ? "below" : "above"} normal.${note}`;
+// The card's top line: date and, when the schedule names one, the opponent.
+export function topLine(day, date) {
+  const s = day?.schedule ?? {};
+  const game = s.opponent ? ` · ${s.home_away === "away" ? "Away at" : "Home vs"} ${s.opponent}` : "";
+  return `Lineup Card · ${shortDate(date)}${game}`;
 }
 
-// The card's top line: club, date and, when the schedule names one, the opponent.
-export function metaLine(day, date) {
-  const s = day.schedule ?? {};
-  const game = s.opponent ? ` ${s.home_away === "away" ? "Away at" : "Home vs"} ${s.opponent}.` : "";
-  return `${day.club}. ${shortDate(date)}, ${date.slice(0, 4)}.${game}`;
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+
+// The card's headline and the line under it. Counts are roster-wide, after review decisions.
+export function headline(day, players) {
+  const shift = day?.team_shift;
+  const flagged = players.filter((p) => FLAGGED.has(p.status));
+  const usual = players.filter((p) => p.status === "no_change").length;
+  const missing = players.filter((p) => p.status === "not_enough_data").map((p) => p.name);
+  const history = missing.length ? ` No history yet: ${missing.join(", ")}.` : "";
+  if (shift?.beyond_noise) {
+    const beyond = flagged.filter((p) => p.beyond_team === true).length;
+    return {
+      title: `The whole team is jumping ${Math.abs(Math.round(shift.median_pct))}% ${shift.median_pct < 0 ? "below" : "above"} its usual today`,
+      sub: `${beyond ? `${plural(beyond, "player", "players")} dropped more than the team.` : "Nobody dropped more than the team."}${history}`,
+    };
+  }
+  const title = flagged.length === 0 ? "No one stands out today"
+    : flagged.length === 1 ? "1 player to talk to before he trains"
+      : `${flagged.length} players to talk to before they train`;
+  const looks = usual === 0 ? "" : usual === 1 ? "1 looks like his usual self." : `${usual} look like their usual selves.`;
+  return { title, sub: `${looks}${history}`.trim() };
 }
 
 export function countByStatus(players) {
@@ -151,43 +197,30 @@ export function sourcesNote(day) {
   return failed.length ? `${failed.join(" and ")} data not updated this morning.` : "";
 }
 
-const lowerFirst = (s) => s.charAt(0).toLowerCase() + s.slice(1);
+// The action line in a flagged player's box.
+export const ACTION = { check_in: "Talk with him before he trains.", watch: "Keep an eye on him today." };
+const sentence = (s) => (/[.!?]$/.test(s) ? s : `${s}.`);
 
+// Group text: date line, headline and sub line, each flagged player with his reasons, then the disclaimer.
 // reviewed: false puts "NOT REVIEWED YET." first, so an unapproved card is never pasted as approved.
 export function plainSummary(day, players, todayIds = [], { reviewed = true } = {}) {
-  // todayIds is accepted so callers can pass the lineup; the summary always covers the whole roster,
-  // so a flagged player who is not in today's lineup is still named.
-  void todayIds;
+  const lineup = new Set(todayIds);
   const who = (p) => {
-    const reason = plainReason(p).split(" · ").filter(Boolean).map(lowerFirst).join(", ");
-    return `${p.name} ${p.pos}${reason ? `, ${reason}` : ""}${p.reviewNote ? ` (${p.reviewNote})` : ""}`;
+    const reasons = reasonLines(p);
+    if (lineup.size && !lineup.has(p.id)) reasons.push("Not in today's lineup");
+    return `${WORDS[p.status]}: ${p.name} (${p.pos}). ${reasons.map(sentence).join(" ")}`;
   };
-  const statusLines = (list) => ["check_in", "watch"].flatMap((s) => {
-    const xs = list.filter((p) => p.status === s);
-    return xs.length ? [`${WORDS[s]} (${xs.length}): ${xs.map(who).join("; ")}`] : [];
-  });
-
-  const s = day.schedule ?? {};
   const lines = reviewed ? [] : ["NOT REVIEWED YET."];
-  lines.push(`Lineup Card, ${shortDate(day.date)}${s.opponent ? `, vs ${s.opponent} (${s.home_away})` : ""}`);
+  lines.push(topLine(day, day.date));
+  const h = headline(day, players);
+  lines.push(h.title);
+  if (h.sub) lines.push(h.sub);
   const stale = sourcesNote(day);
   if (stale) lines.push(stale);
   const groups = groupCheckins(players, day.team_shift);
-  if (groups.lead) {
-    lines.push(teamLine(day));
-    if (groups.more.length) lines.push("Not explained by the team drop:", ...statusLines(groups.more));
-    else lines.push("Nobody is down more than the team.");
-    if (groups.withTeam.length) {
-      lines.push(`Down with the team (${groups.withTeam.length}): ${groups.withTeam.map((p) => p.name).join(", ")}.`);
-    }
-  } else if (groups.more.length) {
-    lines.push(...statusLines(groups.more));
-  } else {
-    lines.push("Nobody to check in on today.");
-  }
-  const n = countByStatus(players);
-  const missing = players.filter((p) => p.status === "not_enough_data").map((p) => p.name);
-  lines.push(`No change: ${n.no_change}. Not enough data: ${n.not_enough_data}${missing.length ? ` (${missing.join(", ")})` : ""}.`);
+  if (groups.lead && groups.more.length) lines.push("Not explained by the team drop:");
+  lines.push(...groups.more.map(who));
+  if (groups.withTeam.length) lines.push(`Down with the team: ${groups.withTeam.map((p) => p.name).join(", ")}.`);
   lines.push(disclaimer(day));
   return lines.join("\n");
 }
