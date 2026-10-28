@@ -54,6 +54,41 @@ export function groupCheckins(players, teamShift) {
   };
 }
 
+// How the printed page makes room for the boxes, so the card stays one Letter page with a
+// roster of at least 9pt. Up to 4 boxes: two across, with pictures and every reason. 5 or 6:
+// three across, no pictures, the first two reasons. 7 or more: a list, one line each, with only
+// the reason that drove the flag. The roster table shows every player's jump and morning form,
+// and a reviewer's note always prints. roster = the roster table's type size in pt (9 to 10),
+// rowGap = the space above and below each roster row in pt, larger when there is room to fill.
+export function printLayout(boxes) {
+  if (boxes <= 4) {
+    return { density: "roomy", pictures: true, reasons: "all", roster: 10, rowGap: [9, 6, 3.5][boxes] ?? 2.5 };
+  }
+  if (boxes <= 6) return { density: "normal", pictures: false, reasons: 2, roster: 10, rowGap: 1.5 };
+  if (boxes >= 12) return { density: "tight", pictures: false, reasons: 1, roster: 9, rowGap: 0.5 };
+  return { density: "tight", pictures: false, reasons: 1, roster: 10, rowGap: { 7: 4, 8: 3 }[boxes] ?? 1.5 };
+}
+
+// The label in the full roster list. On a team-drop day a flagged player whose drop the team
+// drop explains (beyond_team === false) reads "Down with team" with a neutral mark, so the
+// list agrees with the headline. His status, the export and the review are not changed.
+export function rosterLabel(p, teamShift) {
+  if (teamShift?.beyond_noise && FLAGGED.has(p.status) && p.beyond_team === false) {
+    return { kind: "with_team", word: "Down with team" };
+  }
+  return { kind: p.status, word: p.word };
+}
+
+// The printed roster's short columns: jump against his usual, and a low morning form.
+export function rosterJump(p) {
+  const pct = p.rsi?.pct;
+  if (pct == null) return p.rsi?.today == null ? "no jump today" : "no history yet";
+  const size = Math.abs(pct) < 1 ? "at his usual" : `${Math.round(Math.abs(pct))}% ${pct < 0 ? "below" : "above"}`;
+  return isStale(p) ? `${size}, ${daysAgo(p.rsi.days_old)}` : size;
+}
+
+export const rosterForm = (p) => (p.wellness?.z != null && p.wellness.z <= -1.2 ? "low" : "");
+
 // Jump today in plain words: percent of his own usual.
 export const isStale = (p) => p.rsi?.pct != null && p.rsi.days_old > 0;
 

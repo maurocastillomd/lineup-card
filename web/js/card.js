@@ -1,6 +1,6 @@
 import {
-  ACTION, applyDecisions, disclaimer, groupCheckins, headline, plainChange, plainSummary, reasonLines,
-  shortDate, sourcesNote, topLine, trendSvg,
+  ACTION, applyDecisions, disclaimer, groupCheckins, headline, plainChange, plainSummary, printLayout, reasonLines,
+  rosterForm, rosterJump, rosterLabel, shortDate, sourcesNote, topLine, trendSvg,
 } from "./logic.js";
 import { hasSavedReview, loadReview } from "./store.js";
 
@@ -93,7 +93,7 @@ export async function init(src) {
       <div class="box-top"><h2>${esc(p.name)} <span class="pos">${esc(p.pos)}</span></h2>${status(p)}</div>
       <div class="box-body">
         <div class="box-text">
-          <ul class="reasons">${reasonLines(p).map((r) => `<li>${esc(r)}</li>`).join("")}</ul>
+          <ul class="reasons">${reasonLines(p).map((r) => `<li${r === p.reviewNote ? ' class="review-note"' : ""}>${esc(r)}</li>`).join("")}</ul>
           ${away}
           <p class="action">${esc(ACTION[p.status] ?? "")}</p>
         </div>
@@ -101,20 +101,49 @@ export async function init(src) {
       </div></article>`;
   };
   $("boxes").innerHTML = groups.more.map(box).join("");
-  $("boxes").classList.toggle("many", groups.more.length > 9);
+  // The printed page makes room by box count (printLayout in logic.js).
+  const layout = printLayout(groups.more.length);
+  $("card").dataset.density = layout.density;
+  $("card").dataset.pictures = String(layout.pictures);
+  $("card").dataset.reasons = String(layout.reasons);
+  $("card").dataset.roster = String(layout.roster);
+  $("card").style.setProperty("--row-gap", `${layout.rowGap}pt`);
+  // With 7 or more boxes the printed boxes become a list; one line says what each status asks for.
+  $("tight-legend").textContent = `Check in: ${ACTION.check_in.toLowerCase()} Watch: ${ACTION.watch.toLowerCase()}`;
   $("more-label").hidden = !(groups.lead && groups.more.length);
   $("with-team").textContent = groups.withTeam.length
     ? `Down with the team: ${groups.withTeam.map((p) => p.name).join(", ")}.` : "";
 
   // ---- everyone, behind one button; in print the list always shows ----
+  // On a team-drop day a flag the drop explains reads "Down with team" here (rosterLabel).
+  const label = (p) => {
+    const l = rosterLabel(p, shift);
+    return `<span class="status">${glyph(l.kind)}<span class="word word-${esc(l.kind)}">${esc(l.word)}</span></span>`;
+  };
   const row = (p) => `<li class="all-row">
-      <span class="all-name">${esc(p.name)}</span>${status(p)}
-      <span class="all-change">${esc(plainChange(p))}</span>${
-      lineupKnown && inLineup.has(p.id) ? `<span class="in-lineup">in lineup</span>` : ""}</li>`;
+      <span class="all-name">${esc(p.name)} <span class="pos">${esc(p.pos)}</span></span>${label(p)}
+      <span class="all-change">${esc(plainChange(p))}</span><span class="in-lineup">${
+      lineupKnown && inLineup.has(p.id) ? "in lineup" : ""}</span></li>`;
   $("all").innerHTML = GROUPS.map(([pos, label]) => {
     const rows = players.filter((p) => p.pos === pos);
     return rows.length ? `<div class="all-group"><h3>${label}</h3><ul>${rows.map(row).join("")}</ul></div>` : "";
   }).join("");
+  // ---- the printed roster: two balanced tables of short columns, grouped by position ----
+  const groupsByPos = GROUPS.map(([pos, name]) => [name, players.filter((p) => p.pos === pos)]).filter(([, r]) => r.length);
+  const size = (gs) => gs.reduce((n, [, r]) => n + r.length + 1, 0);
+  let split = 1;
+  for (let i = 1; i < groupsByPos.length; i++) {
+    const diff = (k) => Math.abs(size(groupsByPos.slice(0, k)) - size(groupsByPos.slice(k)));
+    if (diff(i) < diff(split)) split = i;
+  }
+  const table = (gs) => `<table class="roster-table${lineupKnown ? " with-lineup" : ""}"><thead><tr><th>Player</th><th>Status</th><th>Jump vs usual</th>
+      <th>Form</th>${lineupKnown ? "<th>Lineup</th>" : ""}</tr></thead><tbody>${gs.map(([name, rows]) =>
+      `<tr class="grp"><th colspan="${lineupKnown ? 5 : 4}">${esc(name)}</th></tr>${rows.map((p) => `<tr>
+        <td class="rt-name">${esc(p.name)}</td><td>${label(p)}</td>
+        <td>${esc(rosterJump(p))}</td><td>${esc(rosterForm(p))}</td>${
+        lineupKnown ? `<td>${inLineup.has(p.id) ? "yes" : ""}</td>` : ""}</tr>`).join("")}`).join("")}</tbody></table>`;
+  $("roster-print").innerHTML = table(groupsByPos.slice(0, split)) + table(groupsByPos.slice(split));
+
   const showLabel = `Show all ${players.length} players`;
   $("toggle").textContent = showLabel;
   $("toggle").addEventListener("click", () => {
@@ -126,6 +155,14 @@ export async function init(src) {
 
   // ---- share bar ----
   const say = (text) => { $("share-msg").textContent = text; };
+  // "Save PDF": the print window's Save as PDF takes its file name from the page title.
+  const pdfTitle = `Lineup Card ${day.club ? `${day.club} ` : ""}${date}`;
+  let pageTitle = document.title;
+  addEventListener("beforeprint", () => {
+    if (document.title !== pdfTitle) pageTitle = document.title;
+    document.title = pdfTitle;
+  });
+  addEventListener("afterprint", () => { document.title = pageTitle; });
   $("print").addEventListener("click", () => print());
 
   let copyTimer;
@@ -178,7 +215,7 @@ export async function init(src) {
       }
       say("");
     } catch {
-      say("Could not make the image here. Use Print / PDF.");
+      say("Could not make the image here. Use Save PDF.");
     } finally {
       $("card").classList.remove("capturing");
       btn.disabled = false;

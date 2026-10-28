@@ -376,3 +376,76 @@ test("trendSvg escapes the name", () => {
   const p = { name: 'A "<b>"', status: "watch", rsi: { pct: -5, days_old: 0 }, trend: trendOf([-1.5]) };
   assert.doesNotMatch(trendSvg(p), /<b>/);
 });
+
+import { rosterLabel } from "../../web/js/logic.js";
+
+test("rosterLabel: on a team-drop day a flag explained by the drop shows as Down with team", () => {
+  const drop = { beyond_noise: true, median_pct: -10.2, n: 27 };
+  const p = (status, beyond_team) => ({ status, word: { check_in: "Check in", watch: "Watch", no_change: "No change" }[status], beyond_team });
+  assert.deepEqual(rosterLabel(p("check_in", false), drop), { kind: "with_team", word: "Down with team" });
+  assert.deepEqual(rosterLabel(p("watch", false), drop), { kind: "with_team", word: "Down with team" });
+  // Not explained by the drop (beyond it, or flagged for another reason): keeps its status.
+  assert.deepEqual(rosterLabel(p("check_in", true), drop), { kind: "check_in", word: "Check in" });
+  assert.deepEqual(rosterLabel(p("check_in", null), drop), { kind: "check_in", word: "Check in" });
+  // Unflagged players never get the label, even with beyond_team false.
+  assert.deepEqual(rosterLabel(p("no_change", false), drop), { kind: "no_change", word: "No change" });
+});
+
+test("rosterLabel: without a team drop every player keeps his status", () => {
+  const p = { status: "check_in", word: "Check in", beyond_team: false };
+  for (const shift of [null, undefined, { beyond_noise: false, median_pct: -3 }]) {
+    assert.deepEqual(rosterLabel(p, shift), { kind: "check_in", word: "Check in" });
+  }
+});
+
+test("rosterLabel leaves the player's status and word untouched", () => {
+  const p = { status: "check_in", word: "Check in", beyond_team: false };
+  rosterLabel(p, { beyond_noise: true, median_pct: -9 });
+  assert.equal(p.status, "check_in");
+  assert.equal(p.word, "Check in");
+});
+
+import { printLayout } from "../../web/js/logic.js";
+
+test("printLayout: up to 4 boxes keep pictures and every reason; more boxes trade both for one page", () => {
+  const L = (density, pictures, reasons, roster, rowGap) => ({ density, pictures, reasons, roster, rowGap });
+  // Few boxes leave room, so the roster rows open up to fill the page.
+  assert.deepEqual(printLayout(0), L("roomy", true, "all", 10, 9));
+  assert.deepEqual(printLayout(1), L("roomy", true, "all", 10, 6));
+  assert.deepEqual(printLayout(2), L("roomy", true, "all", 10, 3.5));
+  assert.deepEqual(printLayout(3), L("roomy", true, "all", 10, 2.5));
+  assert.deepEqual(printLayout(4), L("roomy", true, "all", 10, 2.5));
+  // 5 or 6 boxes (09-15 has 6): three across, no pictures, the first two reasons.
+  assert.deepEqual(printLayout(5), L("normal", false, 2, 10, 1.5));
+  assert.deepEqual(printLayout(6), L("normal", false, 2, 10, 1.5));
+  // 7 or more (09-06 has 7): a list, one line each (status, name, the reason that drove the flag), no pictures.
+  assert.deepEqual(printLayout(7), L("tight", false, 1, 10, 4));
+  assert.deepEqual(printLayout(8), L("tight", false, 1, 10, 3));
+  assert.deepEqual(printLayout(9), L("tight", false, 1, 10, 1.5));
+  assert.deepEqual(printLayout(11), L("tight", false, 1, 10, 1.5));
+  // 12 or more: the roster drops to its 9pt floor, never smaller.
+  assert.deepEqual(printLayout(12), L("tight", false, 1, 9, 0.5));
+  assert.deepEqual(printLayout(28), L("tight", false, 1, 9, 0.5));
+  // Roster type is 9 to 10pt at every count: never under 9, and never wider than two tables fit on Letter.
+  for (let n = 0; n <= 28; n++) assert.ok(printLayout(n).roster >= 9 && printLayout(n).roster <= 10);
+});
+
+import { rosterForm, rosterJump } from "../../web/js/logic.js";
+
+test("rosterJump: the jump column of the printed roster, short", () => {
+  assert.equal(rosterJump({ rsi: { pct: -13.4, today: 0.4, days_old: 0 } }), "13% below");
+  assert.equal(rosterJump({ rsi: { pct: 2.1, today: 0.5, days_old: 0 } }), "2% above");
+  assert.equal(rosterJump({ rsi: { pct: 0.4, today: 0.5, days_old: 0 } }), "at his usual");
+  assert.equal(rosterJump({ rsi: { pct: -13.2, today: 0.4, days_old: 2 } }), "13% below, 2 days ago");
+  assert.equal(rosterJump({ rsi: { pct: -5, today: 0.4, days_old: 1 } }), "5% below, 1 day ago");
+  assert.equal(rosterJump({ rsi: { pct: null, today: null } }), "no jump today");
+  assert.equal(rosterJump({ rsi: { pct: null, today: 0.5 } }), "no history yet");
+});
+
+test("rosterForm: the morning form column says low only when the form is clearly low", () => {
+  assert.equal(rosterForm({ wellness: { z: -1.2 } }), "low");
+  assert.equal(rosterForm({ wellness: { z: -2.6 } }), "low");
+  assert.equal(rosterForm({ wellness: { z: -1.19 } }), "");
+  assert.equal(rosterForm({ wellness: { z: null } }), "");
+  assert.equal(rosterForm({}), "");
+});

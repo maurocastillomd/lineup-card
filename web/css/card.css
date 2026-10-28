@@ -30,13 +30,16 @@
   border: 1px solid var(--st-watch-edge); border-radius: 1px; }
 .g-no_change::before, .g-not_enough_data::before { inset: 1px; border-radius: 50%; border: 1.5px solid var(--ink-faint); }
 .g-not_enough_data::before { border-style: dashed; }
+/* "Down with team" (roster list on a team-drop day): a solid grey dot, neutral, unlike any status mark */
+.g-with_team::before { inset: 2.5px; border-radius: 50%; background: var(--ink-faint); }
+.word-with_team { color: var(--ink-dim); }
 .status { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .word { font-weight: 500; }
 
 /* ---- the headline ---- */
 .brief { margin-top: 36px; }
 .headline { font-size: clamp(32px, 5.2vw, 50px); line-height: 1.08; letter-spacing: -0.015em; margin: 0; max-width: 22ch; text-wrap: balance; }
-.subline { font-size: 19px; color: var(--ink-dim); margin: 12px 0 0; max-width: 60ch; }
+.subline { font-size: 19px; color: var(--ink-dim); margin: 12px 0 0; }
 .subline:empty { display: none; }
 .schedule-note { font-size: 15px; color: var(--ink-dim); margin: 6px 0 0; }
 
@@ -52,19 +55,18 @@
 .box-top h2 { font-family: var(--sans); font-size: 22px; font-weight: 600; margin: 0; letter-spacing: -0.005em; }
 .box-top .status { font-size: 16px; }
 .pos { font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--ink-dim); margin-left: 4px; }
-.box-body { flex: 1; display: grid; grid-template-rows: auto 1fr; gap: 14px; margin-top: 10px; }
+.box-body { display: grid; gap: 14px; margin-top: 10px; }
 .reasons { list-style: none; padding: 0; margin: 0; font-size: 16px; line-height: 1.45; }
 .reasons li { position: relative; padding-left: 14px; }
 .reasons li + li { margin-top: 2px; }
 .reasons li::before { content: ""; position: absolute; left: 1px; top: .62em; width: 5px; height: 5px; border-radius: 50%; background: var(--ink-faint); }
 .away { display: inline-block; font-size: 13px; color: var(--ink-dim); border: 1px solid var(--line); border-radius: 999px; padding: 1px 10px; margin: 10px 0 0; }
 .action { font-size: 16px; font-weight: 600; margin: 12px 0 0; }
-.box-trend { margin: 0; align-self: end; }
+.box-trend { margin: 0; }
 .box-trend figcaption { font-size: 12px; font-weight: 500; color: var(--ink-faint); margin: 0 0 2px; }
 .trend { display: block; width: 100%; max-width: 400px; height: auto; overflow: visible; }
 @container (min-width: 600px) {
-  .box-body { grid-template-columns: 1fr minmax(280px, 1fr); grid-template-rows: auto; align-items: center; }
-  .box-trend { align-self: center; }
+  .box-body { grid-template-columns: 1fr minmax(280px, 1fr); align-items: center; }
 }
 
 /* the two-week jump picture (trendSvg in logic.js) */
@@ -91,10 +93,15 @@
 .all-group h3 { font: 600 12px var(--sans); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 4px; }
 .all-group ul { list-style: none; padding: 0; margin: 0; }
 .all-row { display: grid; grid-template-columns: 1fr auto; column-gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--line); font-size: 14px; line-height: 1.35; }
+.all-row .pos { margin-left: 2px; }
 .all-name { font-weight: 500; }
 .all-row .status { font-size: 13px; }
 .all-change { grid-column: 1; font-size: 13px; color: var(--ink-dim); }
 .in-lineup { grid-column: 2; justify-self: end; font-size: 12px; color: var(--ink-dim); }
+.in-lineup:empty { display: none; }
+
+.roster-print { display: none; }
+.tight-legend { display: none; }
 
 /* ---- how to read this ---- */
 .card-foot { font-size: 14px; color: var(--ink-dim); border-top: 1px solid var(--line); margin-top: 32px; padding-top: 16px; }
@@ -119,60 +126,105 @@
   #toggle { width: 100%; }
 }
 
-/* ---- print: one US Letter page ---- */
-@page { size: letter; margin: 0.35in; }
+/* ---- print: one full US Letter page. The PDF is the real product (sent by Slack, Teams, email). ----
+   Sizes are in pt; roster text is never under 9pt. "How to read this" sits at the page bottom.
+   data-density / data-pictures on #card come from printLayout() in logic.js:
+   roomy (0-4 boxes, two across, with pictures), normal (5-6, three across), tight (7+, a one-line-each list). */
+@page { size: letter; margin: 0.4in 0.45in; }
 @media print {
   :root, :root:not([data-theme="light"]) { --bg: #fff; --card: #fff; --ink: #000; --ink-dim: #333; --ink-faint: #666670; --surface: #eee;
     --line: rgba(0, 0, 0, .16); --st-check: #B3261E; --st-watch: #E3A21A; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  body { font-size: 10px; line-height: 1.3; background: #fff; }
+  body { font-size: 10pt; line-height: 1.3; background: #fff; }
   .wrap { padding: 0; max-width: none; }
-  .noprint, .banner { display: none !important; }
-  .topline { font-size: 10px; } .reviewed { font-size: 9px; }
-  .head-info { gap: 1px; }
-  .fiction { font-size: 8px; padding: 0 6px; }
-  .brief { margin-top: 10px; }
-  .headline { font-size: 24px; max-width: none; }
-  .subline { font-size: 11.5px; margin-top: 3px; }
-  .schedule-note { font-size: 9.5px; margin-top: 1px; }
-  .stale-note { font-size: 9px; padding: 2px 8px; margin: 4px 0 0; }
-  .glyph { width: 9px; height: 9px; }
-  .g-check_in::before, .g-check_in::after { height: 3px; }
-  .g-watch::before { top: 2.5px; height: 4px; }
-  .g-no_change::before, .g-not_enough_data::before { border-width: 1.2px; }
-  .status { gap: 4px; }
-  .flags { margin-top: 10px; }
-  .group-label { font-size: 9px; margin-bottom: 4px; }
-  .boxes { grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  .box { padding: 6px 9px; border-radius: 6px; border-left-width: 3px; break-inside: avoid; }
-  .box-top h2 { font-size: 12px; }
-  .box-top .status { font-size: 10px; }
-  .pos { font-size: 8px; }
-  .box-body { grid-template-columns: 1fr !important; gap: 3px; margin-top: 3px; }
-  .reasons { font-size: 9px; line-height: 1.3; }
-  .reasons li { padding-left: 9px; }
-  .reasons li::before { width: 3px; height: 3px; }
-  .away { font-size: 8px; padding: 0 6px; margin-top: 3px; }
-  .action { font-size: 9.5px; margin-top: 3px; }
-  .trend { max-width: 2.3in; max-height: .62in; }
-  .box-trend figcaption { font-size: 7.5px; margin: 0; }
-  .with-team { font-size: 9px; margin-top: 5px; }
-  .everyone { margin-top: 8px; }
-  .all, .all[hidden] { display: block !important; columns: 3; column-gap: 16px; margin-top: 0; }
-  .all-group { margin-bottom: 4px; }
-  .all-group h3 { font-size: 7px; margin-bottom: 1px; }
-  .all-row { grid-template-columns: auto auto 1fr auto; column-gap: 5px; padding: 0; border: 0; font-size: 7.5px; line-height: 1.3; }
-  .all-row .status { font-size: 7.5px; gap: 2px; }
-  .all-row .glyph { width: 8px; height: 8px; }
-  .all-row .g-check_in::before, .all-row .g-check_in::after { height: 2.5px; }
-  .all-row .g-watch::before { top: 2px; height: 4px; }
-  /* a long list of boxes: four across and no pictures, so the card still fits one page */
-  .boxes.many { grid-template-columns: repeat(4, 1fr); }
-  .boxes.many .box-trend { display: none; }
-  .all-change { grid-column: auto; font-size: 7px; text-align: right; }
-  .in-lineup { grid-column: auto; font-size: 6.5px; color: var(--ink-faint); }
-  .card-foot { font-size: 8px; line-height: 1.25; margin-top: 6px; padding-top: 4px; }
-  .card-foot h2 { font-size: 10px; margin: 0 0 1px; }
-  .card-foot p { margin: 0 0 2px; max-width: none; }
-  .card-foot .sources { font-size: 7.5px; }
+  .noprint, .banner, .all, .all[hidden] { display: none !important; }
+  /* the card fills the page; the explanation is pinned to the bottom */
+  .card { display: flex; flex-direction: column; min-height: 9.95in; }
+  .card-foot { margin-top: auto; }
+
+  .head-info { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 2pt 12pt; }
+  .topline { font-size: 10.5pt; } .reviewed { font-size: 9.5pt; }
+  .head-info .fiction { margin: 0; font-size: 8.5pt; padding: 0 6pt; }
+  .stale-note { font-size: 9.5pt; padding: 2pt 8pt; margin: 4pt 0 0; }
+
+  .brief { margin-top: 10pt; }
+  .headline { font-size: 28pt; max-width: none; line-height: 1.08; }
+  .subline { font-size: 13pt; margin-top: 5pt; }
+  .schedule-note { font-size: 10.5pt; margin-top: 2pt; }
+
+  .glyph { width: 9pt; height: 9pt; }
+  .g-check_in::before, .g-check_in::after { height: 3pt; }
+  .g-watch::before { top: 2.5pt; height: 4pt; }
+  .g-no_change::before, .g-not_enough_data::before { border-width: 1.1pt; }
+  .g-with_team::before { inset: 2pt; }
+  .status { gap: 4pt; }
+
+  .flags { margin-top: 10pt; }
+  .group-label { font-size: 10pt; margin-bottom: 4pt; }
+  .boxes { grid-template-columns: repeat(auto-fit, minmax(3.5in, 1fr)); gap: 8pt; }
+  .box { padding: 7pt 10pt 6pt; border-radius: 6pt; border-left-width: 4pt; break-inside: avoid; }
+  .box-top h2 { font-size: 13pt; }
+  .box-top .status { font-size: 11pt; }
+  .pos { font-size: 8pt; }
+  .box-body { gap: 4pt; margin-top: 3pt; }
+  .reasons { font-size: 10.5pt; line-height: 1.3; }
+  .reasons li { padding-left: 9pt; }
+  .reasons li::before { width: 3pt; height: 3pt; }
+  .away { font-size: 9pt; padding: 0 6pt; margin-top: 3pt; }
+  .action { font-size: 10.5pt; margin-top: 3pt; }
+  .box-trend figcaption { font-size: 8.5pt; margin: 2pt 0 0; }
+  .trend { width: 100%; max-width: 3.4in; height: auto; }
+  @container (min-width: 6in) { .box-body { grid-template-columns: 1fr 3.4in; align-items: center; } }
+  .card[data-pictures="false"] .box-trend { display: none; }
+  .card[data-reasons="2"] .reasons li:nth-child(n+3):not(.review-note),
+  .card[data-reasons="1"] .reasons li:nth-child(n+2):not(.review-note) { display: none; }
+  .card[data-density="normal"] .boxes { grid-template-columns: repeat(3, 1fr); }
+  .card[data-density="normal"] .reasons, .card[data-density="normal"] .action { font-size: 10pt; }
+  /* tight (7+): the boxes print as a one-line-each list: status, name, the reason that drove the flag */
+  .tight-legend { display: none; }
+  .card[data-density="tight"] .tight-legend { display: block; font-size: 10pt; margin: 0 0 3pt; }
+  .card[data-density="tight"] .boxes { grid-template-columns: 1fr; gap: 0; }
+  .card[data-density="tight"] .box { display: grid; grid-template-columns: 0.95in 1.45in 1fr; column-gap: 6pt; align-items: baseline;
+    border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding: var(--row-gap, 1pt) 0; line-height: 1.2; }
+  .card[data-density="tight"] .box-top { display: contents; }
+  .card[data-density="tight"] .box-top .status { grid-column: 1; grid-row: 1; font-size: 10pt; }
+  .card[data-density="tight"] .box-top h2 { grid-column: 2; grid-row: 1; font-size: 10pt; font-weight: 600; line-height: 1.2; }
+  .card[data-density="tight"] .box-top h2 .pos { font-size: 8.5pt; }
+  .card[data-density="tight"] .box-body { grid-column: 3; grid-row: 1; display: block; margin: 0; }
+  .card[data-density="tight"] .reasons { font-size: 10pt; line-height: 1.2; }
+  .card[data-roster="9"] .box-top .status, .card[data-roster="9"] .box-top h2, .card[data-roster="9"] .reasons { font-size: 9.5pt; }
+  /* 12 or more flags: the roster drops to its 9pt floor */
+  .card[data-roster="9"] .roster-table { font-size: 9pt; }
+  .card[data-roster="9"] .roster-table .status { font-size: 9pt; }
+  .card[data-density="tight"] .reasons li { padding: 0; }
+  .card[data-density="tight"] .reasons li::before { content: none; }
+  .card[data-density="tight"] .action, .card[data-density="tight"] .away { display: none; }
+  /* on paper the roster table already marks each of them "Down with team", and the sub line counts them */
+  .with-team { display: none; }
+
+  /* the whole roster: two tables side by side */
+  .everyone { margin-top: 10pt; }
+  .roster-print { display: grid; grid-template-columns: 1fr 1fr; gap: 0 0.25in; align-items: start; }
+  .roster-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 10pt; line-height: 1.15; }
+  .roster-table th:nth-child(1) { width: 28%; } .roster-table th:nth-child(2) { width: 34%; }
+  .roster-table th:nth-child(3) { width: 26%; } .roster-table th:nth-child(4) { width: 12%; }
+  .roster-table.with-lineup th:nth-child(1) { width: 24%; } .roster-table.with-lineup th:nth-child(2) { width: 34%; }
+  .roster-table.with-lineup th:nth-child(3) { width: 20%; } .roster-table.with-lineup th:nth-child(4) { width: 9%; }
+  .roster-table td:nth-child(n+4), .roster-table th:nth-child(n+4) { text-align: right; padding-right: 0; }
+  .roster-table thead th { font: 500 8.5pt var(--sans); color: var(--ink-dim); text-align: left; padding: 0 4pt 2pt 0;
+    border-bottom: 1px solid var(--ink-faint); vertical-align: bottom; }
+  .roster-table td { padding: var(--row-gap, 1.5pt) 4pt var(--row-gap, 1.5pt) 0; border-bottom: 1px solid var(--line); vertical-align: baseline; white-space: nowrap; }
+  .roster-table td:nth-child(3) { white-space: normal; }
+  .roster-table tr.grp th { font: 600 8.5pt var(--sans); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint);
+    text-align: left; padding: 3pt 0 0; }
+  .roster-table .pos { font-size: 8.5pt; }
+  .roster-table .rt-name { font-weight: 500; }
+  .roster-table .status { font-size: 10pt; }
+
+  .card-foot { font-size: 9.5pt; line-height: 1.3; padding-top: 6pt; margin-top: auto; }
+  .card-foot h2 { display: inline; font-size: 11pt; margin: 0 4pt 0 0; }
+  .card-foot h2 + p { display: inline; }
+  .card-foot .sources { margin-top: 3pt; }
+  .card-foot p { margin: 0 0 3pt; max-width: none; }
+  .card-foot .sources { font-size: 9pt; }
 }
