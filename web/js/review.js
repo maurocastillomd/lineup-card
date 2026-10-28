@@ -1,4 +1,4 @@
-import { FLAGGED, WORDS, disclaimer, parseLineup, signalLine, sourcesNote } from "./logic.js";
+import { FLAGGED, WORDS, disclaimer, parseLineup, reasonLines, signalLine, sourcesNote } from "./logic.js";
 import { emptyReview, hasSavedReview, loadReview, saveReview } from "./store.js";
 
 const $ = (id) => document.getElementById(id);
@@ -11,6 +11,12 @@ export async function init(src) {
   async function load(date) {
     day = await src.getDay(date);
     review = hasSavedReview(date, src.scope) ? loadReview(date, src.scope) : emptyReview(src.reviewer);
+    if (!hasSavedReview(date, src.scope)) {
+      // The fictional sample comes with an example review: show how it was checked (its lineup and
+      // decisions), not yet approved, so approving it makes it this reviewer's own.
+      const ex = await src.getExample?.(date);
+      if (ex) review = { ...emptyReview(src.reviewer), todayIds: ex.todayIds, decisions: ex.decisions };
+    }
     $("disclaimer").textContent = disclaimer(day);
     $("stale").textContent = sourcesNote(day);
     $("stale").hidden = !sourcesNote(day);
@@ -54,7 +60,8 @@ export async function init(src) {
       const d = review.decisions[p.id];
       const state = d ? `<small>Decision: ${esc(d.action)}${d.note ? ` · ${esc(d.note)}` : ""}</small>` : "";
       return `<div class="row" data-id="${esc(p.id)}">
-        <div><strong>${esc(p.name)}</strong> ${esc(p.pos)} · <span class="word-${esc(p.status)}">${esc(p.word)}</span> ${esc(p.magnitude)}
+        <div><strong>${esc(p.name)}</strong> ${esc(p.pos)} · <span class="word-${esc(p.status)}">${esc(p.word)}</span>
+          <span class="plain">${reasonLines(p).map(esc).join(". ")}.</span>
           <small>${p.reasons.map(esc).join("; ")}</small>
           <small>${esc(signalLine("RSI-mod", "m/s", p.rsi))}</small><small>${esc(signalLine("Wellness", "pts", p.wellness, 1))}</small>${state}
           <span class="err" data-err></span></div>

@@ -13,15 +13,8 @@
   <span class="fiction" id="disclaimer">Not a fitness-to-play decision.</span>
   <p id="stale" class="err" role="status" hidden></p>
   <h1>Morning review</h1>
-  <p>Check what the pipeline did, mark today's players, then approve the Lineup Card.</p>
+  <p>Mark today's players, decide on each flag, then approve the Lineup Card.</p>
   <label>Date <select id="date"></select></label>
-
-  <section class="panel">
-    <h2>Test noise today</h2>
-    <p>How sensitive each measure is for this squad. TE = typical error (test-to-test noise). SWC = smallest worthwhile change (0.2 x between-player SD). MDC95 = change needed to be 95% sure one reading moved. Your gate = 1.5 x TE.</p>
-    <div id="signal"></div>
-    <details><summary>All players' numbers</summary><div id="allnums"></div></details>
-  </section>
 
   <section class="panel">
     <h2>1. Today's players</h2>
@@ -32,15 +25,24 @@
   </section>
 
   <section class="panel">
-    <h2>2. What the pipeline held out or dropped</h2>
+    <h2>2. Flags to decide</h2>
+    <p>Confirm each flag, change it, or remove it. A change or removal needs a short note; it shows on the card.</p>
+    <div id="flags"></div>
+  </section>
+
+  <section class="panel">
+    <h2>3. What was held out or dropped</h2>
     <div id="held"></div>
     <div id="log"></div>
   </section>
 
-  <section class="panel">
-    <h2>3. Flags</h2>
-    <div id="flags"></div>
-  </section>
+  <details class="panel analysts">
+    <summary>For analysts: how noisy each test is</summary>
+    <p>How sensitive each measure is for this squad. TE = typical error (test-to-test noise). SWC = smallest worthwhile change (0.2 x between-player SD). MDC95 = change needed to be 95% sure one reading moved. Your gate = 1.5 x TE.</p>
+    <div id="signal"></div>
+    <h3>All players' numbers</h3>
+    <div id="allnums"></div>
+  </details>
 
   <section class="panel">
     <button class="primary" id="approve">Approve and build the Lineup Card</button>

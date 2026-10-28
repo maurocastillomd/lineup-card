@@ -10,4 +10,7 @@ table.num th:first-child, table.num td:first-child { text-align: left; }
 table.num th { font: 500 12px var(--sans); color: var(--ink-dim); }
 .scroll { overflow-x: auto; }
 details summary { cursor: pointer; color: var(--accent); margin-top: 8px; }
+details.analysts summary { margin-top: 0; font-weight: 500; }
+details.analysts h3 { font-size: 16px; margin-top: 16px; }
+.row .plain { display: block; margin-top: 2px; }
 @media (max-width: 640px) { .row { grid-template-columns: 1fr; } }
