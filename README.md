@@ -1,5 +1,33 @@
 # Lineup Card
 
+**Every morning, one page that tells the staff which players to talk to before they train, and why.**
+
+[See the live sample card](https://maurocastillomd.github.io/lineup-card/) · [How to use (1 page)](docs/club-edition/how-to-use.jpg) · [IT fact sheet (1 page)](docs/club-edition/it-fact-sheet.jpg)
+
+<a href="https://maurocastillomd.github.io/lineup-card/"><img src="docs/club-edition/sample-lineup-card.jpg" alt="Sample Lineup Card: the headline says 2 players to talk to before they train, one box each for J. Ortega (Check in) and C. Duvall (Watch) with reasons and a 2-week jump picture, then the full roster by position" width="640"></a>
+
+*The sample card for a fictional Sep 20. Fictional club, players and data.*
+
+## What staff get
+
+- **A headline.** How many players to talk to today, in plain words.
+- **One box per flagged player.** What changed (jump, morning form, throwing load), what to do about it, and his last 2 weeks of jumps.
+- **The whole roster.** Every player by position, with the biggest jump change at the top of each group.
+- **A one-page PDF** to send by Slack, Teams or email.
+
+## How it decides
+
+Each player is compared with his own last 4 weeks, not with the team. A flag means his drop is bigger than his normal day-to-day ups and downs and bigger than the test's own noise. A coach reviews every flag before the card is made. It is a reason to talk, not a decision to sit him.
+
+## Two ways to use it
+
+- **Hosted demo.** The link above. Fictional data, opens in any browser.
+- **Club Edition (offline).** One HTML file that staff open from their own computer. No install, no internet and no AI inside, so it fits clubs whose IT allows only approved tools such as Copilot or ChatGPT. See [Club Edition](#club-edition-offline) below.
+
+Built by [Mauro Castillo](https://maurocastillomd.com). The rest of this page is the full detail: the data, the rules, the math and how to run it.
+
+## The details
+
 A daily one-page staff report from force plate, GPS and wellness data, with the coach's review before anything is shared.
 
 **Fictional roster and fictional data.** The club, the 28 players, the opponents and every number are invented. No real athlete data is in this repository.
